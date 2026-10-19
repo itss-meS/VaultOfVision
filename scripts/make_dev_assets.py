@@ -4,8 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from scripts.sign import keygen, sign_file
-
+from sign import keygen, sign_file
 BANNED = {
     "version": 1,
     "items": ["Endosulfan", "Monocrotophos"],
