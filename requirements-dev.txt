@@ -1,0 +1,7 @@
+pytest
+ruff
+mypy
+PyYAML
+pillow
+numpy
+cryptography

@@ -1,0 +1,120 @@
+{
+  "app": {
+    "title": "Redesigned Edge AI",
+    "tagline": "Tomato leaf advisor"
+  },
+  "common": {
+    "continue": "Continue",
+    "back": "Back",
+    "retry": "Try again",
+    "loading": "Working...",
+    "percent": "{{value}}%"
+  },
+  "login": {
+    "title": "Sign in",
+    "profile": "Profile code",
+    "pin": "PIN",
+    "submit": "Sign in",
+    "failed": "Wrong code or PIN.",
+    "totp": "Authenticator code (officers and admins only)"
+  },
+  "setup": {
+    "title": "Set up",
+    "language": "Language",
+    "crop": "Crop",
+    "cropValue": "Tomato",
+    "region": "Region",
+    "area": "Farm size (hectares)",
+    "consent": "Photos are processed on this device and are not saved. Only the advice result is kept.",
+    "theme": "Appearance"
+  },
+  "capture": {
+    "title": "Check a leaf",
+    "camera": "Take photo",
+    "gallery": "Choose photo",
+    "question": "Ask a question (optional)",
+    "mic": "Speak",
+    "micUnavailable": "Voice input is not available on this device",
+    "analyze": "Check leaf",
+    "hint": "Photograph one leaf in daylight, filling most of the frame."
+  },
+  "result": {
+    "title": "Result",
+    "confidence": "Confidence",
+    "severity": "Severity",
+    "affected": "Leaf area affected",
+    "retake": "The photo is not clear enough. Please take another one.",
+    "retakeButton": "Take another photo",
+    "healthy": "No disease found on this leaf.",
+    "advice": "Get advice"
+  },
+  "advisory": {
+    "title": "Advice",
+    "steps": "What to do",
+    "prevent": "Prevention",
+    "dosage": "Dosage for your farm",
+    "dosageTotal": "{{total}} {{unit}} of {{product}} for {{area}} ha",
+    "dosageMissing": "No approved dosage is available for this case. Ask your extension officer.",
+    "safety": "Safety",
+    "play": "Play audio",
+    "playing": "Playing...",
+    "fallback": "This is a safe standard answer. Ask your extension officer for treatment advice.",
+    "refusal": "This request cannot be answered with product advice.",
+    "newCheck": "Check another leaf"
+  },
+  "priority": {
+    "critical": "Do first",
+    "high": "Important",
+    "normal": "Also"
+  },
+  "errors": {
+    "auth": "Please sign in again.",
+    "busy": "The device is busy. Try again in a moment.",
+    "rate": "Too many requests. Please wait a moment.",
+    "rejected": "That photo could not be used. Try a different photo.",
+    "network": "Cannot reach the device engine.",
+    "unknown": "Something went wrong. Please try again."
+  },
+  "diseases": {
+    "BacterialSpot": "Bacterial Spot",
+    "EarlyBlight": "Early Blight",
+    "LateBlight": "Late Blight",
+    "LeafMold": "Leaf Mold",
+    "SeptoriaLeafSpot": "Septoria Leaf Spot",
+    "SpiderMites": "Spider Mites",
+    "TargetSpot": "Target Spot",
+    "YellowLeafCurlVirus": "Yellow Leaf Curl Virus",
+    "MosaicVirus": "Mosaic Virus",
+    "Healthy": "Healthy"
+  },
+  "severityLevels": {
+    "1": "Very Low",
+    "2": "Low",
+    "3": "Moderate",
+    "4": "High",
+    "5": "Severe"
+  },
+  "device": {
+    "title": "Device",
+    "status": "Status",
+    "temp": "Temperature",
+    "memory": "Peak memory",
+    "system": "System",
+    "platform": "Platform",
+    "uptime": "Uptime",
+    "bannedList": "Banned list",
+    "ota": "Update version",
+    "engines": "Engines",
+    "vision": "Vision",
+    "llm": "Language model",
+    "retriever": "Retriever",
+    "audio": "Audio",
+    "forbidden": "Only officers and admins can view this screen.",
+    "open": "Device"
+  },
+  "theme": {
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  }
+}

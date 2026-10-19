@@ -1,0 +1,7 @@
+{
+  "public_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEApc9YDqqvq9woAiNMc2IfC1O5rLCyceXj36YwLaWCPdY=\n-----END PUBLIC KEY-----\n",
+  "banned": "{\"version\": 3, \"items\": [\"Endosulfan\", \"Monocrotophos\"], \"aliases\": [\"Thiodan\"]}",
+  "banned_sig": "e4604731ee5f28cc0a0a1a9ab38a140cdedf1b697baf289555c74c4862a7cbefd11f0592416868ad8a9d5f3e673e7fcaaccb09f8a69debfe9dbf6f47349a280b",
+  "dosage": "{\"version\": 2, \"entries\": [{\"crop\": \"tomato\", \"disease\": \"Early Blight\", \"severity_min\": 2, \"severity_max\": 4, \"product\": \"Copper oxychloride\", \"dose_per_ha\": 2.5, \"unit\": \"kg\", \"notes\": \"Spray in the evening\"}, {\"crop\": \"tomato\", \"disease\": \"Late Blight\", \"severity_min\": 1, \"severity_max\": 5, \"product\": \"Endosulfan\", \"dose_per_ha\": 1, \"unit\": \"l\"}]}",
+  "dosage_sig": "b4f05455ebceac08605b6b8c6f17f8f2687106cb6c00e44ea9e633febc595a3b2a7ca649218eacbab19fa56c23f6fa949c43ba3103b178658943f3bdd1f4980a"
+}
