@@ -69,11 +69,10 @@ async function folders(): Promise<string[]> {
   if (wanted) return [wanted];
   const res = await fetch(`${BASE}/models.json`);
   const names = res.ok ? ((await res.json()) as string[]) : [];
-  if (names.length > 0) return names.map((n) => `${n}/`);
   const rootModel = await fetch(`${BASE}/models/vision.onnx`, {
     method: "HEAD",
   });
-  return rootModel.ok ? [""] : [];
+  return rootModel.ok && names.length === 0 ? [""] : names.map((n) => `${n}/`);
 }
 
 async function load(): Promise<Loaded[]> {

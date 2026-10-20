@@ -211,6 +211,28 @@ def combined_items(roots: dict[str, Path | None]) -> list[Item]:
     return items
 
 
+ROUTER_DOMAINS = {
+    "plantvillage": "plantvillage-all",
+    "cassava": "cassava",
+    "ip102": "ip102",
+}
+
+
+def router_items(roots: dict[str, Path | None], cap: int | None, seed: int) -> list[Item]:
+    rng = random.Random(seed)
+    items: list[Item] = []
+    for kind, domain in ROUTER_DOMAINS.items():
+        root = roots.get(kind)
+        if root is None:
+            continue
+        picked = [Item(i.path, domain, i.split, i.group) for i in load_items(kind, root, None)]
+        rng.shuffle(picked)
+        items.extend(picked[:cap] if cap else picked)
+    if len({i.label for i in items}) < 2:
+        raise DatasetError("the router needs at least two dataset folders")
+    return items
+
+
 def assign_splits(items: list[Item], val_frac: float, test_frac: float, seed: int) -> list[tuple[Item, str]]:
     rng = random.Random(seed)
     result: list[tuple[Item, str]] = []
@@ -282,8 +304,11 @@ def prepare_dataset(
     test_frac: float,
     seed: int,
     link: bool,
+    cap: int | None = None,
 ) -> dict[str, object]:
-    if isinstance(root, dict):
+    if isinstance(root, dict) and kind == "router":
+        items = router_items(root, cap, seed)
+    elif isinstance(root, dict):
         items = combined_items(root)
     else:
         items = load_items(kind, root, crop)

@@ -124,3 +124,49 @@ def test_combined_dataset_prefixes_labels(tmp_path: Path) -> None:
         False,
     )
     assert summary["classes"] == ["Cassava Healthy", "Cassava Mosaic Disease", "Tomato Healthy"]
+
+
+def test_router_labels_are_domains_and_capped(tmp_path: Path) -> None:
+    pv = tmp_path / "pv"
+    for _ in range(30):
+        img(pv / "Tomato___Healthy" / f"{uuid.uuid4()}.jpg")
+    cas = tmp_path / "cas"
+    rows = ["image_id,label"]
+    for i in range(30):
+        img(cas / "train_images" / f"{i}.jpg")
+        rows.append(f"{i}.jpg,3")
+    (cas / "train.csv").write_text("\n".join(rows))
+    summary = prepare_dataset(
+        "router",
+        {"plantvillage": pv, "cassava": cas, "ip102": None},
+        tmp_path / "out",
+        None,
+        0.1,
+        0.1,
+        1,
+        False,
+        12,
+    )
+    assert summary["classes"] == ["cassava", "plantvillage-all"]
+    counts = summary["counts"]
+    assert isinstance(counts, dict)
+    totals = {"cassava": 0, "plantvillage-all": 0}
+    for key, n in counts.items():
+        totals[key.split("/", 1)[1]] += n
+    assert totals == {"cassava": 12, "plantvillage-all": 12}
+
+
+def test_router_needs_two_domains(tmp_path: Path) -> None:
+    pv = tmp_path / "pv"
+    img(pv / "Tomato___Healthy" / f"{uuid.uuid4()}.jpg")
+    with pytest.raises(DatasetError):
+        prepare_dataset(
+            "router",
+            {"plantvillage": pv, "cassava": None, "ip102": None},
+            tmp_path / "o",
+            None,
+            0.1,
+            0.1,
+            1,
+            False,
+        )

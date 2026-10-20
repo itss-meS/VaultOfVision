@@ -139,7 +139,7 @@ def main() -> None:
     p.add_argument(
         "--dataset",
         required=True,
-        choices=["plantvillage", "cassava", "ip102", "folders", "combined", "separate"],
+        choices=["plantvillage", "cassava", "ip102", "folders", "combined", "separate", "router"],
     )
     p.add_argument("--root", type=Path, help="folder that holds the downloaded dataset")
     p.add_argument(
@@ -154,6 +154,7 @@ def main() -> None:
     p.add_argument("--pv-root", type=Path, help="PlantVillage color folder, for combined or separate")
     p.add_argument("--cassava-root", type=Path, help="Cassava folder, for combined or separate")
     p.add_argument("--ip102-root", type=Path, help="IP102 folder, for combined or separate")
+    p.add_argument("--per-domain", type=int, default=2000, help="images per dataset for the router")
     p.add_argument("--name", help="name for the outputs, default is the dataset name")
     p.add_argument("--work", type=Path, default=Path("data"))
     p.add_argument("--model", default="yolo11n-cls.pt")
@@ -202,9 +203,9 @@ def main() -> None:
         "cassava": a.cassava_root,
         "ip102": a.ip102_root,
     }
-    if a.dataset == "combined":
+    if a.dataset in ("combined", "router"):
         if not any(combined.values()):
-            sys.exit("combined needs at least one of --pv-root, --cassava-root, --ip102-root")
+            sys.exit(f"{a.dataset} needs at least one of --pv-root, --cassava-root, --ip102-root")
         source: Path | dict[str, Path | None] = combined
     elif root is None:
         sys.exit("give --root <dataset folder>")
@@ -224,7 +225,9 @@ def run_one(
 ) -> Path:
     prepared = a.work / name
     try:
-        summary = prepare_dataset(dataset, source, prepared, crop, 0.1, 0.1, 42, not a.copy)
+        summary = prepare_dataset(
+            dataset, source, prepared, crop, 0.1, 0.1, 42, not a.copy, getattr(a, "per_domain", None)
+        )
         if a.field_test:
             print(f"field test images added: {add_field_test(a.field_test, prepared)}")
     except DatasetError as exc:
