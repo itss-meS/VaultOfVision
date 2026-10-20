@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 import type { Plugin } from 'vite';
+import { devAssets } from './devAssets';
 
 const devWithoutCsp: Plugin = {
   name: 'dev-without-csp',
@@ -10,9 +11,21 @@ const devWithoutCsp: Plugin = {
   },
 };
 
+const withoutOrtInBuild: Plugin = {
+  name: 'without-ort-in-build',
+  apply: 'build',
+  enforce: 'pre',
+  resolveId(id) {
+    return id === 'onnxruntime-web' ? '\0empty-ort' : null;
+  },
+  load(id) {
+    return id === '\0empty-ort' ? 'export default {};' : null;
+  },
+};
+
 export default defineConfig({
   base: './',
-  plugins: [react(), devWithoutCsp],
+  plugins: [react(), devWithoutCsp, devAssets(), withoutOrtInBuild],
   build: {
     sourcemap: false,
     target: 'es2020',

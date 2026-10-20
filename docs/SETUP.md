@@ -12,17 +12,26 @@ This repository contains the phone app, the model training pipeline and the docu
 | NVIDIA driver | current | Training only (RTX GPU) |
 | Android Studio and JDK 21, or GitHub Actions | current | Building the APK |
 
-## 2. Run the web UI in a browser
+## 2. Run the app in a browser (development)
 
-The UI runs without a backend only when an engine is available. In a browser there is no on-device engine, so the screens can be inspected but photo analysis needs the phone build.
+The development server runs the real advice engine in the browser. Photo analysis uses your trained vision model through ONNX Runtime Web. There is no language model in the browser, so advice is the safe built-in template for the detected label. This is for testing the vision model and the screens. The language model runs only in the Android build.
 
 ```
+python -m scripts.make_dev_assets
+copy models\plantvillage-all\vision.onnx models\vision.onnx
+copy models\plantvillage-all\labels.json models\labels.json
 cd ui\web
 npm ci
 npm run dev
 ```
 
-Open the address Vite prints. `VITE_ENGINE=native` or `VITE_ENGINE=http` forces the engine choice.
+Open the address Vite prints, for example `http://localhost:5173/`.
+
+- Choose another trained model with a query string: `http://localhost:5173/?model=ip102` or `?model=cassava` (the folder name inside `models`).
+- The top five predictions for each photo are printed in the browser console (F12).
+- Sign in with any name of 2 to 32 letters or digits and a PIN of 4 to 12 digits. The first sign-in creates the account. There is no authenticator code.
+- Accounts and cases are stored in `.dev\data\kv.json`. Delete that file to start fresh.
+- `VITE_ENGINE=http` uses a separate backend instead, and `VITE_ENGINE=native` forces the phone engine.
 
 ## 3. Quality checks
 
