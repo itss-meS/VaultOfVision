@@ -79,6 +79,6 @@
       "items": { "type": "string", "minLength": 1, "maxLength": 400 }
     },
     "safety_notice": { "type": "string", "minLength": 1, "maxLength": 600 },
-    "lang": { "enum": ["en", "hi", "mr"] }
+    "lang": { "enum": ["en", "hi", "mr", "te"] }
   }
 }

@@ -11,29 +11,26 @@ const devWithoutCsp: Plugin = {
   },
 };
 
-const withoutOrtInBuild: Plugin = {
-  name: 'without-ort-in-build',
+const withoutDevEnginesInBuild: Plugin = {
+  name: 'without-dev-engines-in-build',
   apply: 'build',
   enforce: 'pre',
   resolveId(id) {
-    return id === 'onnxruntime-web' ? '\0empty-ort' : null;
+    return id === 'onnxruntime-web' || id === 'sql.js' ? '\0empty-dev-engine' : null;
   },
   load(id) {
-    return id === '\0empty-ort' ? 'export default {};' : null;
+    return id === '\0empty-dev-engine' ? 'export default {};' : null;
   },
 };
 
 export default defineConfig({
   base: './',
-  plugins: [react(), devWithoutCsp, devAssets(), withoutOrtInBuild],
+  plugins: [react(), devWithoutCsp, devAssets(), withoutDevEnginesInBuild],
   build: {
     sourcemap: false,
     target: 'es2020',
     assetsInlineLimit: 0,
     cssCodeSplit: false,
-  },
-  server: {
-    proxy: { '/api': 'http://127.0.0.1:8080' },
   },
   test: {
     environment: 'jsdom',

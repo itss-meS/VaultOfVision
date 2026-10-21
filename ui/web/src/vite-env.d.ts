@@ -1,5 +1,5 @@
 interface ImportMetaEnv {
-  readonly VITE_ENGINE?: 'http' | 'native';
+  readonly VITE_ENGINE?: "http" | "native";
 }
 
 interface ImportMeta {

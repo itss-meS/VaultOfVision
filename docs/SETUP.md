@@ -18,8 +18,6 @@ The development server runs the real advice engine in the browser. Photo analysi
 
 ```
 python -m scripts.make_dev_assets
-copy models\plantvillage-all\vision.onnx models\vision.onnx
-copy models\plantvillage-all\labels.json models\labels.json
 cd ui\web
 npm ci
 npm run dev
@@ -27,11 +25,12 @@ npm run dev
 
 Open the address Vite prints, for example `http://localhost:5173/`.
 
-- Choose another trained model with a query string: `http://localhost:5173/?model=ip102` or `?model=cassava` (the folder name inside `models`).
+- Every folder inside `models` that has `vision.onnx` and `labels.json` is loaded, and the most confident prediction wins, so leaves, cassava and insects are recognised without choosing. To test one model only, add `?model=ip102` to the address.
 - The top five predictions for each photo are printed in the browser console (F12).
-- Sign in with any name of 2 to 32 letters or digits and a PIN of 4 to 12 digits. The first sign-in creates the account. There is no authenticator code.
-- Accounts and cases are stored in `.dev\data\kv.json`. Delete that file to start fresh.
-- `VITE_ENGINE=http` uses a separate backend instead, and `VITE_ENGINE=native` forces the phone engine.
+- Create an account on first launch with a name, a 10-digit mobile number and a password of at least 6 characters, then log in with the mobile number and password. There is no authenticator code.
+- Accounts and scan history are stored in a SQLite database at `.dev\data\agriedge.sqlite`. Delete that file to start fresh. On the phone the same schema lives in the app's own SQLite store.
+- Passwords are stored as PBKDF2 hashes with a per-user salt. Five wrong attempts lock the account for 30 seconds.
+- `VITE_ENGINE=native` forces the phone engine.
 
 ## 3. Quality checks
 

@@ -152,3 +152,13 @@ Class count barely changes size. YOLO11n-cls is about 1.5 million parameters, s 
 
 - Severity from lesion masks needs a segmentation dataset and model. The classifier gives a label and confidence only.
 - Advice and dosage for non-tomato crops need the multi-crop work listed in `DECISIONS.md` and `ARCHITECTURE.md`, plus knowledge and dosage data for those crops (`KNOWLEDGE.md`).
+
+## Router model (decides leaf, cassava or insect)
+
+Each model only knows its own classes, so it names one of them for any photo. The router is a small model that first decides which model a photo belongs to. Train it after the three separate models, from the same dataset folders:
+
+```
+python -m scripts.train.train_all --dataset router --pv-root "D:\PlantVillageDataset\train_val_test\train" --cassava-root "D:\archive\cassava_datasetv2" --ip102-root "D:\archive (1)" --name router --model yolo11n-cls.pt --epochs 20 --per-domain 2000
+```
+
+The result is `models\router\`. Its classes are `plantvillage-all`, `cassava` and `ip102`, which match the model folder names, so the app sends the photo to the right model. If the router is unsure (below 60%), the app falls back to asking every model and taking the most confident one.

@@ -1,42 +1,96 @@
 {
   "app": {
-    "title": "Redesigned Edge AI",
-    "tagline": "Tomato leaf advisor"
+    "name1": "Redesigned",
+    "name2": "Edge AI",
+    "tagline": "Photograph a leaf. Get advice in your language, with no internet."
   },
   "common": {
-    "continue": "Continue",
     "back": "Back",
+    "close": "Close",
     "retry": "Try again",
     "loading": "Working...",
-    "percent": "{{value}}%"
+    "percent": "{{value}}%",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "viewAll": "View all"
   },
-  "login": {
-    "title": "Sign in",
-    "profile": "Profile code",
-    "pin": "PIN",
-    "submit": "Sign in",
-    "failed": "Wrong code or PIN.",
-    "totp": "Authenticator code (officers and admins only)"
+  "nav": {
+    "home": "Home",
+    "scan": "Scan Leaf",
+    "history": "History",
+    "account": "Account"
   },
-  "setup": {
-    "title": "Set up",
-    "language": "Language",
-    "crop": "Crop",
-    "cropValue": "Tomato",
-    "region": "Region",
-    "area": "Farm size (hectares)",
-    "consent": "Photos are processed on this device and are not saved. Only the advice result is kept.",
-    "theme": "Appearance"
+  "header": {
+    "language": "Change app language",
+    "theme": "Switch theme",
+    "about": "About"
   },
-  "capture": {
-    "title": "Check a leaf",
+  "auth": {
+    "welcome": "Welcome to Redesigned Edge AI",
+    "subtitleLogin": "Log in to scan your crops and keep your history on this phone.",
+    "subtitleCreate": "Create a free account to scan your crops and keep your history on this phone.",
+    "tabLogin": "Log In",
+    "tabCreate": "Create Account",
+    "name": "Full name",
+    "namePlaceholder": "Your name",
+    "mobile": "Mobile number",
+    "mobilePlaceholder": "10-digit mobile number",
+    "password": "Password",
+    "passwordPlaceholder": "Your password",
+    "passwordNew": "At least 6 characters",
+    "confirm": "Confirm password",
+    "confirmPlaceholder": "Type the password again",
+    "optional": "Add village (optional)",
+    "village": "Village",
+    "villagePlaceholder": "Village or town",
+    "submitLogin": "Log In",
+    "submitCreate": "Create Account",
+    "toCreate": "New here?",
+    "toCreateLink": "Create an account",
+    "toLogin": "Already have an account?",
+    "toLoginLink": "Log in",
+    "privacy": "Your account is stored only on this phone.",
+    "show": "Show password",
+    "hide": "Hide password",
+    "errors": {
+      "name": "Enter your name (2 to 60 characters).",
+      "mobile": "Enter a valid 10-digit mobile number.",
+      "password": "Use at least 6 characters.",
+      "mismatch": "The passwords do not match.",
+      "wrong": "Wrong mobile number or password.",
+      "exists": "This mobile number already has an account. Log in instead.",
+      "locked": "Too many attempts. Wait 30 seconds and try again."
+    }
+  },
+  "home": {
+    "openCamera": "Open Camera to Scan Leaf",
+    "upload": "Upload Photo from Gallery",
+    "recent": "Recent Scans",
+    "noScans": "No scans yet. Scan your first leaf.",
+    "tiles": {
+      "private": {
+        "title": "Private",
+        "text": "Stays on this phone"
+      },
+      "offline": {
+        "title": "Offline",
+        "text": "No internet needed"
+      },
+      "languages": {
+        "title": "4 languages",
+        "text": "Hindi, Telugu, Marathi, English"
+      }
+    }
+  },
+  "scan": {
+    "title": "Crop Disease Scanner",
+    "hint": "Hold the leaf steady inside the frame",
+    "analysing": "Analysing the leaf...",
     "camera": "Take photo",
     "gallery": "Choose photo",
-    "question": "Ask a question (optional)",
-    "mic": "Speak",
-    "micUnavailable": "Voice input is not available on this device",
-    "analyze": "Check leaf",
-    "hint": "Photograph one leaf in daylight, filling most of the frame."
+    "clear": "Clear photo",
+    "tip": "Use daylight and fill most of the frame with one leaf."
   },
   "result": {
     "title": "Result",
@@ -67,12 +121,62 @@
     "high": "Important",
     "normal": "Also"
   },
+  "history": {
+    "ledger": "Field Ledger",
+    "ledgerSub": "On-device SQLite database",
+    "scans": "Scans",
+    "storage": "Storage used",
+    "last": "Last scan",
+    "filterAll": "All",
+    "filterDisease": "Disease",
+    "filterPest": "Pest",
+    "filterHealthy": "Healthy",
+    "title": "Diagnosis History",
+    "clear": "Clear all",
+    "clearConfirm": "Tap again to confirm",
+    "empty": "No scans in this list.",
+    "match": "{{value}}% match",
+    "ms": "{{value}} ms",
+    "noAdvice": "No advice was saved for this scan. Scan the leaf again to get advice.",
+    "detail": "Scan details",
+    "deleteScan": "Delete scan",
+    "kb": "{{value}} KB",
+    "never": "None yet"
+  },
+  "account": {
+    "title": "Account",
+    "name": "Name",
+    "village": "Village",
+    "villagePlaceholder": "Add village",
+    "area": "Farm size (hectares)",
+    "areaPlaceholder": "Used for dosage totals",
+    "save": "Save changes",
+    "saved": "Saved",
+    "invalidArea": "Enter a size above 0 and up to 1000.",
+    "privacyNote": "Your account and scan history are stored in a SQLite database on this phone. Nothing is uploaded.",
+    "logout": "Log Out",
+    "delete": "Delete my account",
+    "deleteHelp": "This removes your account and all scans from this phone. Enter your password to confirm.",
+    "deleteConfirm": "Delete account",
+    "password": "Password"
+  },
+  "about": {
+    "title": "About",
+    "text": "Redesigned Edge AI recognises crop problems from a leaf photo and gives advice without internet. Photos never leave the phone.",
+    "version": "Version",
+    "platform": "Platform",
+    "vision": "Vision model",
+    "llm": "Language model",
+    "none": "Not available",
+    "close": "Close"
+  },
   "errors": {
     "auth": "Please sign in again.",
     "busy": "The device is busy. Try again in a moment.",
     "rate": "Too many requests. Please wait a moment.",
     "rejected": "That photo could not be used. Try a different photo.",
-    "network": "Cannot reach the device engine.",
+    "exists": "This already exists.",
+    "invalid": "Some of the details are not valid.",
     "unknown": "Something went wrong. Please try again."
   },
   "diseases": {
@@ -87,34 +191,18 @@
     "MosaicVirus": "Mosaic Virus",
     "Healthy": "Healthy"
   },
+  "crops": {
+    "Tomato": "Tomato",
+    "Potato": "Potato",
+    "Pepper": "Pepper",
+    "Cassava": "Cassava",
+    "Pest": "Pest"
+  },
   "severityLevels": {
     "1": "Very Low",
     "2": "Low",
     "3": "Moderate",
     "4": "High",
     "5": "Severe"
-  },
-  "device": {
-    "title": "Device",
-    "status": "Status",
-    "temp": "Temperature",
-    "memory": "Peak memory",
-    "system": "System",
-    "platform": "Platform",
-    "uptime": "Uptime",
-    "bannedList": "Banned list",
-    "ota": "Update version",
-    "engines": "Engines",
-    "vision": "Vision",
-    "llm": "Language model",
-    "retriever": "Retriever",
-    "audio": "Audio",
-    "forbidden": "Only officers and admins can view this screen.",
-    "open": "Device"
-  },
-  "theme": {
-    "system": "System",
-    "light": "Light",
-    "dark": "Dark"
   }
 }
