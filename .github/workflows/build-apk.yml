@@ -42,10 +42,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p models
-          gh release download models-v1 --repo "${{ github.repository }}" --dir models --clobber
-          for z in models/*.zip; do
-            if [ -e "$z" ]; then unzip -o -q "$z" -d models && rm "$z"; fi
-          done
+          if gh release view models-v1 --repo "${{ github.repository }}" > /dev/null 2>&1; then
+            gh release download models-v1 --repo "${{ github.repository }}" --dir models --clobber
+            for z in models/*.zip; do
+              if [ -e "$z" ]; then unzip -o -q "$z" -d models && rm "$z"; fi
+            done
+          else
+            echo "::warning::release models-v1 not found, building without models"
+          fi
           ls -lhR models
       - run: npm run prepare:android
         working-directory: ui/android
