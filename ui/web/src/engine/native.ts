@@ -1,4 +1,5 @@
 import { registerPlugin } from "@capacitor/core";
+import { openCapacitorSql } from "../db/capacitorSql";
 import { LocalEngineClient } from "./core/engine";
 import type {
   ChatMessage,
@@ -18,8 +19,6 @@ interface AgriEdgePlugin {
   }): Promise<{ text: string }>;
   speak(args: { text: string; lang: Lang }): Promise<void>;
   readAsset(args: { name: string }): Promise<{ base64: string | null }>;
-  kvGet(args: { key: string }): Promise<{ value: string | null }>;
-  kvSet(args: { key: string; value: string }): Promise<void>;
   health(): Promise<NativeHealth>;
 }
 
@@ -46,12 +45,6 @@ export const nativePorts: NativePorts = {
     const { base64 } = await Plugin.readAsset({ name });
     return base64 ? fromBase64(base64) : null;
   },
-  async kvGet(key) {
-    return (await Plugin.kvGet({ key })).value;
-  },
-  async kvSet(key, value) {
-    await Plugin.kvSet({ key, value });
-  },
   health() {
     return Plugin.health();
   },
@@ -59,6 +52,6 @@ export const nativePorts: NativePorts = {
 
 export class NativeEngineClient extends LocalEngineClient {
   constructor() {
-    super(nativePorts);
+    super(nativePorts, openCapacitorSql);
   }
 }

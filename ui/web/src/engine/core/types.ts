@@ -5,8 +5,6 @@ export type {
   DeviceHealth,
   DosageResult,
   Lang,
-  Role,
-  SessionInfo,
   VisionResult,
 } from "../../contracts/types";
 
@@ -24,7 +22,7 @@ export interface ToolCall {
 }
 
 export interface ChatMessage {
-  role: "system" | "user";
+  role: "system" | "user" | "assistant";
   content: string;
 }
 
@@ -34,7 +32,14 @@ export interface RawDetection {
   confidence: number;
   bbox?: [number, number, number, number];
   mask_polygon?: Array<[number, number]>;
+  model?: string;
   leaf_polygon?: Array<[number, number]>;
+  alternatives?: Array<{
+    class_id: number;
+    label: string;
+    confidence: number;
+    model?: string;
+  }>;
 }
 
 export interface Chunk {
@@ -71,7 +76,5 @@ export interface NativePorts extends LlmPort {
   detect(imageBase64: string): Promise<RawDetection | null>;
   speak(text: string, lang: Lang): Promise<void>;
   readAsset(name: string): Promise<Uint8Array | null>;
-  kvGet(key: string): Promise<string | null>;
-  kvSet(key: string, value: string): Promise<void>;
   health(): Promise<NativeHealth>;
 }

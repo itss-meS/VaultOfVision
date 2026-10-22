@@ -1,7 +1,7 @@
 import type { Lang } from "../contracts/types";
 
 const KEY = "agriedge.lang";
-const LANGS: readonly Lang[] = ["en", "hi", "mr"];
+const LANGS: readonly Lang[] = ["en", "hi", "mr", "te"];
 
 export function loadLang(): Lang | null {
   try {
@@ -20,17 +20,15 @@ export function saveLang(lang: Lang): void {
   }
 }
 
-export type ThemeChoice = "system" | "light" | "dark";
+export type ThemeChoice = "light" | "dark";
 
 const THEME_KEY = "agriedge.theme";
-const THEMES: readonly ThemeChoice[] = ["system", "light", "dark"];
 
 export function loadTheme(): ThemeChoice {
   try {
-    const value = window.localStorage.getItem(THEME_KEY);
-    return THEMES.find((t) => t === value) ?? "system";
+    return window.localStorage.getItem(THEME_KEY) === "dark" ? "dark" : "light";
   } catch {
-    return "system";
+    return "light";
   }
 }
 
@@ -43,7 +41,5 @@ export function saveTheme(theme: ThemeChoice): void {
 }
 
 export function applyTheme(theme: ThemeChoice): void {
-  const root = document.documentElement;
-  if (theme === "system") root.removeAttribute("data-theme");
-  else root.setAttribute("data-theme", theme);
+  document.documentElement.setAttribute("data-theme", theme);
 }

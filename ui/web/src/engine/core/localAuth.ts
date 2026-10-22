@@ -1,12 +1,8 @@
-import type { Role } from "./types";
-
 const ITERATIONS = 210000;
 const MAX_FAILS = 5;
 const LOCK_MS = 30000;
 
-export interface StoredProfile {
-  id: string;
-  role: Role;
+export interface Credential {
   salt: string;
   hash: string;
   iterations: number;
@@ -26,13 +22,13 @@ function fromHex(hex: string): Uint8Array {
 }
 
 export async function derive(
-  pin: string,
+  secret: string,
   salt: Uint8Array,
   iterations: number,
 ): Promise<string> {
   const key = await crypto.subtle.importKey(
     "raw",
-    enc.encode(pin),
+    enc.encode(secret),
     "PBKDF2",
     false,
     ["deriveBits"],
@@ -52,36 +48,46 @@ export function constantTimeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
-export async function makeProfile(
-  id: string,
-  pin: string,
-  role: Role,
+export async function makeCredential(
+  password: string,
   iterations = ITERATIONS,
-): Promise<StoredProfile> {
+): Promise<Credential> {
   const salt = crypto.getRandomValues(new Uint8Array(16));
   return {
-    id,
-    role,
     salt: toHex(salt),
-    hash: await derive(pin, salt, iterations),
+    hash: await derive(password, salt, iterations),
     iterations,
   };
 }
 
-export async function checkPin(
-  profile: StoredProfile,
-  pin: string,
+export async function checkCredential(
+  credential: Credential,
+  password: string,
 ): Promise<boolean> {
-  const hash = await derive(pin, fromHex(profile.salt), profile.iterations);
-  return constantTimeEqual(hash, profile.hash);
+  const hash = await derive(
+    password,
+    fromHex(credential.salt),
+    credential.iterations,
+  );
+  return constantTimeEqual(hash, credential.hash);
 }
 
-export function validPin(pin: string): boolean {
-  return /^[0-9]{4,12}$/.test(pin);
+export function validName(name: string): boolean {
+  const trimmed = name.trim();
+  return trimmed.length >= 2 && trimmed.length <= 60;
 }
 
-export function validProfileId(id: string): boolean {
-  return /^[A-Za-z0-9_-]{2,32}$/.test(id);
+export function normalizeMobile(mobile: string): string {
+  const digits = mobile.replace(/[\s-]/g, "");
+  return digits.replace(/^(\+91|91|0)(?=[6-9][0-9]{9}$)/, "");
+}
+
+export function validMobile(mobile: string): boolean {
+  return /^[6-9][0-9]{9}$/.test(mobile);
+}
+
+export function validPassword(password: string): boolean {
+  return password.length >= 6 && password.length <= 64;
 }
 
 export class Throttle {
@@ -106,3 +112,5 @@ export class Throttle {
     this.fails = 0;
   }
 }
+
+export const LOCK = { maxFails: MAX_FAILS, lockMs: LOCK_MS };

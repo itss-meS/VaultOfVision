@@ -1,3 +1,4 @@
+import { openDevSql } from "../db/devSql";
 import { LocalEngineClient } from "./core/engine";
 import type {
   ChatMessage,
@@ -19,11 +20,11 @@ interface Loaded {
 }
 
 const BASE = "/__dev";
-const ROUTER_MIN = 0.6;
 const LANG_TAG: Record<Lang, string> = {
   en: "en-IN",
   hi: "hi-IN",
   mr: "mr-IN",
+  te: "te-IN",
 };
 
 function modelPath(): string {
@@ -69,10 +70,11 @@ async function folders(): Promise<string[]> {
   if (wanted) return [wanted];
   const res = await fetch(`${BASE}/models.json`);
   const names = res.ok ? ((await res.json()) as string[]) : [];
+  if (names.length > 0) return names.map((n) => `${n}/`);
   const rootModel = await fetch(`${BASE}/models/vision.onnx`, {
     method: "HEAD",
   });
-  return rootModel.ok && names.length === 0 ? [""] : names.map((n) => `${n}/`);
+  return rootModel.ok ? [""] : [];
 }
 
 async function load(): Promise<Loaded[]> {
@@ -155,33 +157,35 @@ async function toTensor(b64: string, side: number): Promise<Float32Array> {
 export const webPorts: NativePorts = {
   async detect(imageBase64): Promise<RawDetection | null> {
     const models = await loaded();
-    const router = models.find((m) => m.model === "router/vision.onnx");
-    const classifiers = models.filter((m) => m !== router);
-    let pool = classifiers;
-    if (router) {
-      const route = await classify(router, imageBase64);
-      console.info("vision router", route.top);
-      const target = classifiers.filter(
-        (m) => m.model === `${route.label}/vision.onnx`,
-      );
-      if (route.score >= ROUTER_MIN && target.length > 0) pool = target;
-    }
+    const classifiers = models.filter((m) => m.model !== "router/vision.onnx");
+    if (classifiers.length === 0) return null;
     const results = await Promise.all(
-      pool.map(async (m) => ({ m, r: await classify(m, imageBase64) })),
+      classifiers.map(async (m) => ({
+        m,
+        r: await classify(m, imageBase64),
+      })),
     );
     for (const { m, r } of results) console.info("vision", m.model, r.top);
-    const win = results.reduce((a, b) => (b.r.score > a.r.score ? b : a));
-    console.info("vision chosen", win.m.model, win.r.label);
+    const ranked = [...results].sort((a, b) => b.r.score - a.r.score);
+    const win = ranked[0];
+    if (!win) return null;
     return {
       class_id: win.r.id,
       label: win.r.label,
       confidence: win.r.score,
+      model: win.m.model,
       bbox: [0, 0, 1, 1],
       mask_polygon: [],
+      alternatives: ranked.slice(1).map(({ m, r }) => ({
+        class_id: r.id,
+        label: r.label,
+        confidence: r.score,
+        model: m.model,
+      })),
     };
   },
   generate(_messages: ChatMessage[], _maxTokens: number): Promise<string> {
-    return Promise.reject(new Error("no language model in the browser"));
+    return Promise.reject(new Error("llm_unavailable"));
   },
   speak(text, lang) {
     if (typeof speechSynthesis === "undefined") return Promise.resolve();
@@ -194,17 +198,6 @@ export const webPorts: NativePorts = {
   async readAsset(name) {
     const res = await fetch(`${BASE}/${name}`);
     return res.ok ? new Uint8Array(await res.arrayBuffer()) : null;
-  },
-  async kvGet(key) {
-    const res = await fetch(`${BASE}/kv/${encodeURIComponent(key)}`);
-    return res.status === 200 ? await res.text() : null;
-  },
-  async kvSet(key, value) {
-    const res = await fetch(`${BASE}/kv/${encodeURIComponent(key)}`, {
-      method: "PUT",
-      body: value,
-    });
-    if (!res.ok) throw new Error("dev storage unavailable");
   },
   health(): Promise<NativeHealth> {
     return Promise.resolve({
@@ -222,6 +215,6 @@ export const webPorts: NativePorts = {
 
 export class WebEngineClient extends LocalEngineClient {
   constructor() {
-    super(webPorts);
+    super(webPorts, openDevSql);
   }
 }

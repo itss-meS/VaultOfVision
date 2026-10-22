@@ -1,32 +1,41 @@
 import {
   type AdvisoryResponse,
   type AskOptions,
+  type Candidate,
+  type ChatTurn,
   type DeviceHealth,
   type EngineClient,
   EngineError,
   type Lang,
-  type SessionInfo,
+  type LedgerStats,
+  type NewScan,
+  type ProfilePatch,
+  type ScanRecord,
+  type SignUpInput,
+  type UserProfile,
   type VisionResult,
 } from "../../contracts/types";
+import { migrate, type Sql } from "../../db/sql";
+import { Accounts, SESSION_MS } from "./accounts";
 import {
-  checkPin,
-  makeProfile,
-  type StoredProfile,
-  Throttle,
-  validPin,
-  validProfileId,
-} from "./localAuth";
+  buildChatMessages,
+  CHAT_TOKENS,
+  cleanHistory,
+  guardReply,
+} from "./chat";
+import { Throttle } from "./localAuth";
 import {
   DEFAULT_CONFIG,
   detectionToVision,
   Orchestrator,
 } from "./orchestrator";
 import { Bm25Retriever } from "./retriever";
-import { rulesFromDocument } from "./rules";
+import { type RuleEngine, rulesFromDocument } from "./rules";
+import { kindFor, Scans } from "./scans";
 import { loadSignedJson, publicKeyFromPem } from "./signing";
 import { dosageFromDocument } from "./tools";
-import type { NativePorts, Retriever } from "./types";
-import { validateVision } from "./validate";
+import type { NativePorts, RawDetection, Retriever } from "./types";
+import { validateAdvisory, validateVision } from "./validate";
 
 export const ASSETS = {
   trust: "knowledge/release_ed25519.pub",
@@ -40,7 +49,6 @@ export const ASSETS = {
 export interface LocalEngineOptions {
   confThreshold: number;
   thresholds: readonly number[];
-  sessionSeconds: number;
   maxImageBytes: number;
   pinIterations: number;
 }
@@ -48,7 +56,6 @@ export interface LocalEngineOptions {
 export const DEFAULT_OPTIONS: LocalEngineOptions = {
   confThreshold: 0.55,
   thresholds: [5, 15, 30, 50],
-  sessionSeconds: 3600,
   maxImageBytes: 8_000_000,
   pinIterations: 210000,
 };
@@ -57,7 +64,15 @@ const dec = new TextDecoder();
 
 interface Loaded {
   orchestrator: Orchestrator;
+  rules: RuleEngine;
   bannedVersion: number;
+}
+
+const MAX_CANDIDATES = 3;
+
+interface Store {
+  accounts: Accounts;
+  scans: Scans;
 }
 
 function base64Size(b64: string): number {
@@ -78,26 +93,42 @@ function toBase64(blob: Blob): Promise<string> {
   });
 }
 
-function randomToken(): string {
-  const bytes = crypto.getRandomValues(new Uint8Array(24));
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
-}
-
 export class LocalEngineClient implements EngineClient {
-  readonly kind = "native" as const;
-  private session: SessionInfo | null = null;
+  readonly kind = "device" as const;
+  private user: UserProfile | null = null;
   private expiresAt = 0;
   private loading: Promise<Loaded> | null = null;
+  private opening: Promise<Store> | null = null;
   private busy = false;
+  private lastModel = "";
+  private shown: RawDetection[] = [];
   private readonly started = Date.now();
   private readonly throttle = new Throttle();
   private readonly opts: LocalEngineOptions;
 
   constructor(
     private readonly ports: NativePorts,
+    private readonly openSql: () => Promise<Sql>,
     options: Partial<LocalEngineOptions> = {},
   ) {
     this.opts = { ...DEFAULT_OPTIONS, ...options };
+  }
+
+  private store(): Promise<Store> {
+    if (this.opening === null) {
+      this.opening = (async () => {
+        const sql = await this.openSql();
+        await migrate(sql);
+        return {
+          accounts: new Accounts(sql, this.opts.pinIterations),
+          scans: new Scans(sql),
+        };
+      })().catch((err: unknown) => {
+        this.opening = null;
+        throw err;
+      });
+    }
+    return this.opening;
   }
 
   private async load(): Promise<Loaded> {
@@ -129,6 +160,7 @@ export class LocalEngineClient implements EngineClient {
           table,
           DEFAULT_CONFIG,
         ),
+        rules,
         bannedVersion: rules.version,
       };
     } catch {
@@ -146,87 +178,98 @@ export class LocalEngineClient implements EngineClient {
     return this.loading;
   }
 
-  private requireSession(): SessionInfo {
-    if (this.session === null || Date.now() >= this.expiresAt) {
-      this.session = null;
+  private requireUser(): UserProfile {
+    if (this.user === null || Date.now() >= this.expiresAt) {
+      this.user = null;
       throw new EngineError("auth", "sign in required");
     }
-    return this.session;
+    return this.user;
   }
 
-  async restoreSession(): Promise<SessionInfo | null> {
-    if (this.session === null || Date.now() >= this.expiresAt) return null;
-    return this.session;
+  private open(user: UserProfile): UserProfile {
+    this.user = user;
+    this.expiresAt = Date.now() + SESSION_MS;
+    return user;
   }
 
-  private async readProfiles(): Promise<string[]> {
-    const raw = await this.ports.kvGet("profiles");
-    if (!raw) return [];
+  private wrap(err: unknown, message: string): EngineError {
+    return err instanceof EngineError
+      ? err
+      : new EngineError("unknown", message);
+  }
+
+  async restoreSession(): Promise<UserProfile | null> {
+    if (this.user !== null && Date.now() < this.expiresAt) return this.user;
     try {
-      const v = JSON.parse(raw) as unknown;
-      return Array.isArray(v)
-        ? v.filter((x): x is string => typeof x === "string")
-        : [];
-    } catch {
-      return [];
+      const { accounts } = await this.store();
+      const user = await accounts.restore();
+      return user === null ? null : this.open(user);
+    } catch (err) {
+      throw this.wrap(err, "storage unavailable");
     }
   }
 
-  async login(
-    profileId: string,
-    pin: string,
-    _totp?: string,
-  ): Promise<SessionInfo> {
+  async signUp(input: SignUpInput): Promise<UserProfile> {
+    try {
+      const { accounts } = await this.store();
+      return this.open(await accounts.signUp(input));
+    } catch (err) {
+      throw this.wrap(err, "sign up failed");
+    }
+  }
+
+  async login(mobile: string, password: string): Promise<UserProfile> {
     if (this.throttle.locked())
       throw new EngineError("rate", "too many attempts");
-    if (!validProfileId(profileId) || !validPin(pin)) {
-      this.throttle.failed();
-      throw new EngineError("auth", "invalid credentials");
-    }
-    const ids = await this.readProfiles();
-    let profile: StoredProfile;
-    if (ids.length === 0) {
-      profile = await makeProfile(
-        profileId,
-        pin,
-        "farmer",
-        this.opts.pinIterations,
-      );
-      await this.ports.kvSet(`profile:${profileId}`, JSON.stringify(profile));
-      await this.ports.kvSet("profiles", JSON.stringify([profileId]));
-    } else {
-      const raw = ids.includes(profileId)
-        ? await this.ports.kvGet(`profile:${profileId}`)
-        : null;
-      if (!raw) {
+    try {
+      const { accounts } = await this.store();
+      const user = await accounts.login(mobile, password);
+      this.throttle.ok();
+      return this.open(user);
+    } catch (err) {
+      if (err instanceof EngineError && err.code === "auth")
         this.throttle.failed();
-        throw new EngineError("auth", "invalid credentials");
-      }
-      profile = JSON.parse(raw) as StoredProfile;
-      if (!(await checkPin(profile, pin))) {
-        this.throttle.failed();
-        throw new EngineError("auth", "invalid credentials");
-      }
+      throw this.wrap(err, "sign in failed");
     }
-    this.throttle.ok();
-    this.session = {
-      profile_id: profile.id,
-      role: profile.role,
-      lang: "en",
-      csrf: randomToken(),
-      expires_in: this.opts.sessionSeconds,
-    };
-    this.expiresAt = Date.now() + this.opts.sessionSeconds * 1000;
-    return this.session;
   }
 
   async logout(): Promise<void> {
-    this.session = null;
+    this.user = null;
     this.expiresAt = 0;
+    try {
+      const { accounts } = await this.store();
+      await accounts.end();
+    } catch (err) {
+      throw this.wrap(err, "sign out failed");
+    }
+  }
+
+  async updateProfile(patch: ProfilePatch): Promise<UserProfile> {
+    const user = this.requireUser();
+    try {
+      const { accounts } = await this.store();
+      const next = await accounts.update(user.id, patch);
+      this.user = next;
+      return next;
+    } catch (err) {
+      throw this.wrap(err, "profile not saved");
+    }
+  }
+
+  async deleteAccount(password: string): Promise<void> {
+    const user = this.requireUser();
+    try {
+      const { accounts } = await this.store();
+      await accounts.remove(user.id, password);
+      this.user = null;
+      this.expiresAt = 0;
+    } catch (err) {
+      throw this.wrap(err, "account not deleted");
+    }
   }
 
   async analyzeImage(photo: Blob): Promise<VisionResult> {
-    this.requireSession();
+    this.requireUser();
     if (photo.size === 0 || photo.size > this.opts.maxImageBytes)
       throw new EngineError("rejected", "image size not accepted");
     const b64 = await toBase64(photo);
@@ -236,6 +279,8 @@ export class LocalEngineClient implements EngineClient {
     this.busy = true;
     try {
       const det = await this.ports.detect(b64);
+      this.lastModel = det?.model ?? "";
+      this.shown = det === null ? [] : this.rank(det);
       return validateVision(
         detectionToVision(det, this.opts.confThreshold, this.opts.thresholds),
       );
@@ -247,12 +292,73 @@ export class LocalEngineClient implements EngineClient {
     }
   }
 
+  private rank(det: RawDetection): RawDetection[] {
+    const all: RawDetection[] = [
+      det,
+      ...(det.alternatives ?? []).map((a) => ({
+        class_id: a.class_id,
+        label: a.label,
+        confidence: a.confidence,
+        ...(a.model !== undefined ? { model: a.model } : {}),
+        bbox: det.bbox ?? [0, 0, 1, 1],
+        mask_polygon: [],
+      })),
+    ];
+    const seen = new Set<string>();
+    return all
+      .sort((a, b) => b.confidence - a.confidence)
+      .filter((d) => {
+        const key = `${d.model ?? ""}|${d.label}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .slice(0, MAX_CANDIDATES);
+  }
+
+  candidates(): Candidate[] {
+    return this.shown.map((d) => ({
+      label: d.label,
+      confidence: d.confidence,
+      kind: kindFor(d.label, d.model ?? ""),
+      source: d.model ?? "",
+    }));
+  }
+
+  async chat(history: ChatTurn[], lang: Lang, topic?: string): Promise<string> {
+    this.requireUser();
+    const turns = cleanHistory(history);
+    if (turns === null) throw new EngineError("rejected", "invalid message");
+    if (this.busy) throw new EngineError("busy", "engine busy");
+    this.busy = true;
+    try {
+      const { rules } = await this.ready();
+      let raw: string;
+      try {
+        raw = await this.ports.generate(
+          buildChatMessages(turns, lang, topic),
+          CHAT_TOKENS,
+        );
+      } catch (err) {
+        if (err instanceof Error && err.message === "llm_unavailable")
+          throw new EngineError("unavailable", "language model unavailable");
+        throw new EngineError("unknown", "chat failed");
+      }
+      return guardReply(raw, lang, rules);
+    } catch (err) {
+      if (err instanceof EngineError) throw err;
+      throw new EngineError("unknown", "chat failed");
+    } finally {
+      this.busy = false;
+    }
+  }
+
   async ask(
     query: string,
     vision: VisionResult | undefined,
     options: AskOptions,
   ): Promise<AdvisoryResponse> {
-    const session = this.requireSession();
+    this.requireUser();
     let checked: VisionResult | null = null;
     if (vision !== undefined) {
       try {
@@ -275,14 +381,8 @@ export class LocalEngineClient implements EngineClient {
         "",
         area,
       );
-      const caseId = crypto.randomUUID();
-      await this.saveCase(
-        session.profile_id,
-        caseId,
-        out.advisory.diagnosis.primary,
-      );
       return {
-        case_id: caseId,
+        case_id: null,
         source: out.source,
         advisory: out.advisory,
         dosage: out.dosage,
@@ -295,28 +395,8 @@ export class LocalEngineClient implements EngineClient {
     }
   }
 
-  private async saveCase(
-    profileId: string,
-    caseId: string,
-    diagnosis: string,
-  ): Promise<void> {
-    try {
-      const raw = await this.ports.kvGet(`cases:${profileId}`);
-      const list = raw
-        ? (JSON.parse(raw) as Array<Record<string, unknown>>)
-        : [];
-      list.push({ id: caseId, at: new Date().toISOString(), diagnosis });
-      await this.ports.kvSet(
-        `cases:${profileId}`,
-        JSON.stringify(list.slice(-100)),
-      );
-    } catch {
-      return;
-    }
-  }
-
   async speak(text: string, lang: Lang): Promise<void> {
-    this.requireSession();
+    this.requireUser();
     try {
       await this.ports.speak(text.slice(0, 2000), lang);
     } catch {
@@ -349,5 +429,88 @@ export class LocalEngineClient implements EngineClient {
       peak_rss_kb: h.peak_rss_kb,
       temp_c: h.temp_c,
     };
+  }
+
+  async saveScan(scan: NewScan): Promise<string> {
+    const user = this.requireUser();
+    try {
+      const { scans } = await this.store();
+      return await scans.add(user.id, scan, this.lastModel);
+    } catch (err) {
+      throw this.wrap(err, "scan not saved");
+    }
+  }
+
+  async attachAdvice(
+    scanId: string,
+    response: AdvisoryResponse,
+  ): Promise<void> {
+    const user = this.requireUser();
+    try {
+      const { scans } = await this.store();
+      await scans.attach(user.id, scanId, response);
+    } catch (err) {
+      throw this.wrap(err, "advice not saved");
+    }
+  }
+
+  async listScans(): Promise<ScanRecord[]> {
+    const user = this.requireUser();
+    try {
+      const { scans } = await this.store();
+      return await scans.list(user.id);
+    } catch (err) {
+      throw this.wrap(err, "history unavailable");
+    }
+  }
+
+  async getAdvice(scanId: string): Promise<AdvisoryResponse | null> {
+    const user = this.requireUser();
+    try {
+      const { scans } = await this.store();
+      const raw = await scans.advice(user.id, scanId);
+      if (typeof raw !== "object" || raw === null) return null;
+      const entry = raw as Record<string, unknown>;
+      const advisory = validateAdvisory(entry["advisory"]);
+      return {
+        case_id: null,
+        source: entry["source"] === "llm" ? "llm" : "fallback",
+        advisory,
+        dosage: (entry["dosage"] as AdvisoryResponse["dosage"]) ?? null,
+      };
+    } catch (err) {
+      if (err instanceof EngineError) throw err;
+      return null;
+    }
+  }
+
+  async deleteScan(scanId: string): Promise<void> {
+    const user = this.requireUser();
+    try {
+      const { scans } = await this.store();
+      await scans.remove(user.id, scanId);
+    } catch (err) {
+      throw this.wrap(err, "scan not deleted");
+    }
+  }
+
+  async clearScans(): Promise<void> {
+    const user = this.requireUser();
+    try {
+      const { scans } = await this.store();
+      await scans.clear(user.id);
+    } catch (err) {
+      throw this.wrap(err, "history not cleared");
+    }
+  }
+
+  async ledgerStats(): Promise<LedgerStats> {
+    const user = this.requireUser();
+    try {
+      const { scans } = await this.store();
+      return await scans.stats(user.id);
+    } catch (err) {
+      throw this.wrap(err, "history unavailable");
+    }
   }
 }

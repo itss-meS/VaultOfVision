@@ -138,7 +138,7 @@ export function validateAdvisory(value: unknown): Advisory {
   ))
     str(p, "preventive", 1, 400);
   str(need(root, "safety_notice", "advisory"), "safety_notice", 1, 600);
-  oneOf(need(root, "lang", "advisory"), "lang", ["en", "hi", "mr"]);
+  oneOf(need(root, "lang", "advisory"), "lang", ["en", "hi", "mr", "te"]);
   return value as Advisory;
 }
 
