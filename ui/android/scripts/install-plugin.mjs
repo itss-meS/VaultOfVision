@@ -78,6 +78,12 @@ public class MainActivity extends BridgeActivity {
 `,
 );
 
+const xmlOut = join(app, 'src', 'main', 'res', 'xml');
+mkdirSync(xmlOut, { recursive: true });
+copyFileSync(
+  join(shell, 'native', 'agriedge-engine', 'src', 'main', 'res', 'xml', 'network_security_config.xml'),
+  join(xmlOut, 'network_security_config.xml'),
+);
 const gradlePath = join(app, 'build.gradle');
 let gradle = readFileSync(gradlePath, 'utf8');
 for (const dep of DEPENDENCIES) {
