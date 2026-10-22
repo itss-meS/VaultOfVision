@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   apk-debug:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,7 +32,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - uses: android-actions/setup-android@v3
       - run: npm ci
         working-directory: ui/web
       - run: npm ci
@@ -71,7 +70,7 @@ jobs:
   apk-release:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: apk-debug
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: release
     steps:
       - uses: actions/checkout@v4
@@ -82,7 +81,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - uses: android-actions/setup-android@v3
       - run: npm ci
         working-directory: ui/web
       - run: npm ci
