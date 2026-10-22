@@ -52,8 +52,15 @@ jobs:
           ls -lhR models
       - run: npm run prepare:android
         working-directory: ui/android
-      - run: ./gradlew assembleDebug --no-daemon
+      - name: Build debug APK
         working-directory: ui/android/android
+        run: |
+          set -o pipefail
+          ./gradlew assembleDebug --no-daemon --console=plain 2>&1 | tee gradle.log
+      - name: Show compile errors
+        if: failure()
+        working-directory: ui/android/android
+        run: grep -n -B2 -A10 -E "error:|What went wrong" gradle.log | head -120
       - name: Reject source maps in APK
         run: |
           APK=$(ls ui/android/android/app/build/outputs/apk/debug/*.apk | head -n 1)
