@@ -36,19 +36,19 @@ jobs:
         working-directory: ui/web
       - run: npm ci
         working-directory: ui/android
-      - name: Download models from the llama3-2 release
+      - name: Download models from the executorch release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p models
-          if gh release view llama3-2 --repo "${{ github.repository }}"; then
-            gh release download llama3-2 --repo "${{ github.repository }}" --dir models --clobber
+          if gh release view executorch --repo "${{ github.repository }}"; then
+            gh release download executorch --repo "${{ github.repository }}" --dir models --clobber
             for z in models/*.zip; do
               if [ -e "$z" ]; then unzip -o -q "$z" -d models && rm "$z"; fi
             done
           else
             gh release list --repo "${{ github.repository }}" || true
-            echo "::warning::release llama3-2 not found, building without models"
+            echo "::warning::release executorch not found, building without models"
           fi
           ls -lhR models
       - run: npm run prepare:android
@@ -93,12 +93,12 @@ jobs:
         working-directory: ui/web
       - run: npm ci
         working-directory: ui/android
-      - name: Download models from the llama3-2 release
+      - name: Download models from the executorch release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p models
-          gh release download llama3-2 --repo "${{ github.repository }}" --dir models --clobber
+          gh release download executorch --repo "${{ github.repository }}" --dir models --clobber
           for z in models/*.zip; do
             if [ -e "$z" ]; then unzip -o -q "$z" -d models && rm "$z"; fi
           done
