@@ -31,6 +31,8 @@ Open the address Vite prints, for example `http://localhost:5173/`.
 - Accounts and scan history are stored in a SQLite database at `.dev\data\agriedge.sqlite`. Delete that file to start fresh. On the phone the same schema lives in the app's own SQLite store.
 - Passwords are stored as PBKDF2 hashes with a per-user salt. Five wrong attempts lock the account for 30 seconds.
 - `VITE_ENGINE=native` forces the phone engine.
+- The Ask tab and follow-up questions need the language model, which runs only in the Android app. In the browser they show a message saying so.
+- The result screen lists the answer and confidence of every model in `models\`. The router is not used.
 
 ## 3. Quality checks
 

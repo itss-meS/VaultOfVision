@@ -1,10 +1,19 @@
 import {
   type AdvisoryResponse,
   type AskOptions,
+  type Candidate,
+  type ChatTurn,
   type DeviceHealth,
   type EngineClient,
+  EngineError,
   type Lang,
-  type SessionInfo,
+  type LedgerStats,
+  type NewScan,
+  type ProfilePatch,
+  type ScanKind,
+  type ScanRecord,
+  type SignUpInput,
+  type UserProfile,
   type VisionResult,
 } from "../src/contracts/types";
 
@@ -25,6 +34,7 @@ const SEVERITY_WORDS: Record<Lang, string[]> = {
   en: ["Very Low", "Low", "Moderate", "High", "Severe"],
   hi: ["बहुत कम", "कम", "मध्यम", "अधिक", "गंभीर"],
   mr: ["खूप कमी", "कमी", "मध्यम", "जास्त", "तीव्र"],
+  te: ["చాలా తక్కువ", "తక్కువ", "మధ్యస్థం", "ఎక్కువ", "తీవ్రం"],
 };
 
 const TEXT: Record<
@@ -52,6 +62,13 @@ const TEXT: Record<
     p2: "हवा खेळती राहण्यासाठी झाडांना आधार द्या.",
     safety: "फवारणी करताना हातमोजे आणि मास्क वापरा.",
   },
+  te: {
+    a1: "బాగా దెబ్బతిన్న ఆకులను తొలగించి పొలానికి దూరంగా నాశనం చేయండి.",
+    a2: "ఆకులు పొడిగా ఉండేలా మొక్క మొదట్లో నీరు పోయండి.",
+    p1: "ప్రతి సీజన్‌లో పంట మార్పిడి చేయండి.",
+    p2: "గాలి బాగా ఆడేలా మొక్కలకు ఆసరా ఇవ్వండి.",
+    safety: "పిచికారీ చేసేటప్పుడు చేతి తొడుగులు మరియు మాస్క్ ధరించండి.",
+  },
 };
 
 function pick(size: number): number {
@@ -63,32 +80,168 @@ function delay(ms: number): Promise<void> {
 }
 
 export class FakeEngineClient implements EngineClient {
-  readonly kind = "http" as const;
+  readonly kind = "device" as const;
   private readonly latencyMs: number;
+  private readonly users = new Map<
+    string,
+    UserProfile & { password: string }
+  >();
+  private current: string | null = null;
+  private rows: Array<
+    ScanRecord & { userId: string; advice: AdvisoryResponse | null }
+  > = [];
+  private nextId = 1;
+  private shown: Candidate[] = [];
+  private lastKind: ScanKind = "disease";
+  chatReply: string | Error = "Water early in the day.";
+  readonly chatCalls: ChatTurn[][] = [];
+  readonly chatTopics: Array<string | undefined> = [];
 
-  constructor(latencyMs = 450) {
+  constructor(latencyMs = 450, signedIn = false) {
     this.latencyMs = latencyMs;
+    if (signedIn) {
+      this.users.set("9876543210", {
+        id: "u1",
+        name: "Asha Patil",
+        mobile: "9876543210",
+        village: "",
+        areaHa: null,
+        lang: "en",
+        password: "secret1",
+      });
+      this.current = "9876543210";
+    }
   }
 
-  restoreSession(): Promise<SessionInfo | null> {
-    return Promise.resolve({
-      profile_id: "00000000-0000-4000-8000-000000000001",
-      role: "officer",
-      lang: "en",
-      csrf: "fake",
-      expires_in: 900,
-    });
+  private user(): UserProfile & { password: string } {
+    const u = this.current ? this.users.get(this.current) : undefined;
+    if (!u) throw new EngineError("auth", "sign in required");
+    return u;
   }
 
-  login(): Promise<SessionInfo> {
-    return this.restoreSession().then((s) => {
-      if (!s) throw new Error("unreachable");
-      return s;
-    });
+  private strip(u: UserProfile & { password: string }): UserProfile {
+    return {
+      id: u.id,
+      name: u.name,
+      mobile: u.mobile,
+      village: u.village,
+      areaHa: u.areaHa,
+      lang: u.lang,
+    };
+  }
+
+  restoreSession(): Promise<UserProfile | null> {
+    const u = this.current ? this.users.get(this.current) : undefined;
+    return Promise.resolve(u ? this.strip(u) : null);
+  }
+
+  signUp(input: SignUpInput): Promise<UserProfile> {
+    if (this.users.has(input.mobile))
+      return Promise.reject(new EngineError("exists", "exists"));
+    const u = {
+      id: `u${this.nextId++}`,
+      name: input.name.trim(),
+      mobile: input.mobile,
+      village: input.village ?? "",
+      areaHa: null,
+      lang: input.lang ?? "en",
+      password: input.password,
+    };
+    this.users.set(u.mobile, u);
+    this.current = u.mobile;
+    return Promise.resolve(this.strip(u));
+  }
+
+  login(mobile: string, password: string): Promise<UserProfile> {
+    const u = this.users.get(mobile);
+    if (!u || u.password !== password)
+      return Promise.reject(new EngineError("auth", "invalid"));
+    this.current = mobile;
+    return Promise.resolve(this.strip(u));
   }
 
   logout(): Promise<void> {
+    this.current = null;
     return Promise.resolve();
+  }
+
+  updateProfile(patch: ProfilePatch): Promise<UserProfile> {
+    const u = this.user();
+    Object.assign(u, patch);
+    return Promise.resolve(this.strip(u));
+  }
+
+  deleteAccount(password: string): Promise<void> {
+    const u = this.user();
+    if (u.password !== password)
+      return Promise.reject(new EngineError("auth", "invalid"));
+    this.users.delete(u.mobile);
+    this.rows = this.rows.filter((r) => r.userId !== u.id);
+    this.current = null;
+    return Promise.resolve();
+  }
+
+  saveScan(scan: NewScan): Promise<string> {
+    const u = this.user();
+    const id = `s${this.nextId++}`;
+    this.rows.unshift({
+      id,
+      userId: u.id,
+      label: scan.vision.label,
+      kind: /healthy$/i.test(scan.vision.label) ? "healthy" : this.lastKind,
+      confidence: scan.vision.confidence,
+      severity: scan.vision.severity_level,
+      durationMs: scan.durationMs,
+      thumb: scan.thumb,
+      createdAt: Date.now(),
+      hasAdvice: false,
+      advice: null,
+    });
+    return Promise.resolve(id);
+  }
+
+  attachAdvice(scanId: string, response: AdvisoryResponse): Promise<void> {
+    const row = this.rows.find((r) => r.id === scanId);
+    if (row) {
+      row.advice = response;
+      row.hasAdvice = true;
+    }
+    return Promise.resolve();
+  }
+
+  listScans(): Promise<ScanRecord[]> {
+    const u = this.user();
+    return Promise.resolve(
+      this.rows
+        .filter((r) => r.userId === u.id)
+        .map(({ userId: _u, advice: _a, ...rest }) => rest),
+    );
+  }
+
+  getAdvice(scanId: string): Promise<AdvisoryResponse | null> {
+    return Promise.resolve(
+      this.rows.find((r) => r.id === scanId)?.advice ?? null,
+    );
+  }
+
+  deleteScan(scanId: string): Promise<void> {
+    this.rows = this.rows.filter((r) => r.id !== scanId);
+    return Promise.resolve();
+  }
+
+  clearScans(): Promise<void> {
+    const u = this.user();
+    this.rows = this.rows.filter((r) => r.userId !== u.id);
+    return Promise.resolve();
+  }
+
+  async ledgerStats(): Promise<LedgerStats> {
+    const list = await this.listScans();
+    return {
+      scans: list.length,
+      bytes: list.length * 100,
+      lastAt: list[0]?.createdAt ?? null,
+    };
   }
 
   async analyzeImage(photo: Blob): Promise<VisionResult> {
@@ -115,6 +268,22 @@ export class FakeEngineClient implements EngineClient {
               : pct < 50
                 ? 4
                 : 5;
+    const rounded = Math.round(confidence * 1000) / 1000;
+    this.shown = [
+      {
+        label,
+        confidence: rounded,
+        kind: healthy ? "healthy" : "disease",
+        source: "plantvillage-all/vision.onnx",
+      },
+      {
+        label: "flea beetle",
+        confidence: 0.31,
+        kind: "pest",
+        source: "ip102/vision.onnx",
+      },
+    ];
+    this.lastKind = this.shown[0]?.kind ?? "disease";
     return {
       class_id: seed % CLASSES.length,
       label,
@@ -130,6 +299,23 @@ export class FakeEngineClient implements EngineClient {
       low_confidence: low,
       affected_area_pct: pct,
     };
+  }
+
+  candidates(): Candidate[] {
+    return this.shown;
+  }
+
+  async chat(
+    history: ChatTurn[],
+    _lang: Lang,
+    topic?: string,
+  ): Promise<string> {
+    this.user();
+    await delay(this.latencyMs);
+    this.chatCalls.push(history);
+    this.chatTopics.push(topic);
+    if (this.chatReply instanceof Error) throw this.chatReply;
+    return this.chatReply;
   }
 
   async ask(
@@ -228,7 +414,7 @@ export class FakeEngineClient implements EngineClient {
       return Promise.resolve();
     return new Promise((resolve) => {
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = lang === "en" ? "en-IN" : lang === "hi" ? "hi-IN" : "mr-IN";
+      u.lang = { en: "en-IN", hi: "hi-IN", mr: "mr-IN", te: "te-IN" }[lang];
       u.onend = () => resolve();
       u.onerror = () => resolve();
       window.speechSynthesis.cancel();

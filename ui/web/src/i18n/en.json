@@ -19,7 +19,8 @@
     "home": "Home",
     "scan": "Scan Leaf",
     "history": "History",
-    "account": "Account"
+    "account": "Account",
+    "chat": "Ask"
   },
   "header": {
     "language": "Change app language",
@@ -93,14 +94,20 @@
     "tip": "Use daylight and fill most of the frame with one leaf."
   },
   "result": {
-    "title": "Result",
+    "title": "AI Confidence",
     "confidence": "Confidence",
     "severity": "Severity",
     "affected": "Leaf area affected",
     "retake": "The photo is not clear enough. Please take another one.",
     "retakeButton": "Take another photo",
     "healthy": "No disease found on this leaf.",
-    "advice": "Get advice"
+    "advice": "Get advice",
+    "sources": {
+      "leaf": "Leaf disease model",
+      "pest": "Insect and pest model",
+      "cassava": "Cassava model"
+    },
+    "all": "AI results from every model"
   },
   "advisory": {
     "title": "Advice",
@@ -177,7 +184,8 @@
     "rejected": "That photo could not be used. Try a different photo.",
     "exists": "This already exists.",
     "invalid": "Some of the details are not valid.",
-    "unknown": "Something went wrong. Please try again."
+    "unknown": "Something went wrong. Please try again.",
+    "unavailable": "The language model runs only in the Android app. It is not available in the browser."
   },
   "diseases": {
     "BacterialSpot": "Bacterial Spot",
@@ -204,5 +212,20 @@
     "3": "Moderate",
     "4": "High",
     "5": "Severe"
+  },
+  "chat": {
+    "title": "Ask AgriEdge",
+    "intro": "Ask a farming question. Answers come from the language model on this phone and can be wrong. For doses, scan the leaf and use Advice.",
+    "placeholder": "Type your question",
+    "send": "Send",
+    "thinking": "Thinking...",
+    "clear": "Clear chat",
+    "assistant": "AgriEdge",
+    "you": "You",
+    "s1": "How do I stop leaf spots on tomato?",
+    "s2": "When should I water tomato plants?",
+    "s3": "How do I keep insects away without spraying?",
+    "followUp": "Ask a follow-up question",
+    "followUpHint": "Ask a follow-up question about this leaf. Answers come from the language model on this phone."
   }
 }

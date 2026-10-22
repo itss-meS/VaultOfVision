@@ -9,7 +9,7 @@ const validateVision = ajv.compile(visionSchema);
 const validateAdvisory = ajv.compile(advisorySchema);
 
 describe("fake engine honours the shared JSON schemas", () => {
-  const engine = new FakeEngineClient(0);
+  const engine = new FakeEngineClient(0, true);
 
   it("produces valid VisionResult for many photos", async () => {
     for (let size = 1000; size < 1400; size += 7) {
@@ -25,7 +25,7 @@ describe("fake engine honours the shared JSON schemas", () => {
 
   it("produces valid Advisory in every language", async () => {
     const vision = await engine.analyzeImage(new Blob([new Uint8Array(1234)]));
-    for (const lang of ["en", "hi", "mr"] as const) {
+    for (const lang of ["en", "hi", "mr", "te"] as const) {
       const res = await engine.ask("help", vision, { lang, area_ha: 0.5 });
       expect(
         validateAdvisory(res.advisory),

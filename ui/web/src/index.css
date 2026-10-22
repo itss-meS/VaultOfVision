@@ -1,10 +1,13 @@
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/jetbrains-mono/400.css';
-@import '@fontsource/jetbrains-mono/500.css';
-@import '@fontsource/noto-sans-devanagari/400.css';
-@import '@fontsource/noto-sans-devanagari/600.css';
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource/noto-sans-devanagari/400.css";
+@import "@fontsource/noto-sans-devanagari/600.css";
+@import "@fontsource/noto-sans-telugu/400.css";
+@import "@fontsource/noto-sans-telugu/600.css";
 
 @tailwind base;
 @tailwind components;
@@ -12,56 +15,46 @@
 
 @layer base {
   :root {
-    --bg: 30 31 34;
-    --panel: 43 45 48;
-    --raised: 49 51 56;
-    --line: 57 59 64;
-    --fg: 223 225 229;
-    --muted: 157 160 168;
-    --accent: 53 116 240;
-    --accent-hover: 74 133 245;
-    --ok: 95 184 101;
-    --warn: 229 176 74;
-    --bad: 242 103 122;
-    color-scheme: dark;
-  }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme='dark']) {
-      --bg: 247 248 250;
-      --panel: 255 255 255;
-      --raised: 240 241 244;
-      --line: 217 220 225;
-      --fg: 30 31 34;
-      --muted: 107 111 118;
-      --accent: 53 116 240;
-      --accent-hover: 37 99 220;
-      --ok: 32 138 60;
-      --warn: 166 106 0;
-      --bad: 212 48 75;
-      color-scheme: light;
-    }
-  }
-  :root[data-theme='light'] {
-    --bg: 247 248 250;
+    --bg: 248 250 252;
     --panel: 255 255 255;
-    --raised: 240 241 244;
-    --line: 217 220 225;
-    --fg: 30 31 34;
-    --muted: 107 111 118;
-    --accent: 53 116 240;
-    --accent-hover: 37 99 220;
-    --ok: 32 138 60;
-    --warn: 166 106 0;
-    --bad: 212 48 75;
+    --raised: 241 245 249;
+    --line: 226 232 240;
+    --fg: 15 23 42;
+    --muted: 100 116 139;
+    --brand: 22 83 49;
+    --brand-hover: 17 66 39;
+    --mint: 4 120 87;
+    --tint: 226 240 232;
+    --ok: 21 128 61;
+    --warn: 161 98 7;
+    --bad: 190 18 60;
+    --shadow: 15 23 42;
     color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    --bg: 7 11 20;
+    --panel: 15 22 38;
+    --raised: 22 31 50;
+    --line: 30 41 59;
+    --fg: 241 245 249;
+    --muted: 148 163 184;
+    --brand: 27 90 54;
+    --brand-hover: 34 110 66;
+    --mint: 52 211 153;
+    --tint: 18 48 36;
+    --ok: 74 222 128;
+    --warn: 251 191 36;
+    --bad: 251 113 133;
+    --shadow: 0 0 0;
+    color-scheme: dark;
   }
 }
 
 @layer base {
   html {
-    background-color: theme('colors.bg');
-    color: theme('colors.fg');
-    font-family: theme('fontFamily.sans');
+    background-color: theme("colors.bg");
+    color: theme("colors.fg");
+    font-family: theme("fontFamily.sans");
     font-size: 16px;
     -webkit-tap-highlight-color: transparent;
   }
@@ -70,29 +63,41 @@
     margin: 0;
   }
   :focus-visible {
-    outline: 2px solid theme('colors.accent.DEFAULT');
+    outline: 2px solid theme("colors.mint");
     outline-offset: 2px;
   }
 }
 
 @layer components {
   .btn {
-    @apply flex min-h-[48px] w-full items-center justify-center gap-2 rounded-lg px-5 text-base font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40;
+    @apply flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl px-5 text-base font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-accent text-white hover:bg-accent-hover;
+    @apply btn bg-brand text-white shadow-lift hover:bg-brand-hover active:scale-[0.99];
   }
   .btn-secondary {
-    @apply btn border border-line bg-panel text-fg hover:bg-raised;
+    @apply btn border border-line bg-panel text-fg hover:bg-raised active:scale-[0.99];
   }
-  .field {
-    @apply min-h-[48px] w-full rounded-lg border border-line bg-panel px-4 text-base text-fg placeholder:text-muted focus:border-accent;
+  .btn-danger {
+    @apply btn border border-bad/40 bg-panel text-bad hover:bg-bad/10;
+  }
+  .field-wrap {
+    @apply flex min-h-[52px] w-full items-center gap-3 rounded-2xl border border-line bg-raised px-4 text-fg focus-within:border-brand;
+  }
+  .field-input {
+    @apply min-w-0 flex-1 bg-transparent py-3 text-base text-fg outline-none placeholder:text-muted;
   }
   .card {
-    @apply rounded-xl border border-line bg-panel p-4;
+    @apply rounded-3xl border border-line bg-panel p-4 shadow-card;
   }
   .label {
-    @apply flex flex-col gap-2 text-sm font-medium text-muted;
+    @apply flex flex-col gap-2 text-sm font-semibold text-fg;
+  }
+  .icon-btn {
+    @apply flex h-11 w-11 items-center justify-center rounded-2xl border border-line bg-panel text-fg transition hover:bg-raised;
+  }
+  .pill {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold;
   }
   .mono {
     @apply font-mono text-sm;

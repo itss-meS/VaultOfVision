@@ -18,7 +18,6 @@ export interface FakePortOptions {
 }
 
 export class FakePorts implements NativePorts {
-  readonly store = new Map<string, string>();
   readonly prompts: ChatMessage[][] = [];
   readonly spoken: Array<[string, Lang]> = [];
   private idx = 0;
@@ -62,14 +61,6 @@ export class FakePorts implements NativePorts {
     };
     const v = table[key];
     return v === null ? null : enc.encode(v);
-  }
-
-  async kvGet(key: string): Promise<string | null> {
-    return this.store.get(key) ?? null;
-  }
-
-  async kvSet(key: string, value: string): Promise<void> {
-    this.store.set(key, value);
   }
 
   async health(): Promise<NativeHealth> {

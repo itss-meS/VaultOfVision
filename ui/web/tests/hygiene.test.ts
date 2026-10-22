@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import en from "../src/i18n/en.json";
 import hi from "../src/i18n/hi.json";
 import mr from "../src/i18n/mr.json";
+import te from "../src/i18n/te.json";
 
 function files(dir: string): string[] {
   return readdirSync(dir).flatMap((n) => {
@@ -74,5 +75,6 @@ describe("source hygiene", () => {
     const base = keys(en).sort();
     expect(keys(hi).sort()).toEqual(base);
     expect(keys(mr).sort()).toEqual(base);
+    expect(keys(te).sort()).toEqual(base);
   });
 });

@@ -39,6 +39,11 @@ function locate(path: string): string | null {
       resolve(here, "node_modules", "onnxruntime-web", "dist"),
       path.slice(5),
     );
+  if (path.startsWith("/sql/"))
+    return inside(
+      resolve(here, "node_modules", "sql.js", "dist"),
+      path.slice(5),
+    );
   if (path.startsWith("/models/"))
     return inside(resolve(repo, "models"), path.slice(8));
   if (path.startsWith("/knowledge/")) {
@@ -51,40 +56,45 @@ function locate(path: string): string | null {
   return null;
 }
 
-const kvFile = resolve(repo, ".dev", "data", "kv.json");
+const dbFile = resolve(repo, ".dev", "data", "agriedge.sqlite");
+const MAX_DB_BYTES = 64 * 1024 * 1024;
 
-function readKv(): Record<string, string> {
-  try {
-    return JSON.parse(readFileSync(kvFile, "utf-8")) as Record<string, string>;
-  } catch {
-    return {};
-  }
-}
-
-function handleKv(
+function handleDb(
   method: string,
-  key: string,
   req: NodeJS.ReadableStream,
-  res: { statusCode: number; end: (body?: string) => void },
+  res: {
+    statusCode: number;
+    setHeader: (k: string, v: string) => void;
+    end: (body?: Buffer) => void;
+  },
 ): void {
-  if (!/^[\w.:-]{1,64}$/.test(key)) {
-    res.statusCode = 400;
-    res.end();
-    return;
-  }
-  const store = readKv();
   if (method === "GET") {
-    const value = store[key];
-    res.statusCode = value === undefined ? 204 : 200;
-    res.end(value);
+    if (!existsSync(dbFile)) {
+      res.statusCode = 204;
+      res.end();
+      return;
+    }
+    res.setHeader("Content-Type", "application/octet-stream");
+    res.setHeader("Cache-Control", "no-store");
+    res.end(readFileSync(dbFile));
     return;
   }
   const chunks: Buffer[] = [];
-  req.on("data", (c: Buffer) => chunks.push(c));
+  let size = 0;
+  let tooBig = false;
+  req.on("data", (c: Buffer) => {
+    size += c.length;
+    if (size > MAX_DB_BYTES) tooBig = true;
+    else chunks.push(c);
+  });
   req.on("end", () => {
-    store[key] = Buffer.concat(chunks).toString("utf-8");
-    mkdirSync(dirname(kvFile), { recursive: true });
-    writeFileSync(kvFile, JSON.stringify(store, null, 2));
+    if (tooBig) {
+      res.statusCode = 413;
+      res.end();
+      return;
+    }
+    mkdirSync(dirname(dbFile), { recursive: true });
+    writeFileSync(dbFile, Buffer.concat(chunks));
     res.statusCode = 204;
     res.end();
   });
@@ -115,13 +125,8 @@ export function devAssets(): Plugin {
           res.end(JSON.stringify(modelFolders()));
           return;
         }
-        if (url.pathname.startsWith("/kv/")) {
-          handleKv(
-            req.method === "PUT" ? "PUT" : "GET",
-            decodeURIComponent(url.pathname.slice(4)),
-            req,
-            res,
-          );
+        if (url.pathname === "/db") {
+          handleDb(req.method === "PUT" ? "PUT" : "GET", req, res);
           return;
         }
         const file = locate(decodeURIComponent(url.pathname));

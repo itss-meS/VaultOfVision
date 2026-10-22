@@ -116,7 +116,7 @@ describe("validators agree with the shared JSON schemas", () => {
   });
 
   it("templates are schema valid in every language", () => {
-    for (const lang of ["en", "hi", "mr"] as const) {
+    for (const lang of ["en", "hi", "mr", "te"] as const) {
       for (const a of [
         templates.retake(lang, 0.3),
         templates.unsupported(lang),

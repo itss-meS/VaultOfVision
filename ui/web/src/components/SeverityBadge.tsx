@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next';
-import { TONE_CLASS, TONE_DOT, severityTone } from '../lib/severity';
+import { useTranslation } from "react-i18next";
+import { TONE_CLASS, TONE_DOT, severityTone } from "../lib/severity";
 
 export function SeverityBadge({ level }: { level: number }) {
   const { t } = useTranslation();
