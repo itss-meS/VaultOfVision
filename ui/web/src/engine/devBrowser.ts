@@ -1,3 +1,4 @@
+import { openDevSql } from "../db/devSql";
 import { LocalEngineClient } from "./core/engine";
 import type {
   ChatMessage,
@@ -61,7 +62,7 @@ export class DevBrowserPorts implements NativePorts {
 
   async speak(text: string, lang: Lang): Promise<void> {
     if (typeof speechSynthesis === "undefined") return;
-    const tags: Record<Lang, string> = { en: "en-IN", hi: "hi-IN", mr: "mr-IN" };
+    const tags: Record<Lang, string> = { en: "en-IN", hi: "hi-IN", mr: "mr-IN", te: "te-IN" };
     const u = new SpeechSynthesisUtterance(text);
     u.lang = tags[lang];
     speechSynthesis.cancel();
@@ -99,6 +100,6 @@ export class DevBrowserPorts implements NativePorts {
 
 export class DevBrowserEngineClient extends LocalEngineClient {
   constructor() {
-    super(new DevBrowserPorts(), { pinIterations: 1000 });
+    super(new DevBrowserPorts(), openDevSql, { pinIterations: 1000 });
   }
 }
