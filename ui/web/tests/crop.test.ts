@@ -53,10 +53,15 @@ describe("screenDetection", () => {
     expect(screenDetection({ ...leaf, confidence: 0.4 })).not.toBeNull();
   });
   it("rejects a photo with almost no plant colour unless a model is very sure", () => {
-    expect(screenDetection({ ...leaf, plant_ratio: 0.01 })).toBeNull();
+    expect(screenDetection({ ...leaf, plant_ratio: 0.02 })).toBeNull();
     expect(
-      screenDetection({ ...leaf, confidence: 0.95, plant_ratio: 0.01 }),
+      screenDetection({ ...leaf, confidence: 0.95, plant_ratio: 0.02 }),
     ).not.toBeNull();
+  });
+  it("rejects a photo with no plant colour even when a model is sure", () => {
+    expect(
+      screenDetection({ ...leaf, confidence: 0.99, plant_ratio: 0.0007 }),
+    ).toBeNull();
   });
   it("does not gate on colour when the ratio is unknown", () => {
     expect(screenDetection(leaf)).not.toBeNull();

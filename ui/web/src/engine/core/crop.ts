@@ -2,12 +2,14 @@ import type { RawDetection } from "./types";
 
 export interface CropGate {
   minTop: number;
+  hardPlant: number;
   minPlant: number;
   sureTop: number;
 }
 
 export const DEFAULT_GATE: CropGate = {
   minTop: 0.4,
+  hardPlant: 0.01,
   minPlant: 0.04,
   sureTop: 0.9,
 };
@@ -41,6 +43,7 @@ export function screenDetection(
   const best = kept[0];
   if (best === undefined || best.confidence < gate.minTop) return null;
   const plant = det.plant_ratio;
+  if (plant !== undefined && plant < gate.hardPlant) return null;
   if (
     plant !== undefined &&
     plant < gate.minPlant &&

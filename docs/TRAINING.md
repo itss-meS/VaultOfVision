@@ -165,7 +165,7 @@ The result is `models\router\`. Its classes are `plantvillage-all`, `cassava` an
 
 ## Teaching the model what is not a leaf or insect
 
-A classifier always names one of its own classes, so a photo of a table gets a disease label. The app now rejects photos that look wrong, using three signals: a weak top answer (under 40 percent), almost no green or yellow-brown colour (under 4 percent of pixels) unless a model is at least 90 percent sure, and a class named `Not a leaf or insect`. The first two work with the models you already have; the third needs training data.
+A classifier always names one of its own classes, so a photo of a table gets a disease label. The app now rejects photos that look wrong, using three signals: a weak top answer (under 40 percent), almost no green or yellow-brown colour (under 1 percent of pixels always, under 4 percent unless a model is at least 90 percent sure), and a class named `Not a leaf or insect`. The first two work with the models you already have; the third needs training data.
 
 1. Collect 500 to 2,000 ordinary photos that are not leaves or insects: rooms, hands, faces, soil, tools, food, pets, screens, walls, sky. Put them in one folder, any sub-folders. Do not use plant photos.
 2. Train with the extra folder:

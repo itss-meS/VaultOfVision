@@ -391,7 +391,9 @@ describe("photos that are not a leaf or insect", () => {
   });
   it("returns unsupported when there is no plant colour", async () => {
     const e = await signedIn(
-      new FakePorts({ detection: { ...base, plant_ratio: 0.01 } }),
+      new FakePorts({
+        detection: { ...base, confidence: 0.99, plant_ratio: 0.0007 },
+      }),
     );
     expect((await e.analyzeImage(photo())).label).toBe("unsupported");
   });
