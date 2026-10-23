@@ -23,6 +23,7 @@ import {
   cleanHistory,
   guardReply,
 } from "./chat";
+import { type CropGate, DEFAULT_GATE, screenDetection } from "./crop";
 import { Throttle } from "./localAuth";
 import {
   DEFAULT_CONFIG,
@@ -51,6 +52,7 @@ export interface LocalEngineOptions {
   thresholds: readonly number[];
   maxImageBytes: number;
   pinIterations: number;
+  gate: CropGate;
 }
 
 export const DEFAULT_OPTIONS: LocalEngineOptions = {
@@ -58,6 +60,7 @@ export const DEFAULT_OPTIONS: LocalEngineOptions = {
   thresholds: [5, 15, 30, 50],
   maxImageBytes: 8_000_000,
   pinIterations: 210000,
+  gate: DEFAULT_GATE,
 };
 
 const dec = new TextDecoder();
@@ -278,7 +281,8 @@ export class LocalEngineClient implements EngineClient {
     if (this.busy) throw new EngineError("busy", "engine busy");
     this.busy = true;
     try {
-      const det = await this.ports.detect(b64);
+      const raw = await this.ports.detect(b64);
+      const det = raw === null ? null : screenDetection(raw, this.opts.gate);
       this.lastModel = det?.model ?? "";
       this.shown = det === null ? [] : this.rank(det);
       return validateVision(
@@ -340,8 +344,11 @@ export class LocalEngineClient implements EngineClient {
           CHAT_TOKENS,
         );
       } catch (err) {
-        if (err instanceof Error && err.message === "llm_unavailable")
+        const text = err instanceof Error ? err.message : "";
+        if (text === "llm_unavailable")
           throw new EngineError("unavailable", "language model unavailable");
+        if (text.startsWith("llm_"))
+          throw new EngineError("llm", text.slice(0, 200));
         throw new EngineError("unknown", "chat failed");
       }
       return guardReply(raw, lang, rules);

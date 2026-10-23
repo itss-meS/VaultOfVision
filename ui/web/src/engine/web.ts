@@ -1,3 +1,4 @@
+import { isPlantPixel } from "./core/crop";
 import { openDevSql } from "../db/devSql";
 import { LocalEngineClient } from "./core/engine";
 import type {
@@ -154,6 +155,25 @@ async function toTensor(b64: string, side: number): Promise<Float32Array> {
   return out;
 }
 
+async function plantRatio(b64: string): Promise<number> {
+  const side = 64;
+  const bitmap = await createImageBitmap(new Blob([fromBase64(b64)]));
+  const canvas = document.createElement("canvas");
+  canvas.width = side;
+  canvas.height = side;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return 1;
+  ctx.drawImage(bitmap, 0, 0, side, side);
+  const { data } = ctx.getImageData(0, 0, side, side);
+  let hits = 0;
+  for (let i = 0; i < side * side; i++)
+    if (
+      isPlantPixel(data[i * 4] ?? 0, data[i * 4 + 1] ?? 0, data[i * 4 + 2] ?? 0)
+    )
+      hits += 1;
+  return hits / (side * side);
+}
+
 export const webPorts: NativePorts = {
   async detect(imageBase64): Promise<RawDetection | null> {
     const models = await loaded();
@@ -165,6 +185,7 @@ export const webPorts: NativePorts = {
         r: await classify(m, imageBase64),
       })),
     );
+    const plant = await plantRatio(imageBase64);
     for (const { m, r } of results) console.info("vision", m.model, r.top);
     const ranked = [...results].sort((a, b) => b.r.score - a.r.score);
     const win = ranked[0];
@@ -176,6 +197,7 @@ export const webPorts: NativePorts = {
       model: win.m.model,
       bbox: [0, 0, 1, 1],
       mask_polygon: [],
+      plant_ratio: plant,
       alternatives: ranked.slice(1).map(({ m, r }) => ({
         class_id: r.id,
         label: r.label,

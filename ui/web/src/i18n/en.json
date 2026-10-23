@@ -100,6 +100,7 @@
     "affected": "Leaf area affected",
     "retake": "The photo is not clear enough. Please take another one.",
     "retakeButton": "Take another photo",
+    "notCrop": "This does not look like a crop leaf or an insect. Please photograph one leaf or insect, close up and in good light.",
     "healthy": "No disease found on this leaf.",
     "advice": "Get advice",
     "sources": {
@@ -185,7 +186,8 @@
     "exists": "This already exists.",
     "invalid": "Some of the details are not valid.",
     "unknown": "Something went wrong. Please try again.",
-    "unavailable": "The language model runs only in the Android app. It is not available in the browser."
+    "unavailable": "The language model runs only in the Android app. It is not available in the browser.",
+    "llm": "The chat model could not run on this phone. Details: {{detail}}"
   },
   "diseases": {
     "BacterialSpot": "Bacterial Spot",

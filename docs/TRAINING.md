@@ -162,3 +162,20 @@ python -m scripts.train.train_all --dataset router --pv-root "D:\PlantVillageDat
 ```
 
 The result is `models\router\`. Its classes are `plantvillage-all`, `cassava` and `ip102`, which match the model folder names, so the app sends the photo to the right model. If the router is unsure (below 60%), the app falls back to asking every model and taking the most confident one.
+
+## Teaching the model what is not a leaf or insect
+
+A classifier always names one of its own classes, so a photo of a table gets a disease label. The app now rejects photos that look wrong, using three signals: a weak top answer (under 40 percent), almost no green or yellow-brown colour (under 4 percent of pixels) unless a model is at least 90 percent sure, and a class named `Not a leaf or insect`. The first two work with the models you already have; the third needs training data.
+
+1. Collect 500 to 2,000 ordinary photos that are not leaves or insects: rooms, hands, faces, soil, tools, food, pets, screens, walls, sky. Put them in one folder, any sub-folders. Do not use plant photos.
+2. Train with the extra folder:
+
+```powershell
+python -m scripts.train.train_all --dataset combined --pv-root "D:\PlantVillageDataset\train_val_test\train" --cassava-root "D:\archive\cassava_datasetv2" --ip102-root "D:\archive (1)" --negatives "D:\not_leaf_photos" --negatives-cap 1500 --name all-crops --model yolo11s-cls.pt --epochs 40 --activate
+```
+
+`--negatives` also works with `--dataset separate`; every model then gets the class. The app rejects a photo only when every model answers `Not a leaf or insect`, or when no other answer reaches 40 percent, so one model calling an insect photo "not a leaf" does not block the pest model.
+
+3. Put the new `vision.onnx` and `labels.json` back in the release and rebuild.
+
+The thresholds are in `ui/web/src/engine/core/crop.ts` (`DEFAULT_GATE`) and are first guesses. Test with 20 photos of random objects and 20 real leaves, then adjust.

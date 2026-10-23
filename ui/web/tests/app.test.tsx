@@ -220,6 +220,26 @@ describe("scan, advice and history", () => {
     expect(await engine.listScans()).toHaveLength(0);
   });
 
+  it("says when the photo is not a leaf or an insect", async () => {
+    const engine = new FakeEngineClient(0, true);
+    vi.spyOn(engine, "analyzeImage").mockResolvedValue({
+      class_id: 0,
+      label: "unsupported",
+      confidence: 0,
+      bbox: [0, 0, 0, 0],
+      mask_polygon: [],
+      severity_level: null,
+      low_confidence: true,
+    });
+    render(<App engine={engine} />);
+    await screen.findByText("Open Camera to Scan Leaf");
+    choose("camera-input");
+    await screen.findByText(
+      "This does not look like a crop leaf or an insect. Please photograph one leaf or insect, close up and in good light.",
+    );
+    expect(await engine.listScans()).toHaveLength(0);
+  });
+
   it("shows an error and stays on the scanner when analysis fails", async () => {
     const engine = new FakeEngineClient(0, true);
     vi.spyOn(engine, "analyzeImage").mockRejectedValue(new Error("boom"));
@@ -430,6 +450,24 @@ describe("chat", () => {
     expect(
       await screen.findByText(
         "The language model runs only in the Android app. It is not available in the browser.",
+      ),
+    ).toBeTruthy();
+  });
+
+  it("shows the reason when the language model cannot run on the phone", async () => {
+    const engine = new FakeEngineClient(0, true);
+    engine.chatReply = new EngineError(
+      "llm",
+      "llm_load_failed: runtime returned code 18",
+    );
+    await openChat(engine);
+    fireEvent.change(screen.getByPlaceholderText("Type your question"), {
+      target: { value: "Hello" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Send" }));
+    expect(
+      await screen.findByText(
+        "The chat model could not run on this phone. Details: llm_load_failed: runtime returned code 18",
       ),
     ).toBeTruthy();
   });

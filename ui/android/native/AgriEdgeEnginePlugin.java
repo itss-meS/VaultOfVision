@@ -10,8 +10,10 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.speech.tts.TextToSpeech;
 import android.util.Base64;
+import android.util.Log;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -43,6 +45,7 @@ import org.pytorch.executorch.extension.llm.LlmModule;
 @CapacitorPlugin(name = "AgriEdgeEngine")
 public class AgriEdgeEnginePlugin extends Plugin {
 
+  private static final String TAG = "AgriEdge";
   private static final String MODELS = "models";
   private static final String LLM_FILE = "llama32_1b_int4.pte";
   private static final String TOKENIZER_FILE = "tokenizer.model";
@@ -125,6 +128,7 @@ public class AgriEdgeEnginePlugin extends Plugin {
             }
             List<Scored> results = new ArrayList<>();
             for (Vision v : models) results.add(classify(v, source));
+            float plant = plantRatio(source);
             source.recycle();
             Collections.sort(results, (a, b) -> Float.compare(b.score, a.score));
             Scored best = results.get(0);
@@ -133,6 +137,7 @@ public class AgriEdgeEnginePlugin extends Plugin {
             det.put("label", best.label);
             det.put("confidence", (double) best.score);
             det.put("model", best.model);
+            det.put("plant_ratio", (double) plant);
             det.put("bbox", boxAll());
             det.put("mask_polygon", new JSArray());
             JSArray others = new JSArray();
@@ -149,8 +154,9 @@ public class AgriEdgeEnginePlugin extends Plugin {
             JSObject out = new JSObject();
             out.put("detection", det);
             call.resolve(out);
-          } catch (Exception e) {
-            call.reject("vision_failed");
+          } catch (Throwable e) {
+            Log.e(TAG, "vision failed", e);
+            call.reject("vision_failed: " + describe(e), "vision_failed");
           }
         });
   }
@@ -169,7 +175,13 @@ public class AgriEdgeEnginePlugin extends Plugin {
             File model = modelFile(LLM_FILE);
             File tokenizer = modelFile(TOKENIZER_FILE);
             if (model == null || tokenizer == null) {
-              call.reject("llm_unavailable");
+              Log.e(TAG, "llm files missing: model=" + (model != null) + " tokenizer=" + (tokenizer != null));
+              call.reject(
+                  "llm_missing: model "
+                      + (model != null ? "found" : "not found")
+                      + ", tokenizer "
+                      + (tokenizer != null ? "found" : "not found"),
+                  "llm_missing");
               return;
             }
             String prompt = llamaPrompt(messages);
@@ -178,31 +190,46 @@ public class AgriEdgeEnginePlugin extends Plugin {
               if (llm == null) {
                 LlmModule created =
                     new LlmModule(model.getAbsolutePath(), tokenizer.getAbsolutePath(), TEMPERATURE);
-                if (created.load() != 0) {
+                int loaded = created.load();
+                if (loaded != 0) {
                   created.resetNative();
-                  call.reject("llm_load_failed");
+                  Log.e(TAG, "llm load returned " + loaded);
+                  call.reject(
+                      "llm_load_failed: runtime returned code "
+                          + loaded
+                          + " for "
+                          + model.length() / (1024 * 1024)
+                          + " MB model",
+                      "llm_load_failed");
                   return;
                 }
                 llm = created;
               }
               llm.resetContext();
               int seqLen = Math.min(MAX_SEQ_LEN, estimateTokens(prompt) + maxTokens);
-              llm.generate(
-                  prompt,
-                  seqLen,
-                  new LlmCallback() {
-                    @Override
-                    public void onResult(String piece) {
-                      text.append(piece);
-                    }
-                  },
-                  false);
+              int status =
+                  llm.generate(
+                      prompt,
+                      seqLen,
+                      new LlmCallback() {
+                        @Override
+                        public void onResult(String piece) {
+                          text.append(piece);
+                        }
+                      },
+                      false);
+              if (status != 0 && text.length() == 0) {
+                Log.e(TAG, "llm generate returned " + status);
+                call.reject("llm_failed: generate returned code " + status, "llm_failed");
+                return;
+              }
             }
             JSObject out = new JSObject();
             out.put("text", text.toString().replaceAll("<\\|[^|]*\\|>", "").trim());
             call.resolve(out);
           } catch (Throwable e) {
-            call.reject("llm_failed");
+            Log.e(TAG, "llm failed", e);
+            call.reject("llm_failed: " + describe(e), "llm_failed");
           }
         });
   }
@@ -512,6 +539,27 @@ public class AgriEdgeEnginePlugin extends Plugin {
     }
     sb.append("<|start_header_id|>assistant<|end_header_id|>\n\n");
     return sb.toString();
+  }
+
+  private static String describe(Throwable e) {
+    String message = e.getMessage();
+    String text = e.getClass().getSimpleName() + (message == null ? "" : ": " + message);
+    return text.length() > 150 ? text.substring(0, 150) : text;
+  }
+
+  private static float plantRatio(Bitmap source) {
+    final int side = 64;
+    Bitmap small = Bitmap.createScaledBitmap(source, side, side, true);
+    int[] pixels = new int[side * side];
+    small.getPixels(pixels, 0, side, 0, 0, side, side);
+    if (small != source) small.recycle();
+    float[] hsv = new float[3];
+    int hits = 0;
+    for (int p : pixels) {
+      Color.colorToHSV(p, hsv);
+      if (hsv[0] >= 40f && hsv[0] <= 170f && hsv[1] >= 0.15f && hsv[2] >= 0.15f) hits++;
+    }
+    return hits / (float) pixels.length;
   }
 
   private static int estimateTokens(String prompt) {

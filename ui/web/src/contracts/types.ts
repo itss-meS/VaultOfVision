@@ -158,6 +158,7 @@ export type EngineErrorCode =
   | "exists"
   | "invalid"
   | "unavailable"
+  | "llm"
   | "unknown";
 
 export class EngineError extends Error {

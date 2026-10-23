@@ -34,6 +34,7 @@ export interface RawDetection {
   mask_polygon?: Array<[number, number]>;
   model?: string;
   leaf_polygon?: Array<[number, number]>;
+  plant_ratio?: number;
   alternatives?: Array<{
     class_id: number;
     label: string;

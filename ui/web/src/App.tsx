@@ -255,6 +255,12 @@ export function App({ engine: injected }: Props) {
     } catch (err) {
       const code = err instanceof EngineError ? err.code : "unknown";
       if (code === "auth") signedOut();
+      else if (code === "llm")
+        setChatError(
+          t("errors.llm", {
+            detail: err instanceof Error ? err.message : "",
+          }),
+        );
       else setChatError(t(`errors.${code}`));
     } finally {
       setChatBusy(false);

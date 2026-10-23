@@ -10,6 +10,7 @@ import {
 import { EngineError } from "../src/contracts/types";
 import signed from "./fixtures/signed.json";
 import { FakePorts, goodAdvisory } from "./fakePorts";
+import type { RawDetection } from "../src/engine/core/types";
 
 const enc = new TextEncoder();
 const fast = { pinIterations: 1000 };
@@ -372,6 +373,68 @@ describe("candidates", () => {
   });
 });
 
+describe("photos that are not a leaf or insect", () => {
+  const base: RawDetection = {
+    class_id: 1,
+    label: "Early Blight",
+    confidence: 0.8,
+    model: "plantvillage-all/vision.onnx",
+  };
+  it("returns unsupported with no candidates for a weak answer", async () => {
+    const e = await signedIn(
+      new FakePorts({ detection: { ...base, confidence: 0.3 } }),
+    );
+    const v = await e.analyzeImage(photo());
+    expect(v.label).toBe("unsupported");
+    expect(v.low_confidence).toBe(true);
+    expect(e.candidates()).toEqual([]);
+  });
+  it("returns unsupported when there is no plant colour", async () => {
+    const e = await signedIn(
+      new FakePorts({ detection: { ...base, plant_ratio: 0.01 } }),
+    );
+    expect((await e.analyzeImage(photo())).label).toBe("unsupported");
+  });
+  it("returns unsupported when every model says not a leaf or insect", async () => {
+    const e = await signedIn(
+      new FakePorts({
+        detection: {
+          class_id: 0,
+          label: "Not a leaf or insect",
+          confidence: 0.97,
+          alternatives: [
+            { class_id: 0, label: "Not a leaf or insect", confidence: 0.9 },
+          ],
+        },
+      }),
+    );
+    expect((await e.analyzeImage(photo())).label).toBe("unsupported");
+  });
+  it("keeps a real answer and drops the not-a-leaf vote from the list", async () => {
+    const e = await signedIn(
+      new FakePorts({
+        detection: {
+          class_id: 0,
+          label: "Not a leaf or insect",
+          confidence: 0.95,
+          model: "plantvillage-all/vision.onnx",
+          alternatives: [
+            {
+              class_id: 7,
+              label: "Colomerus vitis",
+              confidence: 0.92,
+              model: "ip102/vision.onnx",
+            },
+          ],
+        },
+      }),
+    );
+    const v = await e.analyzeImage(photo());
+    expect(v.label).toBe("Colomerus vitis");
+    expect(e.candidates().map((c) => c.label)).toEqual(["Colomerus vitis"]);
+  });
+});
+
 describe("chat", () => {
   const history = [{ role: "user" as const, content: "When to water?" }];
   it("answers through the language model with a farming prompt", async () => {
@@ -448,6 +511,14 @@ describe("chat", () => {
     );
     await expect(broken.chat(history, "en")).rejects.toMatchObject({
       code: "unknown",
+    });
+  });
+  it("passes the native reason on when the model fails to run", async () => {
+    const reason = "llm_load_failed: runtime returned code 18";
+    const e = await signedIn(new FakePorts({ replies: [new Error(reason)] }));
+    await expect(e.chat(history, "en")).rejects.toMatchObject({
+      code: "llm",
+      message: reason,
     });
   });
   it("keeps only the latest turns", async () => {

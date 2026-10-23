@@ -22,6 +22,8 @@ CASSAVA_DEFAULT = {
 
 SPLITS = ("train", "val", "test_lab")
 
+NOT_CROP_LABEL = "Not a leaf or insect"
+
 
 @dataclass(frozen=True)
 class Item:
@@ -211,6 +213,17 @@ def combined_items(roots: dict[str, Path | None]) -> list[Item]:
     return items
 
 
+def negative_items(root: Path, cap: int | None, seed: int) -> list[Item]:
+    if not root.is_dir():
+        raise DatasetError(f"negatives folder not found: {root}")
+    images = list_images(root)
+    if len(images) < 30:
+        raise DatasetError(f"the negatives folder needs at least 30 images, found {len(images)}")
+    random.Random(seed).shuffle(images)
+    picked = images[:cap] if cap else images
+    return [Item(path, NOT_CROP_LABEL, None, None) for path in picked]
+
+
 ROUTER_DOMAINS = {
     "plantvillage": "plantvillage-all",
     "cassava": "cassava",
@@ -305,6 +318,8 @@ def prepare_dataset(
     seed: int,
     link: bool,
     cap: int | None = None,
+    negatives: Path | None = None,
+    negative_cap: int | None = 1500,
 ) -> dict[str, object]:
     if isinstance(root, dict) and kind == "router":
         items = router_items(root, cap, seed)
@@ -312,5 +327,7 @@ def prepare_dataset(
         items = combined_items(root)
     else:
         items = load_items(kind, root, crop)
+    if negatives is not None and kind != "router":
+        items = items + negative_items(negatives, negative_cap, seed)
     assigned = assign_splits(items, val_frac, test_frac, seed)
     return write_layout(assigned, out, link)

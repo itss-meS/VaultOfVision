@@ -31,12 +31,25 @@ function fromBase64(b64: string): Uint8Array {
   return out;
 }
 
+function nativeReason(err: unknown): string {
+  const e = err as { message?: unknown; code?: unknown } | null;
+  const message = typeof e?.message === "string" ? e.message : "";
+  const code = typeof e?.code === "string" ? e.code : "";
+  if (message.startsWith("llm_")) return message;
+  if (code.startsWith("llm_")) return message ? `${code}: ${message}` : code;
+  return message ? `llm_failed: ${message}` : "llm_failed";
+}
+
 export const nativePorts: NativePorts = {
   async detect(imageBase64) {
     return (await Plugin.detect({ imageBase64 })).detection;
   },
   async generate(messages, maxTokens) {
-    return (await Plugin.generate({ messages, maxTokens })).text;
+    try {
+      return (await Plugin.generate({ messages, maxTokens })).text;
+    } catch (err) {
+      throw new Error(nativeReason(err));
+    }
   },
   speak(text, lang) {
     return Plugin.speak({ text, lang });

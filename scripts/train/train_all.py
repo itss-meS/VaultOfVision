@@ -154,6 +154,12 @@ def main() -> None:
     p.add_argument("--pv-root", type=Path, help="PlantVillage color folder, for combined or separate")
     p.add_argument("--cassava-root", type=Path, help="Cassava folder, for combined or separate")
     p.add_argument("--ip102-root", type=Path, help="IP102 folder, for combined or separate")
+    p.add_argument(
+        "--negatives",
+        type=Path,
+        help="folder of photos that are not leaves or insects (rooms, hands, soil, tools, food); adds the class 'Not a leaf or insect'",
+    )
+    p.add_argument("--negatives-cap", type=int, default=1500, help="most negative images to use")
     p.add_argument("--per-domain", type=int, default=2000, help="images per dataset for the router")
     p.add_argument("--name", help="name for the outputs, default is the dataset name")
     p.add_argument("--work", type=Path, default=Path("data"))
@@ -226,7 +232,17 @@ def run_one(
     prepared = a.work / name
     try:
         summary = prepare_dataset(
-            dataset, source, prepared, crop, 0.1, 0.1, 42, not a.copy, getattr(a, "per_domain", None)
+            dataset,
+            source,
+            prepared,
+            crop,
+            0.1,
+            0.1,
+            42,
+            not a.copy,
+            getattr(a, "per_domain", None),
+            getattr(a, "negatives", None),
+            getattr(a, "negatives_cap", 1500),
         )
         if a.field_test:
             print(f"field test images added: {add_field_test(a.field_test, prepared)}")

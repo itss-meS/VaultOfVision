@@ -32,6 +32,7 @@ export function Result({
   const label = useLabel();
   const shown = label(vision.label, kind);
   const healthy = kind === "healthy" && !vision.low_confidence;
+  const notCrop = vision.label === "unsupported";
   return (
     <Page title={t("result.title")} onBack={onBack}>
       <MaskOverlay src={photoUrl} vision={vision} />
@@ -41,7 +42,7 @@ export function Result({
             role="alert"
             className="rounded-2xl border border-warn/40 bg-warn/10 p-3 text-sm font-medium text-warn"
           >
-            {t("result.retake")}
+            {t(notCrop ? "result.notCrop" : "result.retake")}
           </p>
           <button type="button" className="btn-primary" onClick={onBack}>
             {t("result.retakeButton")}

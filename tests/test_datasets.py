@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from scripts.train.datasets import DatasetError, prepare_dataset, safe_name
+from scripts.train.datasets import NOT_CROP_LABEL, DatasetError, prepare_dataset, safe_name
 
 
 def img(path: Path, color: int = 100) -> None:
@@ -170,3 +170,30 @@ def test_router_needs_two_domains(tmp_path: Path) -> None:
             1,
             False,
         )
+
+
+def test_negatives_add_a_not_a_leaf_class(tmp_path: Path) -> None:
+    root = tmp_path / "color"
+    for cls in ("Tomato___Early_blight", "Tomato___healthy"):
+        for i in range(20):
+            img(root / cls / f"{uuid.uuid4()}___a{i}.JPG")
+    junk = tmp_path / "junk"
+    for i in range(40):
+        img(junk / "room" / f"{i}.jpg", 200)
+    summary = prepare_dataset(
+        "plantvillage", root, tmp_path / "out", "Tomato", 0.15, 0.15, 1, False, None, junk, 25
+    )
+    assert NOT_CROP_LABEL in summary["classes"]
+    assert summary["counts"][f"train/{NOT_CROP_LABEL}"] > 0
+
+
+def test_negatives_need_enough_images(tmp_path: Path) -> None:
+    root = tmp_path / "color"
+    for cls in ("Tomato___Early_blight", "Tomato___healthy"):
+        for i in range(20):
+            img(root / cls / f"{uuid.uuid4()}___a{i}.JPG")
+    junk = tmp_path / "junk"
+    for i in range(5):
+        img(junk / f"{i}.jpg")
+    with pytest.raises(DatasetError):
+        prepare_dataset("plantvillage", root, tmp_path / "out", "Tomato", 0.15, 0.15, 1, False, None, junk)

@@ -1,4 +1,4 @@
-﻿import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const plugin = vi.hoisted(() => ({
   detect: vi.fn(),
@@ -34,13 +34,41 @@ describe("native plugin bridge", () => {
     plugin.generate.mockResolvedValue({ text: "{}" });
     const messages = [{ role: "user" as const, content: "hi" }];
     expect(await nativePorts.generate(messages, 64)).toBe("{}");
-    expect(plugin.generate).toHaveBeenLastCalledWith({ messages, maxTokens: 64 });
+    expect(plugin.generate).toHaveBeenLastCalledWith({
+      messages,
+      maxTokens: 64,
+    });
+  });
+
+  it("keeps the native reason when the language model fails", async () => {
+    const messages = [{ role: "user" as const, content: "hi" }];
+    plugin.generate.mockRejectedValueOnce({
+      code: "llm_failed",
+      message: "llm_failed: UnsatisfiedLinkError: dlopen failed",
+    });
+    await expect(nativePorts.generate(messages, 64)).rejects.toThrow(
+      "llm_failed: UnsatisfiedLinkError: dlopen failed",
+    );
+    plugin.generate.mockRejectedValueOnce({
+      code: "llm_missing",
+      message: "model not found",
+    });
+    await expect(nativePorts.generate(messages, 64)).rejects.toThrow(
+      "llm_missing: model not found",
+    );
+    plugin.generate.mockRejectedValueOnce(new Error("bridge closed"));
+    await expect(nativePorts.generate(messages, 64)).rejects.toThrow(
+      "llm_failed: bridge closed",
+    );
   });
 
   it("forwards speech and health calls", async () => {
     plugin.speak.mockResolvedValue(undefined);
     await nativePorts.speak("hello", "te");
-    expect(plugin.speak).toHaveBeenLastCalledWith({ text: "hello", lang: "te" });
+    expect(plugin.speak).toHaveBeenLastCalledWith({
+      text: "hello",
+      lang: "te",
+    });
     const status = { vision: true };
     plugin.health.mockResolvedValue(status);
     expect(await nativePorts.health()).toBe(status);
@@ -48,7 +76,9 @@ describe("native plugin bridge", () => {
 
   it("decodes assets and treats a missing asset as null", async () => {
     plugin.readAsset.mockResolvedValueOnce({ base64: "QUJD" });
-    expect(Array.from((await nativePorts.readAsset("a.json")) ?? [])).toEqual([65, 66, 67]);
+    expect(Array.from((await nativePorts.readAsset("a.json")) ?? [])).toEqual([
+      65, 66, 67,
+    ]);
     plugin.readAsset.mockResolvedValueOnce({ base64: null });
     expect(await nativePorts.readAsset("missing.json")).toBeNull();
   });
