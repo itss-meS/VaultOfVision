@@ -155,6 +155,13 @@ def main() -> None:
     p.add_argument("--cassava-root", type=Path, help="Cassava folder, for combined or separate")
     p.add_argument("--ip102-root", type=Path, help="IP102 folder, for combined or separate")
     p.add_argument(
+        "--extra",
+        type=Path,
+        action="append",
+        default=[],
+        help="another folder-per-class dataset (PlantDoc, PlantWild, rice, maize); repeat for more; combined only",
+    )
+    p.add_argument(
         "--negatives",
         type=Path,
         help="folder of photos that are not leaves or insects (rooms, hands, soil, tools, food); adds the class 'Not a leaf or insect'",
@@ -209,6 +216,8 @@ def main() -> None:
         "cassava": a.cassava_root,
         "ip102": a.ip102_root,
     }
+    for number, folder in enumerate(a.extra):
+        combined[f"extra{number:02d}"] = folder
     if a.dataset in ("combined", "router"):
         if not any(combined.values()):
             sys.exit(f"{a.dataset} needs at least one of --pv-root, --cassava-root, --ip102-root")

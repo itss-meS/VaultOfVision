@@ -241,6 +241,20 @@ describe("local engine scan history", () => {
     await b.signUp({ ...farmer, name: "Ravi Kumar", mobile: "9123456789" });
     expect(await b.listScans()).toEqual([]);
   });
+  it("marks a Pest-prefixed label from one combined model as a pest", async () => {
+    const e = await signedIn(
+      new FakePorts({
+        detection: {
+          class_id: 3,
+          label: "Pest Aphids",
+          confidence: 0.9,
+          model: "all-crops/vision.onnx",
+        },
+      }),
+    );
+    await e.analyzeImage(photo());
+    expect(e.candidates()[0]?.kind).toBe("pest");
+  });
   it("keeps only the newest 500 scans", async () => {
     const sql = await memorySql();
     const e = await signedIn(new FakePorts(), sql);

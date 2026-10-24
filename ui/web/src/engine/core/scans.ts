@@ -25,6 +25,7 @@ interface ScanRow {
 
 export function kindFor(label: string, model: string): ScanKind {
   if (/healthy$/i.test(label.trim())) return "healthy";
+  if (/^pest\s/i.test(label.trim())) return "pest";
   return /ip102|pest|insect/i.test(model) ? "pest" : "disease";
 }
 

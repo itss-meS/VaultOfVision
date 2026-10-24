@@ -208,6 +208,10 @@ def combined_items(roots: dict[str, Path | None]) -> list[Item]:
             items.append(i if i.label.lower().startswith("cassava") else relabel([i], "Cassava")[0])
     if ip102 is not None:
         items.extend(relabel(load_items("ip102", ip102, None), "Pest"))
+    for key in sorted(roots):
+        extra = roots[key]
+        if key.startswith("extra") and extra is not None:
+            items.extend(load_items("folders", extra, None))
     if not items:
         raise DatasetError("give at least one dataset folder")
     return items

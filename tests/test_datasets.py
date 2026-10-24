@@ -197,3 +197,19 @@ def test_negatives_need_enough_images(tmp_path: Path) -> None:
         img(junk / f"{i}.jpg")
     with pytest.raises(DatasetError):
         prepare_dataset("plantvillage", root, tmp_path / "out", "Tomato", 0.15, 0.15, 1, False, None, junk)
+
+
+def test_combined_accepts_extra_folder_datasets(tmp_path: Path) -> None:
+    pv = tmp_path / "color"
+    for cls in ("Tomato___Early_blight", "Tomato___healthy"):
+        for i in range(20):
+            img(pv / cls / f"{uuid.uuid4()}___a{i}.JPG")
+    extra = tmp_path / "plantwild"
+    for cls in ("Rice Blast", "Rice Healthy"):
+        for i in range(20):
+            img(extra / cls / f"{i}.jpg")
+    summary = prepare_dataset(
+        "combined", {"plantvillage": pv, "extra00": extra}, tmp_path / "out", None, 0.15, 0.15, 1, False
+    )
+    assert "Rice Blast" in summary["classes"]
+    assert "Early Blight" in summary["classes"] or "Tomato Early Blight" in summary["classes"]

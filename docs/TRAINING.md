@@ -179,3 +179,19 @@ python -m scripts.train.train_all --dataset combined --pv-root "D:\PlantVillageD
 3. Put the new `vision.onnx` and `labels.json` back in the release and rebuild.
 
 The thresholds are in `ui/web/src/engine/core/crop.ts` (`DEFAULT_GATE`) and are first guesses. Test with 20 photos of random objects and 20 real leaves, then adjust.
+
+## One model for the whole project
+
+The app already loads every model it finds, so one combined model works with no app change except the label rules (a label starting with `Pest ` is shown as a pest).
+
+1. Download the datasets: PlantVillage, PlantDoc, PlantWild, Cassava, IP102, plus any crop you need (rice, maize, wheat, cotton, sugarcane).
+2. Put PlantDoc, PlantWild and the others in folder-per-class layout (one folder per class) and pass each with `--extra`.
+3. Train one model with every source and the negatives:
+
+```powershell
+python -m scripts.train.train_all --dataset combined --pv-root "D:\PlantVillageDataset\train_val_test\train" --cassava-root "D:\archive\cassava_datasetv2" --ip102-root "D:\archive (1)" --extra "D:\PlantDoc" --extra "D:\PlantWild" --negatives "D:\not_leaf_photos" --name all-crops --model yolo11s-cls.pt --epochs 60 --activate
+```
+
+4. Rename duplicate classes first (for example `Apple Scab`, `Apple scab leaf` and `Apple___Apple_scab` must become one folder) or the model splits one disease into several.
+5. Keep only `models/all-crops/vision.onnx` and its `labels.json` in the release; remove the three old model folders so the app loads one model.
+6. Report accuracy on a held-out set of real field photos, not on the lab test split.

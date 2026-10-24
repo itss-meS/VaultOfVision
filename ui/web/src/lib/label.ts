@@ -26,7 +26,8 @@ export interface LabelParts {
 
 export function splitLabel(label: string, kind: ScanKind): LabelParts {
   const text = label.trim();
-  if (kind === "pest") return { crop: "Pest", name: text };
+  if (kind === "pest")
+    return { crop: "Pest", name: text.replace(/^pest\s+/i, "") };
   const space = text.indexOf(" ");
   if (space > 0) {
     const head = text.slice(0, space);
