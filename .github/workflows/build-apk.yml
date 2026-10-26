@@ -53,6 +53,14 @@ jobs:
           ls -lhR models
       - run: npm run prepare:android
         working-directory: ui/android
+      - name: Require Llama files in models
+        run: |
+          for f in llama32_1b_int4.pte tokenizer.model; do
+            if [ ! -s "models/$f" ]; then
+              echo "::error::models/$f is missing; upload it as a loose asset to the executorch release"
+              exit 1
+            fi
+          done
       - name: Build debug APK
         working-directory: ui/android/android
         run: |
@@ -65,6 +73,8 @@ jobs:
       - name: Reject source maps in APK
         run: |
           APK=$(ls ui/android/android/app/build/outputs/apk/debug/*.apk | head -n 1)
+          ls -lh "$APK"
+          unzip -l "$APK" | grep -E 'llama32_1b_int4\.pte|tokenizer\.model' || { echo "llama files are not inside the APK"; exit 1; }
           if unzip -l "$APK" | grep -E '\.map$'; then
             echo "source map found in APK"
             exit 1
@@ -105,6 +115,14 @@ jobs:
           ls -lhR models
       - run: npm run prepare:android
         working-directory: ui/android
+      - name: Require Llama files in models
+        run: |
+          for f in llama32_1b_int4.pte tokenizer.model; do
+            if [ ! -s "models/$f" ]; then
+              echo "::error::models/$f is missing; upload it as a loose asset to the executorch release"
+              exit 1
+            fi
+          done
       - name: Decode keystore
         env:
           ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
