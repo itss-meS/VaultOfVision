@@ -51,6 +51,14 @@ jobs:
             echo "::warning::release executorch not found, building without models"
           fi
           ls -lhR models
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Create signed placeholder knowledge files
+        run: |
+          pip install cryptography
+          python -m scripts.make_dev_assets
+          ls -l .dev/knowledge
       - run: npm run prepare:android
         working-directory: ui/android
       - name: Require Llama files in models
@@ -113,6 +121,14 @@ jobs:
             if [ -e "$z" ]; then unzip -o -q "$z" -d models && rm "$z"; fi
           done
           ls -lhR models
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Create signed placeholder knowledge files
+        run: |
+          pip install cryptography
+          python -m scripts.make_dev_assets
+          ls -l .dev/knowledge
       - run: npm run prepare:android
         working-directory: ui/android
       - name: Require Llama files in models
