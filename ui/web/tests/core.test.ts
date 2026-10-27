@@ -348,7 +348,7 @@ describe("extractJson", () => {
 
 const vision: VisionResult = {
   class_id: 1,
-  label: "Early Blight",
+  label: "Tomato Early Blight",
   confidence: 0.9,
   bbox: [0, 0, 1, 1],
   mask_polygon: [],
@@ -400,7 +400,7 @@ describe("orchestrator", () => {
     ).toBe("refusal");
     const h = await orch.advise(
       "q",
-      { ...vision, label: "Healthy", severity_level: null },
+      { ...vision, label: "Tomato Healthy", severity_level: null },
       "en",
       "",
       1,

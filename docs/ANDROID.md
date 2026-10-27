@@ -75,7 +75,7 @@ Where the files come from:
 - Llama: if `models\llama32_1b_int4.pte` and `models\tokenizer.model` exist at build time, `prepare:android` bundles them into the APK assets (about 1.1 GB more) and the plugin copies them to private storage on first use. Otherwise, for testing, push them to the app's external files folder: `adb push models\llama32_1b_int4.pte /sdcard/Android/data/ai.redesignededge.app/files/models/` and the same for `tokenizer.model`. Create the `models` folder first with `adb shell mkdir -p /sdcard/Android/data/ai.redesignededge.app/files/models`.
 - Knowledge: `knowledge\` plus `.dev\knowledge\` (the signed placeholder files) are copied into the APK assets.
 
-`scripts/install-plugin.mjs` (run by `prepare:android`) copies the plugin into the generated Android project, registers it in `MainActivity.java`, adds the Gradle dependencies (`onnxruntime-android` 1.20.0, `executorch-android` 1.1.0, fbjni, nativeloader), limits the build to arm64-v8a and adds the R8 keep rules.
+`scripts/install-plugin.mjs` (run by `prepare:android`) copies the plugin into the generated Android project, registers it in `MainActivity.java`, adds the Gradle dependencies (`onnxruntime-android` 1.20.0, `executorch-android` 1.0.0, fbjni, nativeloader), limits the build to arm64-v8a and adds the R8 keep rules.
 
 Version note: the Llama `.pte` must have been exported with an ExecuTorch version that the 1.0.0 runtime can load. If loading fails, export again with a matching version or change `EXECUTORCH` in `install-plugin.mjs`.
 
@@ -122,7 +122,7 @@ All unmeasured. Record real numbers in `BENCHMARKS.md`.
 - The native plugin has not been built or run yet.
 - The Llama chat works only in the APK; the browser has no language model.
 - The model answers are only as good as the training photos; the leaf model was trained on lab photos and the app shows every model result so wrong answers are visible.
-- Advice is tomato-only until the multi-crop work is done.
+- Advice covers the crops and pests that have rows in the signed dosage table; every other scan gets the safe "no vetted data" answer (`docs/KNOWLEDGE.md`).
 - Severity needs a segmentation model; without it no dosage total is computed.
 - Knowledge text and vetted dosage and banned lists are placeholders or empty.
 - Offline Hindi and Marathi speech depends on installed voice data.

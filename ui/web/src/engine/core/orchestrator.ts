@@ -1,9 +1,15 @@
+import {
+  displayLabel,
+  isUnsupportedLabel,
+  parseLabel,
+  type ParsedLabel,
+} from "./labelParse";
 import { buildMessages } from "./prompts";
 import type { RuleEngine } from "./rules";
 import { buildVisionResult, unsupportedVision } from "./severity";
 import { DEFAULT_SEVERITY_LABELS, SEVERITY_LABELS, T } from "./templates";
 import * as templates from "./templates";
-import { calcDosage, type DosageTable } from "./tools";
+import { calcDosage, calcPestDosage, type DosageTable } from "./tools";
 import type {
   Advisory,
   AdvisorySource,
@@ -29,18 +35,26 @@ export interface Outcome {
 export interface OrchestratorConfig {
   maxCtx: number;
   maxTokens: number;
-  crop: "tomato";
   maxRetries: number;
 }
 
 export const DEFAULT_CONFIG: OrchestratorConfig = {
   maxCtx: 2048,
   maxTokens: 700,
-  crop: "tomato",
   maxRetries: 2,
 };
 
-const UNSUPPORTED_LABELS = new Set(["unsupported", "not_tomato", "other_crop"]);
+const DOSE_TEXT =
+  /[0-9\u0966-\u096f\u0c66-\u0c6f]\s*(?:(?:mg|g|gm|gms|gram|grams|kg|kgs|ml|mls|l|lit|litre|litres|liter|liters|cc|ppm)(?![\p{L}])|\u0917\u094d\u0930\u093e\u092e|\u0917\u094d\u0930\u0945\u092e|\u0915\u093f\u0932\u094b|\u0932\u0940\u091f\u0930|\u0932\u093f\u091f\u0930|\u092e\u093f\u0932\u0940|\u0c17\u0c4d\u0c30\u0c3e\u0c2e\u0c41|\u0c17\u0c4d\u0c30\u0c3e|\u0c15\u0c3f\u0c32\u0c4b|\u0c32\u0c40\u0c1f\u0c30\u0c41|\u0c32\u0c40\u0c1f\u0c30\u0c4d|\u0c2e\u0c3f\u0c32\u0c4d\u0c32\u0c40)|\b(?:per|each)\s+(?:ha|hectare|acre|litre|liter)\b|\/\s*(?:ha|ac|acre|hectare|l|lit|litre|liter)\b/iu;
+
+export function mentionsDose(advisory: Advisory): boolean {
+  const parts = [
+    ...advisory.actions.map((a) => a.text),
+    ...advisory.preventive,
+    advisory.safety_notice,
+  ];
+  return parts.some((t) => DOSE_TEXT.test(t));
+}
 
 export function extractJson(raw: string): unknown {
   let text = raw.trim();
@@ -113,6 +127,14 @@ export class Orchestrator {
     };
   }
 
+  private hasVettedDisease(parsed: ParsedLabel): boolean {
+    if (parsed.crop === null) return false;
+    return (
+      this.dosage.crops().has(parsed.crop) &&
+      this.dosage.hasDisease(parsed.crop, parsed.name)
+    );
+  }
+
   async advise(
     query: string,
     vision: VisionResult | null,
@@ -134,21 +156,30 @@ export class Orchestrator {
     }
     if (vision === null || vision.low_confidence)
       return this.finalize("retake", templates.retake(lang, conf), null, 0, t0);
-    const label = vision.label.toLowerCase();
-    if (UNSUPPORTED_LABELS.has(label))
+    if (isUnsupportedLabel(vision.label))
       return this.finalize("refusal", templates.unsupported(lang), null, 0, t0);
-    if (label === "healthy")
+    const parsed = parseLabel(vision.label);
+    if (parsed.kind === "healthy")
       return this.finalize("llm", templates.healthy(lang, conf), null, 0, t0);
 
     const severity = this.severityInfo(vision, lang);
+    const filters: Record<string, string> =
+      parsed.kind === "pest"
+        ? { disease: parsed.name }
+        : { crop: parsed.crop ?? "", disease: parsed.name };
     const chunks = this.retriever.search(
-      query || vision.label,
-      { crop: this.config.crop, disease: vision.label },
+      `${displayLabel(parsed)} ${query}`,
+      filters,
       4,
     );
     const texts = chunks
       .map((c) => c.text)
       .filter((t) => this.rules.isClean(t));
+
+    const usable =
+      parsed.kind === "pest" ? texts.length > 0 : this.hasVettedDisease(parsed);
+    if (!usable) return this.noData(lang, parsed, conf, severity, t0);
+
     const messages = buildMessages(
       vision,
       vision.affected_area_pct,
@@ -173,9 +204,9 @@ export class Orchestrator {
       } catch {
         continue;
       }
-      if (!this.rules.isClean(advisory)) continue;
+      if (!this.rules.isClean(advisory) || mentionsDose(advisory)) continue;
       const adv: Advisory = { ...advisory, severity };
-      const dosage = this.runTool(advisory, vision, areaHa, adv);
+      const dosage = this.runTool(advisory, vision, parsed, areaHa, adv);
       return this.finalize("llm", adv, dosage, attempts, t0);
     }
     return this.finalize(
@@ -187,29 +218,46 @@ export class Orchestrator {
     );
   }
 
+  private noData(
+    lang: Lang,
+    parsed: ParsedLabel,
+    conf: number,
+    severity: SeverityInfo | null,
+    t0: number,
+  ): Outcome {
+    return this.finalize(
+      "fallback",
+      templates.noData(lang, displayLabel(parsed), conf, severity),
+      null,
+      0,
+      t0,
+    );
+  }
+
   private runTool(
     advisory: Advisory,
     vision: VisionResult,
+    parsed: ParsedLabel,
     areaHa: number | null,
     adv: Advisory,
   ): DosageResult | null {
-    if (advisory.tool_call === null || vision.severity_level === null) {
-      adv.tool_call = null;
-      return null;
+    adv.tool_call = null;
+    if (advisory.tool_call === null) return null;
+    if (parsed.kind === "pest") {
+      if (areaHa === null) return { available: false, reason: "area_missing" };
+      return calcPestDosage(parsed.name, areaHa, this.dosage, this.rules);
     }
-    if (areaHa === null) {
-      adv.tool_call = null;
-      return { available: false, reason: "area_missing" };
-    }
+    if (vision.severity_level === null || parsed.crop === null) return null;
+    if (areaHa === null) return { available: false, reason: "area_missing" };
     const call: ToolCall = {
       tool: "calc_dosage",
       args: {
-        crop: "tomato",
+        crop: parsed.crop,
         area_ha: areaHa,
         severity: vision.severity_level,
       },
     };
     adv.tool_call = call;
-    return calcDosage(call, vision.label, this.dosage, this.rules);
+    return calcDosage(call, parsed.name, this.dosage, this.rules);
   }
 }

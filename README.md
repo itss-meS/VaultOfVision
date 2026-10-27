@@ -24,7 +24,7 @@ Hackathon scope: the Android app. The Raspberry Pi and Python backend track is k
 | Kotlin plugin (vision, Llama, speech, storage on Android) | Not written yet |
 | APK build | Workflow exists, never run |
 | Telugu | Not added yet |
-| Multi-crop advice | Not done, advice is tomato-only |
+| Multi-crop advice | Done for potato, tomato, rice, grape and five pests; more crops are listed in `docs/KNOWLEDGE.md`. Data needs agronomist sign-off and release signing |
 | Knowledge base, vetted banned list and dosage table | Empty or placeholders |
 | Severity from lesion area | Needs a segmentation model |
 

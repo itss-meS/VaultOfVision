@@ -1,0 +1,141 @@
+{
+  "version": 2,
+  "entries": [
+    {
+      "kind": "disease",
+      "crop": "potato",
+      "disease": "Late Blight",
+      "severity_min": 1,
+      "severity_max": 5,
+      "product": "Mancozeb 75% WG",
+      "dose_per_ha": 1.0,
+      "unit": "kg",
+      "notes": "Label claim: 1 kg of product per hectare in 500 litres of water. Wait 3 to 5 days between the last spray and harvest. Follow the product label.",
+      "source": {
+        "authority": "CIBRC",
+        "document": "Major Uses of Pesticides registered under the Insecticides Act, 1968: Fungicides, as on 30.09.2012, Central Insecticides Board and Registration Committee, page 17",
+        "url": "https://agritech.tnau.ac.in/crop_protection/pdf/6_Major_use_fungicides.pdf"
+      },
+      "checked_by": null
+    },
+    {
+      "kind": "disease",
+      "crop": "potato",
+      "disease": "Early Blight",
+      "severity_min": 1,
+      "severity_max": 5,
+      "product": "Copper oxychloride 50% WP",
+      "dose_per_ha": 2.5,
+      "unit": "kg",
+      "notes": "Label claim: 2.5 kg of product per hectare in 750 to 1000 litres of water. The source gives no waiting period, so follow the product label.",
+      "source": {
+        "authority": "CIBRC",
+        "document": "Major Uses of Pesticides registered under the Insecticides Act, 1968: Fungicides, as on 30.09.2012, Central Insecticides Board and Registration Committee, page 8",
+        "url": "https://agritech.tnau.ac.in/crop_protection/pdf/6_Major_use_fungicides.pdf"
+      },
+      "checked_by": null
+    },
+    {
+      "kind": "disease",
+      "crop": "tomato",
+      "disease": "Early Blight",
+      "severity_min": 1,
+      "severity_max": 5,
+      "product": "Azoxystrobin 23% SC",
+      "dose_per_ha": 0.5,
+      "unit": "l",
+      "notes": "Label claim: 500 ml of product (125 g active ingredient) per hectare in 500 litres of water. Wait 3 days between the last spray and harvest.",
+      "source": {
+        "authority": "CIBRC",
+        "document": "Major Uses of Pesticides registered under the Insecticides Act, 1968: Fungicides, as on 30.09.2012, Central Insecticides Board and Registration Committee, page 2",
+        "url": "https://agritech.tnau.ac.in/crop_protection/pdf/6_Major_use_fungicides.pdf"
+      },
+      "checked_by": null
+    },
+    {
+      "kind": "disease",
+      "crop": "tomato",
+      "disease": "Late Blight",
+      "severity_min": 1,
+      "severity_max": 5,
+      "product": "Azoxystrobin 23% SC",
+      "dose_per_ha": 0.5,
+      "unit": "l",
+      "notes": "Label claim: 500 ml of product (125 g active ingredient) per hectare in 500 litres of water. Wait 3 days between the last spray and harvest.",
+      "source": {
+        "authority": "CIBRC",
+        "document": "Major Uses of Pesticides registered under the Insecticides Act, 1968: Fungicides, as on 30.09.2012, Central Insecticides Board and Registration Committee, page 2",
+        "url": "https://agritech.tnau.ac.in/crop_protection/pdf/6_Major_use_fungicides.pdf"
+      },
+      "checked_by": null
+    },
+    {
+      "kind": "disease",
+      "crop": "grape",
+      "disease": "Downy Mildew",
+      "severity_min": 1,
+      "severity_max": 5,
+      "product": "Azoxystrobin 23% SC",
+      "dose_per_ha": 0.5,
+      "unit": "l",
+      "notes": "Label claim: 500 ml of product (125 g active ingredient) per hectare in 500 to 750 litres of water. Wait 7 days between the last spray and harvest.",
+      "source": {
+        "authority": "CIBRC",
+        "document": "Major Uses of Pesticides registered under the Insecticides Act, 1968: Fungicides, as on 30.09.2012, Central Insecticides Board and Registration Committee, page 2",
+        "url": "https://agritech.tnau.ac.in/crop_protection/pdf/6_Major_use_fungicides.pdf"
+      },
+      "checked_by": null
+    },
+    {
+      "kind": "disease",
+      "crop": "rice",
+      "disease": "Blast",
+      "severity_min": 1,
+      "severity_max": 5,
+      "product": "Isoprothiolane 40% EC",
+      "dose_per_ha": 0.75,
+      "unit": "l",
+      "notes": "Label claim: 750 ml of product (300 g active ingredient) per hectare in 500 to 1000 litres of water. Wait 60 days between the last spray and harvest.",
+      "source": {
+        "authority": "CIBRC",
+        "document": "Directorate of Plant Protection, Quarantine and Storage advisory on rice blast dated 22.07.2022, Annexure-I: fungicides approved by the Registration Committee for rice blast",
+        "url": "https://ppqs.gov.in/sites/default/files/rice_blast_advisory.pdf"
+      },
+      "checked_by": null
+    },
+    {
+      "kind": "disease",
+      "crop": "rice",
+      "disease": "Sheath Blight",
+      "severity_min": 1,
+      "severity_max": 5,
+      "product": "Hexaconazole 5% EC",
+      "dose_per_ha": 1.0,
+      "unit": "l",
+      "notes": "Label claim: 1000 ml of product (50 g active ingredient) per hectare in 500 litres of water. Wait 40 days between the last spray and harvest.",
+      "source": {
+        "authority": "CIBRC",
+        "document": "Major Uses of Pesticides registered under the Insecticides Act, 1968: Fungicides, as on 30.09.2012, Central Insecticides Board and Registration Committee, page 13",
+        "url": "https://agritech.tnau.ac.in/crop_protection/pdf/6_Major_use_fungicides.pdf"
+      },
+      "checked_by": null
+    },
+    {
+      "kind": "pest",
+      "crop": "rice",
+      "pest": "Brown Plant Hopper",
+      "severity_min": 1,
+      "severity_max": 5,
+      "product": "Buprofezin 25% SC",
+      "dose_per_ha": 0.8,
+      "unit": "l",
+      "notes": "Rice only. Label claim: 800 ml of product (200 g active ingredient) per hectare in 400 to 500 litres of water. Wait 20 days between the last spray and harvest.",
+      "source": {
+        "authority": "CIBRC",
+        "document": "Directorate of Plant Protection, Quarantine and Storage advisory on Brown Plant Hopper of rice dated July 2022, Annexure-I: pesticides approved by the Registration Committee for Brown Plant Hopper",
+        "url": "https://ppqs.gov.in/sites/default/files/rce_bph_advisory.pdf"
+      },
+      "checked_by": null
+    }
+  ]
+}

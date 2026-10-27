@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://redesigned-edge-ai/schemas/dosage_table.schema.json",
+  "title": "Vetted dosage table",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "entries"],
+  "properties": {
+    "version": { "type": "integer", "minimum": 1 },
+    "entries": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority", "document", "url"],
+      "properties": {
+        "authority": {
+          "enum": ["ICAR", "SAU", "State Department of Agriculture", "CIBRC"]
+        },
+        "document": { "type": "string", "minLength": 10, "maxLength": 400 },
+        "url": { "type": "string", "pattern": "^https://\\S+$", "maxLength": 400 }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "crop",
+        "severity_min",
+        "severity_max",
+        "product",
+        "dose_per_ha",
+        "unit",
+        "notes",
+        "source",
+        "checked_by"
+      ],
+      "properties": {
+        "kind": { "enum": ["disease", "pest"] },
+        "crop": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "disease": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "pest": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "severity_min": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "severity_max": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "product": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "dose_per_ha": { "type": "number", "exclusiveMinimum": 0 },
+        "unit": { "enum": ["kg", "l"] },
+        "notes": { "type": "string", "maxLength": 400 },
+        "source": { "$ref": "#/$defs/source" },
+        "checked_by": { "type": ["string", "null"], "minLength": 2, "maxLength": 80 }
+      },
+      "oneOf": [
+        {
+          "properties": { "kind": { "const": "disease" } },
+          "required": ["disease"],
+          "not": { "required": ["pest"] }
+        },
+        {
+          "properties": { "kind": { "const": "pest" } },
+          "required": ["pest"],
+          "not": { "required": ["disease"] }
+        }
+      ]
+    }
+  }
+}

@@ -20,7 +20,7 @@ export interface Advisory {
   actions: Array<{ text: string; priority: Priority }>;
   tool_call: {
     tool: "calc_dosage";
-    args: { crop: "tomato"; area_ha: number; severity: number };
+    args: { crop: string; area_ha: number; severity: number };
   } | null;
   preventive: string[];
   safety_notice: string;

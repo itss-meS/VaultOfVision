@@ -18,7 +18,7 @@ export interface SeverityInfo {
 
 export interface ToolCall {
   tool: "calc_dosage";
-  args: { crop: "tomato"; area_ha: number; severity: number };
+  args: { crop: string; area_ha: number; severity: number };
 }
 
 export interface ChatMessage {

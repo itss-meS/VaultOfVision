@@ -124,7 +124,7 @@ export function validateAdvisory(value: unknown): Advisory {
       "area_ha",
       "severity",
     ]);
-    oneOf(need(args, "crop", "args"), "args.crop", ["tomato"]);
+    str(need(args, "crop", "args"), "args.crop", 1, 40);
     const area = num(need(args, "area_ha", "args"), "args.area_ha", 0, 1000);
     if (area <= 0) fail("args.area_ha", "must be positive");
     int(need(args, "severity", "args"), "args.severity", 1, 5);

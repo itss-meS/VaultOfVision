@@ -1,3 +1,4 @@
+import { parseLabel } from "./labelParse";
 import type { RawDetection, VisionResult } from "./types";
 
 function polygonArea(points: ReadonlyArray<readonly [number, number]>): number {
@@ -38,7 +39,7 @@ export function buildVisionResult(
     ? Math.max(0, Math.min(100, (polygonArea(mask) / leafArea) * 100))
     : null;
   const low = det.confidence < confThreshold;
-  const healthy = det.label.toLowerCase() === "healthy";
+  const healthy = parseLabel(det.label).kind === "healthy";
   const level =
     low || healthy || pct === null ? null : levelFor(pct, thresholds);
   const bbox = det.bbox ?? [0, 0, 0, 0];

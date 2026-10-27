@@ -194,7 +194,7 @@ describe("local engine scan history", () => {
     let list = await e.listScans();
     expect(list.map((s) => s.id)).toEqual([second, id]);
     expect(list[1]).toMatchObject({
-      label: "Early Blight",
+      label: "Tomato Early Blight",
       kind: "disease",
       durationMs: 322,
       thumb,
@@ -275,7 +275,7 @@ describe("local engine flow", () => {
     const ports = new FakePorts({ replies: [goodAdvisory()] });
     const e = await signedIn(ports);
     const v = await e.analyzeImage(photo());
-    expect(v.label).toBe("Early Blight");
+    expect(v.label).toBe("Tomato Early Blight");
     const r = await e.ask(
       "what to do",
       { ...v, severity_level: 3, affected_area_pct: 20 },

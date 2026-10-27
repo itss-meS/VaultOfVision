@@ -26,7 +26,7 @@ export class FakePorts implements NativePorts {
 
   async detect(): Promise<RawDetection | null> {
     return this.opts.detection === undefined
-      ? { class_id: 1, label: "Early Blight", confidence: 0.9 }
+      ? { class_id: 1, label: "Tomato Early Blight", confidence: 0.9 }
       : this.opts.detection;
   }
 
