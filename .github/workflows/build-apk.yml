@@ -17,7 +17,6 @@ permissions:
   contents: read
 
 env:
-  # Release that holds the model files. Tags are case-sensitive: "model-V1".
   MODEL_TAG: model-V1
   MODEL_FILE: llama32_1b_int4.pte
   TOKENIZER_FILE: tokenizer.model

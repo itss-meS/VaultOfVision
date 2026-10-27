@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
 const path = 'android/app/src/main/AndroidManifest.xml';
 if (!existsSync(path)) {
@@ -41,6 +41,21 @@ const additions = [
 ].join('\n');
 xml = xml.replace('</manifest>', `${additions}\n</manifest>`);
 writeFileSync(path, xml);
+
+const resXml = 'android/app/src/main/res/xml';
+mkdirSync(resXml, { recursive: true });
+writeFileSync(
+  `${resXml}/network_security_config.xml`,
+  `<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
+`,
+);
 
 const gradlePath = 'android/app/build.gradle';
 if (existsSync(gradlePath)) {
