@@ -224,8 +224,20 @@ public class AgriEdgeEnginePlugin extends Plugin {
                 return;
               }
             }
+            String cleaned = text.toString().replaceAll("<\\|[^|]*\\|>", "").trim();
+            if (cleaned.isEmpty()) {
+              Log.e(TAG, "llm produced no text, raw length " + text.length());
+              call.reject(
+                  "llm_failed: model returned no text, raw "
+                      + text.length()
+                      + " chars, prompt about "
+                      + estimateTokens(prompt)
+                      + " tokens",
+                  "llm_failed");
+              return;
+            }
             JSObject out = new JSObject();
-            out.put("text", text.toString().replaceAll("<\\|[^|]*\\|>", "").trim());
+            out.put("text", cleaned);
             call.resolve(out);
           } catch (Throwable e) {
             Log.e(TAG, "llm failed", e);

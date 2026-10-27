@@ -16,6 +16,12 @@ on:
 permissions:
   contents: read
 
+env:
+  # Release that holds the model files. Tags are case-sensitive: "model-V1".
+  MODEL_TAG: model-V1
+  MODEL_FILE: llama32_1b_int4.pte
+  TOKENIZER_FILE: tokenizer.model
+
 jobs:
   apk-debug:
     runs-on: ubuntu-24.04
@@ -36,19 +42,19 @@ jobs:
         working-directory: ui/web
       - run: npm ci
         working-directory: ui/android
-      - name: Download models from the executorch release
+      - name: Download models from the ${{ env.MODEL_TAG }} release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p models
-          if gh release view executorch --repo "${{ github.repository }}"; then
-            gh release download executorch --repo "${{ github.repository }}" --dir models --clobber
+          if gh release view "$MODEL_TAG" --repo "${{ github.repository }}"; then
+            gh release download "$MODEL_TAG" --repo "${{ github.repository }}" --dir models --clobber
             for z in models/*.zip; do
               if [ -e "$z" ]; then unzip -o -q "$z" -d models && rm "$z"; fi
             done
           else
             gh release list --repo "${{ github.repository }}" || true
-            echo "::warning::release executorch not found, building without models"
+            echo "::warning::release $MODEL_TAG not found, building without models"
           fi
           ls -lhR models
       - uses: actions/setup-python@v5
@@ -63,9 +69,9 @@ jobs:
         working-directory: ui/android
       - name: Require Llama files in models
         run: |
-          for f in llama32_1b_int4.pte tokenizer.model; do
+          for f in "$MODEL_FILE" "$TOKENIZER_FILE"; do
             if [ ! -s "models/$f" ]; then
-              echo "::error::models/$f is missing; upload it as a loose asset to the executorch release"
+              echo "::error::models/$f is missing; upload it as a loose asset to the $MODEL_TAG release"
               exit 1
             fi
           done
@@ -111,12 +117,12 @@ jobs:
         working-directory: ui/web
       - run: npm ci
         working-directory: ui/android
-      - name: Download models from the executorch release
+      - name: Download models from the ${{ env.MODEL_TAG }} release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p models
-          gh release download executorch --repo "${{ github.repository }}" --dir models --clobber
+          gh release download "$MODEL_TAG" --repo "${{ github.repository }}" --dir models --clobber
           for z in models/*.zip; do
             if [ -e "$z" ]; then unzip -o -q "$z" -d models && rm "$z"; fi
           done
@@ -133,9 +139,9 @@ jobs:
         working-directory: ui/android
       - name: Require Llama files in models
         run: |
-          for f in llama32_1b_int4.pte tokenizer.model; do
+          for f in "$MODEL_FILE" "$TOKENIZER_FILE"; do
             if [ ! -s "models/$f" ]; then
-              echo "::error::models/$f is missing; upload it as a loose asset to the executorch release"
+              echo "::error::models/$f is missing; upload it as a loose asset to the $MODEL_TAG release"
               exit 1
             fi
           done

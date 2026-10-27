@@ -45,7 +45,7 @@ The chat error now shows the reason from the phone. Read the code after "Details
 | Detail starts with | Meaning | Fix |
 |---|---|---|
 | `llm_missing` | The `.pte` or `tokenizer.model` is not inside the APK or the phone's models folder | Check the `models-v1` release names (`llama32_1b_int4.pte`, `tokenizer.model`), read the "ls -lhR models" step of the build log, or copy both files to `Android/data/<app id>/files/models/` |
-| `llm_load_failed` | ExecuTorch 1.0.0 in the app could not open the `.pte` | Export the `.pte` with the same ExecuTorch version (`pip show executorch` in Colab must say 1.0.x), or change the version in `ui/android/scripts/install-plugin.mjs` to match |
+| `llm_load_failed` | ExecuTorch 1.1.0 in the app could not open the `.pte` | Export the `.pte` with the same ExecuTorch version (`pip show executorch` in Colab must say 1.1.x), or change the version in `ui/android/scripts/install-plugin.mjs` to match |
 | `llm_failed: UnsatisfiedLinkError` | The native library is missing for this phone (for example an emulator) | Use a 64-bit ARM phone |
 | `llm_failed: OutOfMemoryError` | Not enough RAM | Close other apps; try a phone with 6 GB or more |
 | `llm_failed: generate returned code` | The runtime started but could not produce text | Send the full detail; the prompt format flag `EXPLICIT_BOS` may need flipping |
