@@ -5,17 +5,20 @@ import {
   findLesions,
   RISK_COLOR,
   riskOf,
-  type LesionBox,
+  riskOfShare,
+  type Lesions,
 } from "../lib/lesions";
 
 interface Props {
   src: string;
   vision: VisionResult;
+  mark?: boolean;
 }
 
 const SIDE = 96;
+const EMPTY: Lesions = { boxes: [], affected: 0 };
 
-function measure(src: string): Promise<LesionBox[]> {
+function measure(src: string): Promise<Lesions> {
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
@@ -28,34 +31,38 @@ function measure(src: string): Promise<LesionBox[]> {
         canvas.height = h;
         const ctx = canvas.getContext("2d");
         if (!ctx) {
-          resolve([]);
+          resolve(EMPTY);
           return;
         }
         ctx.drawImage(img, 0, 0, w, h);
-        resolve(findLesions(ctx.getImageData(0, 0, w, h).data, w, h).boxes);
+        resolve(findLesions(ctx.getImageData(0, 0, w, h).data, w, h));
       } catch {
-        resolve([]);
+        resolve(EMPTY);
       }
     };
-    img.onerror = () => resolve([]);
+    img.onerror = () => resolve(EMPTY);
     img.src = src;
   });
 }
 
-export function MaskOverlay({ src, vision }: Props) {
+export function MaskOverlay({ src, vision, mark = true }: Props) {
   const { t } = useTranslation();
-  const [boxes, setBoxes] = useState<LesionBox[]>([]);
-  const marked = !vision.low_confidence && vision.severity_level !== null;
-  const risk = riskOf(vision.severity_level);
+  const [found, setFound] = useState<Lesions>(EMPTY);
+  const marked = mark && !vision.low_confidence;
+  const boxes = found.boxes;
+  const risk =
+    vision.severity_level !== null
+      ? riskOf(vision.severity_level)
+      : riskOfShare(found.affected);
   const color = RISK_COLOR[risk];
   const points = vision.mask_polygon.map(([x, y]) => `${x},${y}`).join(" ");
 
   useEffect(() => {
     let live = true;
-    setBoxes([]);
+    setFound(EMPTY);
     if (marked)
-      void measure(src).then((found) => {
-        if (live) setBoxes(found);
+      void measure(src).then((result) => {
+        if (live) setFound(result);
       });
     return () => {
       live = false;

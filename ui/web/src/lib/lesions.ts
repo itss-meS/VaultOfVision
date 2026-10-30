@@ -238,6 +238,12 @@ export function riskOf(level: number | null): Risk {
   return "high";
 }
 
+export function riskOfShare(share: number): Risk {
+  if (share < 0.05) return "low";
+  if (share < 0.15) return "medium";
+  return "high";
+}
+
 export const RISK_COLOR: Record<Risk, string> = {
   low: "#2e9e5b",
   medium: "#e0a100",

@@ -35,7 +35,7 @@ export function Result({
   const notCrop = vision.label === "unsupported";
   return (
     <Page title={t("result.title")} onBack={onBack}>
-      <MaskOverlay src={photoUrl} vision={vision} />
+      <MaskOverlay src={photoUrl} vision={vision} mark={!healthy} />
       {vision.low_confidence ? (
         <>
           <p
