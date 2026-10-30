@@ -60,6 +60,9 @@ export class DevBrowserPorts implements NativePorts {
     return JSON.stringify(SAMPLE_ADVISORY);
   }
 
+  async warmUp(): Promise<void> {}
+
+
   async speak(text: string, lang: Lang): Promise<void> {
     if (typeof speechSynthesis === "undefined") return;
     const tags: Record<Lang, string> = { en: "en-IN", hi: "hi-IN", mr: "mr-IN", te: "te-IN" };
