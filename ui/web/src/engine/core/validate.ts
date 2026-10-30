@@ -63,6 +63,33 @@ function oneOf<T extends string>(
   return v as T;
 }
 
+function validateDetails(value: unknown): void {
+  const d = obj(value, "details", [
+    "summary",
+    "symptoms",
+    "causes",
+    "help",
+    "sources",
+  ]);
+  str(need(d, "summary", "details"), "details.summary", 1, 600);
+  for (const s of arr(need(d, "symptoms", "details"), "details.symptoms", 0, 8))
+    str(s, "details.symptoms", 1, 300);
+  for (const c of arr(need(d, "causes", "details"), "details.causes", 0, 6))
+    str(c, "details.causes", 1, 300);
+  if (Object.prototype.hasOwnProperty.call(d, "help"))
+    str(d["help"], "details.help", 1, 300);
+  for (const src of arr(
+    need(d, "sources", "details"),
+    "details.sources",
+    0,
+    6,
+  )) {
+    const item = obj(src, "details.sources", ["title", "url"]);
+    str(need(item, "title", "source"), "source.title", 1, 160);
+    str(need(item, "url", "source"), "source.url", 1, 300);
+  }
+}
+
 export function validateAdvisory(value: unknown): Advisory {
   const root = obj(value, "advisory", [
     "schema_version",
@@ -73,6 +100,7 @@ export function validateAdvisory(value: unknown): Advisory {
     "preventive",
     "safety_notice",
     "lang",
+    "details",
   ]);
   oneOf(need(root, "schema_version", "advisory"), "schema_version", [
     "advisory_v3",
@@ -139,6 +167,8 @@ export function validateAdvisory(value: unknown): Advisory {
     str(p, "preventive", 1, 400);
   str(need(root, "safety_notice", "advisory"), "safety_notice", 1, 600);
   oneOf(need(root, "lang", "advisory"), "lang", ["en", "hi", "mr", "te"]);
+  if (Object.prototype.hasOwnProperty.call(root, "details"))
+    validateDetails(root["details"]);
   return value as Advisory;
 }
 

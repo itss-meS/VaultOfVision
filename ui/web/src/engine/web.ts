@@ -209,6 +209,9 @@ export const webPorts: NativePorts = {
   generate(_messages: ChatMessage[], _maxTokens: number): Promise<string> {
     return Promise.reject(new Error("llm_unavailable"));
   },
+  warmUp() {
+    return Promise.resolve();
+  },
   speak(text, lang) {
     if (typeof speechSynthesis === "undefined") return Promise.resolve();
     const u = new SpeechSynthesisUtterance(text);

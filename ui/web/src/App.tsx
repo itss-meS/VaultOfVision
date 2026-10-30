@@ -73,6 +73,7 @@ export function App({ engine: injected }: Props) {
   const [chatBusy, setChatBusy] = useState(false);
   const [chatError, setChatError] = useState<string | null>(null);
   const urlRef = useRef<string | null>(null);
+  const warmedRef = useRef(false);
   const photoRef = useRef<File | null>(null);
   const durationRef = useRef(0);
 
@@ -149,6 +150,14 @@ export function App({ engine: injected }: Props) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [tab, view]);
+
+  useEffect(() => {
+    if (!user || warmedRef.current) return;
+    if (tab === "chat" || view === "result" || view === "advisory") {
+      warmedRef.current = true;
+      void engine.warmUp();
+    }
+  }, [user, tab, view, engine]);
 
   useEffect(() => {
     if (user) void refresh();
@@ -250,7 +259,10 @@ export function App({ engine: injected }: Props) {
     setChatBusy(true);
     setChatError(null);
     try {
-      const reply = await engine.chat(next, lang, topic);
+      const reply = await engine.chat(next, lang, topic, (partial) => {
+        if (partial.length > 0)
+          setList([...next, { role: "assistant", content: partial }]);
+      });
       setList([...next, { role: "assistant", content: reply }]);
     } catch (err) {
       const code = err instanceof EngineError ? err.code : "unknown";
@@ -295,10 +307,10 @@ export function App({ engine: injected }: Props) {
     }
   }
 
-  async function speak(text: string) {
+  async function speak(text: string, spoken?: Lang) {
     setError(null);
     try {
-      await engine.speak(text, lang);
+      await engine.speak(text, spoken ?? lang);
     } catch (err) {
       fail(err);
     }

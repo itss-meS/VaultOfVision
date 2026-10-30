@@ -1,3 +1,4 @@
+import { isJunkLabel } from "./labels";
 import type { RawDetection } from "./types";
 
 export interface CropGate {
@@ -30,7 +31,7 @@ export function isPlantPixel(r: number, g: number, b: number): boolean {
 }
 
 export function isNegativeLabel(label: string): boolean {
-  return NEGATIVE.test(label.trim());
+  return NEGATIVE.test(label.trim()) || isJunkLabel(label);
 }
 
 export function screenDetection(

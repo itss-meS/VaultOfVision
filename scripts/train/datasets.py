@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from scripts.train.common import IMAGE_EXT, class_name, lab_group_key, list_images, squash
+from scripts.train.labels import is_junk, normalize_label
 
 CASSAVA_DEFAULT = {
     "0": "Cassava Bacterial Blight",
@@ -185,11 +186,19 @@ def load_items(kind: str, root: Path, crop: str | None) -> list[Item]:
     if kind == "ip102":
         return ip102_items(root)
     if kind == "folders":
-        items = folder_items(root)
+        items = canonicalise(folder_items(root))
         if not items:
             raise DatasetError(f"no class folders with images under {root}")
         return items
     raise DatasetError(f"unknown dataset kind: {kind}")
+
+
+def canonicalise(items: list[Item]) -> list[Item]:
+    return [
+        Item(i.path, safe_name(normalize_label(i.label).label), i.split, i.group)
+        for i in items
+        if not is_junk(i.label)
+    ]
 
 
 def relabel(items: list[Item], prefix: str) -> list[Item]:
@@ -202,10 +211,12 @@ def combined_items(roots: dict[str, Path | None]) -> list[Item]:
     cassava = roots.get("cassava")
     ip102 = roots.get("ip102")
     if pv is not None:
-        items.extend(load_items("plantvillage", pv, None))
+        items.extend(canonicalise(load_items("plantvillage", pv, None)))
     if cassava is not None:
         for i in load_items("cassava", cassava, None):
-            items.append(i if i.label.lower().startswith("cassava") else relabel([i], "Cassava")[0])
+            items.extend(
+                canonicalise([i if i.label.lower().startswith("cassava") else relabel([i], "Cassava")[0]])
+            )
     if ip102 is not None:
         items.extend(relabel(load_items("ip102", ip102, None), "Pest"))
     for key in sorted(roots):

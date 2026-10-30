@@ -161,10 +161,72 @@ public class AgriEdgeEnginePlugin extends Plugin {
         });
   }
 
+  private static final class LlmFailure extends Exception {
+    final String code;
+
+    LlmFailure(String message, String code) {
+      super(message);
+      this.code = code;
+    }
+  }
+
+  private LlmModule ensureLlm() throws LlmFailure {
+    File model = modelFile(LLM_FILE);
+    File tokenizer = modelFile(TOKENIZER_FILE);
+    if (model == null || tokenizer == null) {
+      Log.e(TAG, "llm files missing: model=" + (model != null) + " tokenizer=" + (tokenizer != null));
+      throw new LlmFailure(
+          "llm_missing: model "
+              + (model != null ? "found" : "not found")
+              + ", tokenizer "
+              + (tokenizer != null ? "found" : "not found"),
+          "llm_missing");
+    }
+    synchronized (llmLock) {
+      if (llm == null) {
+        long started = System.currentTimeMillis();
+        LlmModule created =
+            new LlmModule(model.getAbsolutePath(), tokenizer.getAbsolutePath(), TEMPERATURE);
+        int loaded = created.load();
+        if (loaded != 0) {
+          created.resetNative();
+          Log.e(TAG, "llm load returned " + loaded);
+          throw new LlmFailure(
+              "llm_load_failed: runtime returned code "
+                  + loaded
+                  + " for "
+                  + model.length() / (1024 * 1024)
+                  + " MB model",
+              "llm_load_failed");
+        }
+        llm = created;
+        Log.i(TAG, "llm loaded in " + (System.currentTimeMillis() - started) + " ms");
+      }
+      return llm;
+    }
+  }
+
+  @PluginMethod
+  public void warmUp(PluginCall call) {
+    llmWork.execute(
+        () -> {
+          try {
+            ensureLlm();
+            call.resolve();
+          } catch (LlmFailure e) {
+            call.reject(e.getMessage(), e.code);
+          } catch (Throwable e) {
+            Log.e(TAG, "llm warm up failed", e);
+            call.reject("llm_failed: " + describe(e), "llm_failed");
+          }
+        });
+  }
+
   @PluginMethod
   public void generate(PluginCall call) {
     final JSArray messages = call.getArray("messages");
     final int maxTokens = clamp(call.getInt("maxTokens", 256), 16, 1024);
+    final String streamId = call.getString("streamId");
     if (messages == null || messages.length() == 0) {
       call.reject("rejected");
       return;
@@ -172,52 +234,49 @@ public class AgriEdgeEnginePlugin extends Plugin {
     llmWork.execute(
         () -> {
           try {
-            File model = modelFile(LLM_FILE);
-            File tokenizer = modelFile(TOKENIZER_FILE);
-            if (model == null || tokenizer == null) {
-              Log.e(TAG, "llm files missing: model=" + (model != null) + " tokenizer=" + (tokenizer != null));
-              call.reject(
-                  "llm_missing: model "
-                      + (model != null ? "found" : "not found")
-                      + ", tokenizer "
-                      + (tokenizer != null ? "found" : "not found"),
-                  "llm_missing");
-              return;
-            }
             String prompt = llamaPrompt(messages);
             final StringBuilder text = new StringBuilder();
+            final long[] marks = {System.currentTimeMillis(), 0L, 0L};
             synchronized (llmLock) {
-              if (llm == null) {
-                LlmModule created =
-                    new LlmModule(model.getAbsolutePath(), tokenizer.getAbsolutePath(), TEMPERATURE);
-                int loaded = created.load();
-                if (loaded != 0) {
-                  created.resetNative();
-                  Log.e(TAG, "llm load returned " + loaded);
-                  call.reject(
-                      "llm_load_failed: runtime returned code "
-                          + loaded
-                          + " for "
-                          + model.length() / (1024 * 1024)
-                          + " MB model",
-                      "llm_load_failed");
-                  return;
-                }
-                llm = created;
-              }
-              llm.resetContext();
+              LlmModule module = ensureLlm();
+              module.resetContext();
               int seqLen = Math.min(MAX_SEQ_LEN, estimateTokens(prompt) + maxTokens);
+              marks[0] = System.currentTimeMillis();
               int status =
-                  llm.generate(
+                  module.generate(
                       prompt,
                       seqLen,
                       new LlmCallback() {
                         @Override
                         public void onResult(String piece) {
+                          if (marks[1] == 0L) marks[1] = System.currentTimeMillis();
+                          marks[2]++;
                           text.append(piece);
+                          if (streamId != null && !piece.contains("<|")) {
+                            JSObject event = new JSObject();
+                            event.put("id", streamId);
+                            event.put("text", piece);
+                            notifyListeners("llmToken", event);
+                          }
                         }
                       },
                       false);
+              long done = System.currentTimeMillis();
+              long first = marks[1] == 0L ? done : marks[1];
+              long decode = Math.max(1L, done - first);
+              Log.i(
+                  TAG,
+                  "llm prompt about "
+                      + estimateTokens(prompt)
+                      + " tokens, first token after "
+                      + (first - marks[0])
+                      + " ms, "
+                      + marks[2]
+                      + " pieces in "
+                      + (done - marks[0])
+                      + " ms, about "
+                      + (marks[2] * 1000L / decode)
+                      + " pieces per second");
               if (status != 0 && text.length() == 0) {
                 Log.e(TAG, "llm generate returned " + status);
                 call.reject("llm_failed: generate returned code " + status, "llm_failed");
@@ -239,6 +298,8 @@ public class AgriEdgeEnginePlugin extends Plugin {
             JSObject out = new JSObject();
             out.put("text", cleaned);
             call.resolve(out);
+          } catch (LlmFailure e) {
+            call.reject(e.getMessage(), e.code);
           } catch (Throwable e) {
             Log.e(TAG, "llm failed", e);
             call.reject("llm_failed: " + describe(e), "llm_failed");

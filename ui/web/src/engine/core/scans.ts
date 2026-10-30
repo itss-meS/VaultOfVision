@@ -6,7 +6,7 @@ import type {
   ScanRecord,
 } from "../../contracts/types";
 import type { Sql } from "../../db/sql";
-import { parseLabel } from "./labelParse";
+import { parseLabel } from "./labels";
 
 export const MAX_SCANS = 500;
 const THUMB_PREFIX = "data:image/jpeg;base64,";
@@ -25,8 +25,8 @@ interface ScanRow {
 }
 
 export function kindFor(label: string, model: string): ScanKind {
-  const kind = parseLabel(label).kind;
-  if (kind !== "disease") return kind;
+  const parsed = parseLabel(label);
+  if (parsed.kind !== "disease") return parsed.kind;
   return /ip102|pest|insect/i.test(model) ? "pest" : "disease";
 }
 

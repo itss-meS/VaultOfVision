@@ -7,6 +7,7 @@ import { Page } from "../components/Page";
 import type {
   AdvisoryResponse,
   EngineClient,
+  Lang,
   ScanRecord,
 } from "../contracts/types";
 import { LANGUAGES } from "../i18n";
@@ -16,7 +17,7 @@ import { useLabel } from "../lib/useLabel";
 interface Props {
   engine: EngineClient;
   scan: ScanRecord;
-  onSpeak: (text: string) => Promise<void>;
+  onSpeak: (text: string, lang?: Lang) => Promise<void>;
   speakError: string | null;
   onBack: () => void;
 }

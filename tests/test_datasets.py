@@ -82,7 +82,7 @@ def test_folder_dataset_with_and_without_split_dirs(tmp_path: Path) -> None:
         for i in range(12):
             img(flat / cls / f"{i}.png")
     summary = prepare_dataset("folders", flat, tmp_path / "o1", None, 0.15, 0.1, 1, False)
-    assert summary["classes"] == ["a", "b"]
+    assert summary["classes"] == ["A", "B"]
     split = tmp_path / "split"
     for s in ("train", "valid", "test"):
         for cls in ("a", "b"):

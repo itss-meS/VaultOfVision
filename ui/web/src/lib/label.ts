@@ -1,23 +1,5 @@
 import type { Candidate, ScanKind } from "../contracts/types";
-
-const CROPS = [
-  "Apple",
-  "Blueberry",
-  "Cassava",
-  "Cherry",
-  "Corn",
-  "Grape",
-  "Maize",
-  "Orange",
-  "Peach",
-  "Pepper",
-  "Potato",
-  "Raspberry",
-  "Soybean",
-  "Squash",
-  "Strawberry",
-  "Tomato",
-];
+import { parseLabel } from "../engine/core/labels";
 
 export interface LabelParts {
   crop: string | null;
@@ -25,20 +7,15 @@ export interface LabelParts {
 }
 
 export function splitLabel(label: string, kind: ScanKind): LabelParts {
-  const text = label.trim();
+  const parsed = parseLabel(label);
   if (kind === "pest")
-    return { crop: "Pest", name: text.replace(/^pest\s+/i, "") };
-  const space = text.indexOf(" ");
-  if (space > 0) {
-    const head = text.slice(0, space);
-    if (CROPS.includes(head))
-      return { crop: head, name: text.slice(space + 1).trim() };
-  }
-  return { crop: null, name: text };
+    return { crop: "Pest", name: label.trim().replace(/^pest\s+/i, "") };
+  if (parsed.crop === null) return { crop: null, name: parsed.name };
+  return { crop: parsed.crop, name: parsed.name };
 }
 
 export function kindOfLabel(label: string): ScanKind {
-  return /healthy$/i.test(label.trim()) ? "healthy" : "disease";
+  return parseLabel(label).kind;
 }
 
 export function formatDate(ms: number, locale: string): string {

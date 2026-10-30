@@ -34,6 +34,8 @@ describe("not a leaf or insect labels", () => {
     expect(isNegativeLabel("Non plant")).toBe(true);
     expect(isNegativeLabel("Early Blight")).toBe(false);
     expect(isNegativeLabel("Notch Spot")).toBe(false);
+    expect(isNegativeLabel("images")).toBe(true);
+    expect(isNegativeLabel("Rice Blast")).toBe(false);
   });
 });
 

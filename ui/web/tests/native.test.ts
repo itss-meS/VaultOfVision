@@ -6,6 +6,8 @@ const plugin = vi.hoisted(() => ({
   speak: vi.fn(),
   readAsset: vi.fn(),
   health: vi.fn(),
+  warmUp: vi.fn(),
+  addListener: vi.fn(),
 }));
 
 vi.mock("@capacitor/core", () => ({ registerPlugin: () => plugin }));

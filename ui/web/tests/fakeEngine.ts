@@ -305,16 +305,28 @@ export class FakeEngineClient implements EngineClient {
     return this.shown;
   }
 
+  warmed = 0;
+
+  async warmUp(): Promise<void> {
+    this.warmed += 1;
+  }
+
   async chat(
     history: ChatTurn[],
     _lang: Lang,
     topic?: string,
+    onPartial?: (text: string) => void,
   ): Promise<string> {
     this.user();
     await delay(this.latencyMs);
     this.chatCalls.push(history);
     this.chatTopics.push(topic);
     if (this.chatReply instanceof Error) throw this.chatReply;
+    if (onPartial !== undefined) {
+      const words = this.chatReply.split(" ");
+      for (let n = 1; n < words.length; n++)
+        onPartial(words.slice(0, n).join(" "));
+    }
     return this.chatReply;
   }
 

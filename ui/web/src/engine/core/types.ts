@@ -51,6 +51,7 @@ export interface Chunk {
   stage: string;
   lang: string;
   region: string;
+  source?: string;
   score: number;
 }
 
@@ -59,7 +60,11 @@ export interface Retriever {
 }
 
 export interface LlmPort {
-  generate(messages: ChatMessage[], maxTokens: number): Promise<string>;
+  generate(
+    messages: ChatMessage[],
+    maxTokens: number,
+    onToken?: (piece: string) => void,
+  ): Promise<string>;
 }
 
 export interface NativeHealth {
@@ -78,4 +83,5 @@ export interface NativePorts extends LlmPort {
   speak(text: string, lang: Lang): Promise<void>;
   readAsset(name: string): Promise<Uint8Array | null>;
   health(): Promise<NativeHealth>;
+  warmUp(): Promise<void>;
 }

@@ -25,8 +25,15 @@ async function memorySql(): Promise<Sql> {
   return openSqlJs();
 }
 
-function engineOn(ports: FakePorts, sql: Sql): LocalEngineClient {
-  return new LocalEngineClient(ports, () => Promise.resolve(sql), fast);
+function engineOn(
+  ports: FakePorts,
+  sql: Sql,
+  extra: Record<string, unknown> = {},
+): LocalEngineClient {
+  return new LocalEngineClient(ports, () => Promise.resolve(sql), {
+    ...fast,
+    ...extra,
+  });
 }
 
 async function signedIn(ports: FakePorts, sql?: Sql) {
@@ -194,7 +201,7 @@ describe("local engine scan history", () => {
     let list = await e.listScans();
     expect(list.map((s) => s.id)).toEqual([second, id]);
     expect(list[1]).toMatchObject({
-      label: "Tomato Early Blight",
+      label: "Early Blight",
       kind: "disease",
       durationMs: 322,
       thumb,
@@ -273,12 +280,18 @@ describe("local engine scan history", () => {
 describe("local engine flow", () => {
   it("analyses a photo and returns advice with dosage", async () => {
     const ports = new FakePorts({ replies: [goodAdvisory()] });
-    const e = await signedIn(ports);
+    const e = engineOn(ports, await memorySql(), { llmAdvice: true });
+    await e.signUp(farmer);
     const v = await e.analyzeImage(photo());
-    expect(v.label).toBe("Tomato Early Blight");
+    expect(v.label).toBe("Early Blight");
     const r = await e.ask(
       "what to do",
-      { ...v, severity_level: 3, affected_area_pct: 20 },
+      {
+        ...v,
+        label: "Tomato Early Blight",
+        severity_level: 3,
+        affected_area_pct: 20,
+      },
       { lang: "en", area_ha: 0.4 },
     );
     expect(r.source).toBe("llm");
@@ -456,7 +469,7 @@ describe("chat", () => {
   it("answers through the language model with a farming prompt", async () => {
     const ports = new FakePorts({ replies: ["Water early in the morning."] });
     const e = await signedIn(ports);
-    expect(await e.chat(history, "hi")).toBe("Water early in the morning.");
+    expect(await e.chat(history, "hi")).toContain("Water early in the morning.");
     const sent = ports.prompts[0] ?? [];
     expect(sent[0]?.role).toBe("system");
     expect(sent[0]?.content).toContain("Hindi");
@@ -513,7 +526,7 @@ describe("chat", () => {
       new FakePorts({ replies: ["<|eot_id|>", "Hello <|eot_id|>"] }),
     );
     expect(await e.chat(history, "en")).toContain("could not prepare");
-    expect(await e.chat(history, "en")).toBe("Hello");
+    expect(await e.chat(history, "en")).toMatch(/^Hello\n\n/);
   });
   it("reports an unavailable model and other failures", async () => {
     const off = await signedIn(

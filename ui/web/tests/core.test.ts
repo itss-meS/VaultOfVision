@@ -2,7 +2,11 @@ import Ajv2020 from "ajv/dist/2020";
 import { describe, expect, it } from "vitest";
 import advisorySchema from "../../../schemas/advisory_v3.schema.json";
 import visionSchema from "../../../schemas/vision_result.schema.json";
-import { Orchestrator, extractJson } from "../src/engine/core/orchestrator";
+import {
+  DEFAULT_CONFIG,
+  Orchestrator,
+  extractJson,
+} from "../src/engine/core/orchestrator";
 import { Bm25Retriever } from "../src/engine/core/retriever";
 import { RuleEngine, normalize } from "../src/engine/core/rules";
 import { buildVisionResult, levelFor } from "../src/engine/core/severity";
@@ -374,7 +378,11 @@ async function build(replies: Array<string | Error>, chunks?: string) {
   const retriever = chunks
     ? Bm25Retriever.fromJsonl(chunks)
     : new Bm25Retriever([]);
-  return { ports, orch: new Orchestrator(ports, retriever, rules, table) };
+  const orch = new Orchestrator(ports, retriever, rules, table, {
+    ...DEFAULT_CONFIG,
+    llmAdvice: true,
+  });
+  return { ports, orch };
 }
 
 describe("orchestrator", () => {
@@ -400,12 +408,12 @@ describe("orchestrator", () => {
     ).toBe("refusal");
     const h = await orch.advise(
       "q",
-      { ...vision, label: "Tomato Healthy", severity_level: null },
+      { ...vision, label: "Healthy", severity_level: null },
       "en",
       "",
       1,
     );
-    expect(h.source).toBe("llm");
+    expect(h.source).toBe("knowledge");
     expect(h.advisory.actions.length).toBe(1);
   });
   it("accepts a valid answer and rebuilds the tool call itself", async () => {

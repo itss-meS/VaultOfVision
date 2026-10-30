@@ -1,4 +1,4 @@
-import { registerPlugin } from "@capacitor/core";
+import { registerPlugin, type PluginListenerHandle } from "@capacitor/core";
 import { openCapacitorSql } from "../db/capacitorSql";
 import { LocalEngineClient } from "./core/engine";
 import type {
@@ -16,7 +16,13 @@ interface AgriEdgePlugin {
   generate(args: {
     messages: ChatMessage[];
     maxTokens: number;
+    streamId?: string;
   }): Promise<{ text: string }>;
+  warmUp(): Promise<void>;
+  addListener(
+    event: "llmToken",
+    listener: (e: { id: string; text: string }) => void,
+  ): Promise<PluginListenerHandle>;
   speak(args: { text: string; lang: Lang }): Promise<void>;
   readAsset(args: { name: string }): Promise<{ base64: string | null }>;
   health(): Promise<NativeHealth>;
@@ -44,12 +50,24 @@ export const nativePorts: NativePorts = {
   async detect(imageBase64) {
     return (await Plugin.detect({ imageBase64 })).detection;
   },
-  async generate(messages, maxTokens) {
+  async generate(messages, maxTokens, onToken) {
+    let handle: PluginListenerHandle | null = null;
     try {
-      return (await Plugin.generate({ messages, maxTokens })).text;
+      if (onToken === undefined)
+        return (await Plugin.generate({ messages, maxTokens })).text;
+      const streamId = crypto.randomUUID();
+      handle = await Plugin.addListener("llmToken", (e) => {
+        if (e.id === streamId) onToken(e.text);
+      });
+      return (await Plugin.generate({ messages, maxTokens, streamId })).text;
     } catch (err) {
       throw new Error(nativeReason(err));
+    } finally {
+      if (handle !== null) await handle.remove();
     }
+  },
+  async warmUp() {
+    await Plugin.warmUp();
   },
   speak(text, lang) {
     return Plugin.speak({ text, lang });

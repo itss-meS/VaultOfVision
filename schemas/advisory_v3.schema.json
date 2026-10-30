@@ -4,34 +4,79 @@
   "title": "Advisory",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "diagnosis", "severity", "actions", "tool_call", "preventive", "safety_notice", "lang"],
+  "required": [
+    "schema_version",
+    "diagnosis",
+    "severity",
+    "actions",
+    "tool_call",
+    "preventive",
+    "safety_notice",
+    "lang"
+  ],
   "properties": {
-    "schema_version": { "const": "advisory_v3" },
+    "schema_version": {
+      "const": "advisory_v3"
+    },
     "diagnosis": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["primary", "confidence", "differential"],
+      "required": [
+        "primary",
+        "confidence",
+        "differential"
+      ],
       "properties": {
-        "primary": { "type": "string", "minLength": 1, "maxLength": 120 },
-        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "primary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
         "differential": {
           "type": "array",
           "maxItems": 5,
-          "items": { "type": "string", "minLength": 1, "maxLength": 120 }
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
         }
       }
     },
     "severity": {
       "oneOf": [
-        { "type": "null" },
+        {
+          "type": "null"
+        },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["level", "label", "affected_area_pct"],
+          "required": [
+            "level",
+            "label",
+            "affected_area_pct"
+          ],
           "properties": {
-            "level": { "type": "integer", "minimum": 1, "maximum": 5 },
-            "label": { "type": "string", "minLength": 1, "maxLength": 40 },
-            "affected_area_pct": { "type": "number", "minimum": 0, "maximum": 100 }
+            "level": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "affected_area_pct": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            }
           }
         }
       ]
@@ -43,30 +88,68 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["text", "priority"],
+        "required": [
+          "text",
+          "priority"
+        ],
         "properties": {
-          "text": { "type": "string", "minLength": 1, "maxLength": 600 },
-          "priority": { "enum": ["critical", "high", "normal"] }
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "priority": {
+            "enum": [
+              "critical",
+              "high",
+              "normal"
+            ]
+          }
         }
       }
     },
     "tool_call": {
       "oneOf": [
-        { "type": "null" },
+        {
+          "type": "null"
+        },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["tool", "args"],
+          "required": [
+            "tool",
+            "args"
+          ],
           "properties": {
-            "tool": { "enum": ["calc_dosage"] },
+            "tool": {
+              "enum": [
+                "calc_dosage"
+              ]
+            },
             "args": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["crop", "area_ha", "severity"],
+              "required": [
+                "crop",
+                "area_ha",
+                "severity"
+              ],
               "properties": {
-                "crop": { "type": "string", "minLength": 1, "maxLength": 40 },
-                "area_ha": { "type": "number", "exclusiveMinimum": 0, "maximum": 1000 },
-                "severity": { "type": "integer", "minimum": 1, "maximum": 5 }
+                "crop": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                },
+                "area_ha": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1000
+                },
+                "severity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                }
               }
             }
           }
@@ -76,9 +159,88 @@
     "preventive": {
       "type": "array",
       "maxItems": 12,
-      "items": { "type": "string", "minLength": 1, "maxLength": 400 }
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 400
+      }
     },
-    "safety_notice": { "type": "string", "minLength": 1, "maxLength": 600 },
-    "lang": { "enum": ["en", "hi", "mr", "te"] }
+    "safety_notice": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 600
+    },
+    "lang": {
+      "enum": [
+        "en",
+        "hi",
+        "mr",
+        "te"
+      ]
+    },
+    "details": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "symptoms",
+        "causes",
+        "sources"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600
+        },
+        "symptoms": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        },
+        "causes": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        },
+        "help": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "sources": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "url"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "url": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

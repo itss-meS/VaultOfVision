@@ -14,29 +14,41 @@ export interface FakePortOptions {
   detection?: RawDetection | null;
   replies?: Array<string | Error>;
   chunks?: string;
+  cards?: string;
   assets?: Partial<Record<keyof typeof ASSETS, Uint8Array | null>>;
 }
 
 export class FakePorts implements NativePorts {
   readonly prompts: ChatMessage[][] = [];
   readonly spoken: Array<[string, Lang]> = [];
+  warmed = 0;
   private idx = 0;
 
   constructor(private readonly opts: FakePortOptions = {}) {}
 
   async detect(): Promise<RawDetection | null> {
     return this.opts.detection === undefined
-      ? { class_id: 1, label: "Tomato Early Blight", confidence: 0.9 }
+      ? { class_id: 1, label: "Early Blight", confidence: 0.9 }
       : this.opts.detection;
   }
 
-  async generate(messages: ChatMessage[]): Promise<string> {
+  async warmUp(): Promise<void> {
+    this.warmed += 1;
+  }
+
+  async generate(
+    messages: ChatMessage[],
+    _maxTokens?: number,
+    onToken?: (piece: string) => void,
+  ): Promise<string> {
     this.prompts.push(messages);
     const replies = this.opts.replies ?? [];
     const r = replies[Math.min(this.idx, replies.length - 1)];
     this.idx += 1;
     if (r === undefined) throw new Error("no reply");
     if (r instanceof Error) throw r;
+    if (onToken !== undefined)
+      for (const piece of r.match(/\S+\s*/g) ?? []) onToken(piece);
     return r;
   }
 
@@ -58,6 +70,7 @@ export class FakePorts implements NativePorts {
       dosage: signed.dosage,
       dosageSig: signed.dosage_sig,
       chunks: this.opts.chunks ?? null,
+      cards: this.opts.cards ?? null,
     };
     const v = table[key];
     return v === null ? null : enc.encode(v);

@@ -3,12 +3,13 @@ import { useTranslation } from "react-i18next";
 import { AdviceView } from "../components/AdviceView";
 import { ArrowLeftIcon, ChatIcon, SendIcon } from "../components/Icons";
 import { ErrorBanner } from "../components/Page";
-import type { AdvisoryResponse, ChatTurn } from "../contracts/types";
+import type { AdvisoryResponse, ChatTurn, Lang } from "../contracts/types";
+import { FOOTER } from "../engine/core/chat";
 
 export interface AdviceProps {
   response: AdvisoryResponse;
   speakError: string | null;
-  onSpeak: (text: string) => Promise<void>;
+  onSpeak: (text: string, lang?: Lang) => Promise<void>;
   onBack: () => void;
   onRestart: () => void;
 }
@@ -146,12 +147,23 @@ export function Chat({
                     : "rounded-bl-lg border border-line bg-panel text-fg"
                 }`}
               >
-                {m.content}
+                {m.role === "assistant" && m.content.includes(FOOTER) ? (
+                  <>
+                    {m.content.slice(0, m.content.indexOf(FOOTER))}
+                    <span className="mt-3 block text-sm text-muted">
+                      {m.content.slice(
+                        m.content.indexOf(FOOTER) + FOOTER.length,
+                      )}
+                    </span>
+                  </>
+                ) : (
+                  m.content
+                )}
               </p>
             </div>
           ))
         )}
-        {busy ? (
+        {busy && messages[messages.length - 1]?.role !== "assistant" ? (
           <div className="flex flex-col items-start gap-1">
             <span className="px-1 text-xs font-semibold text-muted">
               {t("chat.assistant")}

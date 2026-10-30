@@ -1,0 +1,1968 @@
+{
+ "cases": [
+  {
+   "raw": "Cassava Bacterial Blight (CBB)",
+   "kind": "disease",
+   "crop": "Cassava",
+   "name": "Bacterial Blight",
+   "label": "Cassava Bacterial Blight",
+   "key": "cassava-bacterial-blight"
+  },
+  {
+   "raw": "Cassava Brown Streak Disease (CBSD)",
+   "kind": "disease",
+   "crop": "Cassava",
+   "name": "Brown Streak Disease",
+   "label": "Cassava Brown Streak Disease",
+   "key": "cassava-brown-streak-disease"
+  },
+  {
+   "raw": "Cassava Green Mottle (CGM)",
+   "kind": "disease",
+   "crop": "Cassava",
+   "name": "Green Mottle",
+   "label": "Cassava Green Mottle",
+   "key": "cassava-green-mottle"
+  },
+  {
+   "raw": "Cassava Healthy",
+   "kind": "healthy",
+   "crop": "Cassava",
+   "name": "Healthy",
+   "label": "Cassava Healthy",
+   "key": "cassava-healthy"
+  },
+  {
+   "raw": "Cassava Mosaic Disease (CMD)",
+   "kind": "disease",
+   "crop": "Cassava",
+   "name": "Mosaic Disease",
+   "label": "Cassava Mosaic Disease",
+   "key": "cassava-mosaic-disease"
+  },
+  {
+   "raw": "Pepper bell Bacterial Spot",
+   "kind": "disease",
+   "crop": "Bell Pepper",
+   "name": "Bacterial Spot",
+   "label": "Bell Pepper Bacterial Spot",
+   "key": "bell-pepper-bacterial-spot"
+  },
+  {
+   "raw": "Pepper bell Healthy",
+   "kind": "healthy",
+   "crop": "Bell Pepper",
+   "name": "Healthy",
+   "label": "Bell Pepper Healthy",
+   "key": "bell-pepper-healthy"
+  },
+  {
+   "raw": "Pest Adristyrannus",
+   "kind": "pest",
+   "crop": null,
+   "name": "Adristyrannus",
+   "label": "Pest Adristyrannus",
+   "key": "pest-adristyrannus"
+  },
+  {
+   "raw": "Pest Aleurocanthus spiniferus",
+   "kind": "pest",
+   "crop": null,
+   "name": "Aleurocanthus spiniferus",
+   "label": "Pest Aleurocanthus spiniferus",
+   "key": "pest-aleurocanthus-spiniferus"
+  },
+  {
+   "raw": "Pest Ampelophaga",
+   "kind": "pest",
+   "crop": null,
+   "name": "Ampelophaga",
+   "label": "Pest Ampelophaga",
+   "key": "pest-ampelophaga"
+  },
+  {
+   "raw": "Pest Aphis citricola Vander Goot",
+   "kind": "pest",
+   "crop": null,
+   "name": "Aphis citricola Vander Goot",
+   "label": "Pest Aphis citricola Vander Goot",
+   "key": "pest-aphis-citricola-vander-goot"
+  },
+  {
+   "raw": "Pest Apolygus lucorum",
+   "kind": "pest",
+   "crop": null,
+   "name": "Apolygus lucorum",
+   "label": "Pest Apolygus lucorum",
+   "key": "pest-apolygus-lucorum"
+  },
+  {
+   "raw": "Pest Bactrocera tsuneonis",
+   "kind": "pest",
+   "crop": null,
+   "name": "Bactrocera tsuneonis",
+   "label": "Pest Bactrocera tsuneonis",
+   "key": "pest-bactrocera-tsuneonis"
+  },
+  {
+   "raw": "Pest Beet spot flies",
+   "kind": "pest",
+   "crop": null,
+   "name": "Beet spot flies",
+   "label": "Pest Beet spot flies",
+   "key": "pest-beet-spot-flies"
+  },
+  {
+   "raw": "Pest Brevipoalpus lewisi McGregor",
+   "kind": "pest",
+   "crop": null,
+   "name": "Brevipoalpus lewisi McGregor",
+   "label": "Pest Brevipoalpus lewisi McGregor",
+   "key": "pest-brevipoalpus-lewisi-mcgregor"
+  },
+  {
+   "raw": "Pest Ceroplastes rubens",
+   "kind": "pest",
+   "crop": null,
+   "name": "Ceroplastes rubens",
+   "label": "Pest Ceroplastes rubens",
+   "key": "pest-ceroplastes-rubens"
+  },
+  {
+   "raw": "Pest Chlumetia transversa",
+   "kind": "pest",
+   "crop": null,
+   "name": "Chlumetia transversa",
+   "label": "Pest Chlumetia transversa",
+   "key": "pest-chlumetia-transversa"
+  },
+  {
+   "raw": "Pest Chrysomphalus aonidum",
+   "kind": "pest",
+   "crop": null,
+   "name": "Chrysomphalus aonidum",
+   "label": "Pest Chrysomphalus aonidum",
+   "key": "pest-chrysomphalus-aonidum"
+  },
+  {
+   "raw": "Pest Cicadella viridis",
+   "kind": "pest",
+   "crop": null,
+   "name": "Cicadella viridis",
+   "label": "Pest Cicadella viridis",
+   "key": "pest-cicadella-viridis"
+  },
+  {
+   "raw": "Pest Cicadellidae",
+   "kind": "pest",
+   "crop": null,
+   "name": "Cicadellidae",
+   "label": "Pest Cicadellidae",
+   "key": "pest-cicadellidae"
+  },
+  {
+   "raw": "Pest Colomerus vitis",
+   "kind": "pest",
+   "crop": null,
+   "name": "Colomerus vitis",
+   "label": "Pest Colomerus vitis",
+   "key": "pest-colomerus-vitis"
+  },
+  {
+   "raw": "Pest Dacus dorsalis(Hendel)",
+   "kind": "pest",
+   "crop": null,
+   "name": "Dacus dorsalis(Hendel)",
+   "label": "Pest Dacus dorsalis(Hendel)",
+   "key": "pest-dacus-dorsalis-hendel"
+  },
+  {
+   "raw": "Pest Dasineura sp",
+   "kind": "pest",
+   "crop": null,
+   "name": "Dasineura sp",
+   "label": "Pest Dasineura sp",
+   "key": "pest-dasineura-sp"
+  },
+  {
+   "raw": "Pest Deporaus marginatus Pascoe",
+   "kind": "pest",
+   "crop": null,
+   "name": "Deporaus marginatus Pascoe",
+   "label": "Pest Deporaus marginatus Pascoe",
+   "key": "pest-deporaus-marginatus-pascoe"
+  },
+  {
+   "raw": "Pest Erythroneura apicalis",
+   "kind": "pest",
+   "crop": null,
+   "name": "Erythroneura apicalis",
+   "label": "Pest Erythroneura apicalis",
+   "key": "pest-erythroneura-apicalis"
+  },
+  {
+   "raw": "Pest Icerya purchasi Maskell",
+   "kind": "pest",
+   "crop": null,
+   "name": "Icerya purchasi Maskell",
+   "label": "Pest Icerya purchasi Maskell",
+   "key": "pest-icerya-purchasi-maskell"
+  },
+  {
+   "raw": "Pest Lawana imitata Melichar",
+   "kind": "pest",
+   "crop": null,
+   "name": "Lawana imitata Melichar",
+   "label": "Pest Lawana imitata Melichar",
+   "key": "pest-lawana-imitata-melichar"
+  },
+  {
+   "raw": "Pest Limacodidae",
+   "kind": "pest",
+   "crop": null,
+   "name": "Limacodidae",
+   "label": "Pest Limacodidae",
+   "key": "pest-limacodidae"
+  },
+  {
+   "raw": "Pest Locustoidea",
+   "kind": "pest",
+   "crop": null,
+   "name": "Locustoidea",
+   "label": "Pest Locustoidea",
+   "key": "pest-locustoidea"
+  },
+  {
+   "raw": "Pest Lycorma delicatula",
+   "kind": "pest",
+   "crop": null,
+   "name": "Lycorma delicatula",
+   "label": "Pest Lycorma delicatula",
+   "key": "pest-lycorma-delicatula"
+  },
+  {
+   "raw": "Pest Mango flat beak leafhopper",
+   "kind": "pest",
+   "crop": null,
+   "name": "Mango flat beak leafhopper",
+   "label": "Pest Mango flat beak leafhopper",
+   "key": "pest-mango-flat-beak-leafhopper"
+  },
+  {
+   "raw": "Pest Miridae",
+   "kind": "pest",
+   "crop": null,
+   "name": "Miridae",
+   "label": "Pest Miridae",
+   "key": "pest-miridae"
+  },
+  {
+   "raw": "Pest Nipaecoccus vastalor",
+   "kind": "pest",
+   "crop": null,
+   "name": "Nipaecoccus vastalor",
+   "label": "Pest Nipaecoccus vastalor",
+   "key": "pest-nipaecoccus-vastalor"
+  },
+  {
+   "raw": "Pest Panonchus citri McGregor",
+   "kind": "pest",
+   "crop": null,
+   "name": "Panonchus citri McGregor",
+   "label": "Pest Panonchus citri McGregor",
+   "key": "pest-panonchus-citri-mcgregor"
+  },
+  {
+   "raw": "Pest Papilio xuthus",
+   "kind": "pest",
+   "crop": null,
+   "name": "Papilio xuthus",
+   "label": "Pest Papilio xuthus",
+   "key": "pest-papilio-xuthus"
+  },
+  {
+   "raw": "Pest Parlatoria zizyphus Lucus",
+   "kind": "pest",
+   "crop": null,
+   "name": "Parlatoria zizyphus Lucus",
+   "label": "Pest Parlatoria zizyphus Lucus",
+   "key": "pest-parlatoria-zizyphus-lucus"
+  },
+  {
+   "raw": "Pest Phyllocnistis citrella Stainton",
+   "kind": "pest",
+   "crop": null,
+   "name": "Phyllocnistis citrella Stainton",
+   "label": "Pest Phyllocnistis citrella Stainton",
+   "key": "pest-phyllocnistis-citrella-stainton"
+  },
+  {
+   "raw": "Pest Phyllocoptes oleiverus ashmead",
+   "kind": "pest",
+   "crop": null,
+   "name": "Phyllocoptes oleiverus ashmead",
+   "label": "Pest Phyllocoptes oleiverus ashmead",
+   "key": "pest-phyllocoptes-oleiverus-ashmead"
+  },
+  {
+   "raw": "Pest Pieris canidia",
+   "kind": "pest",
+   "crop": null,
+   "name": "Pieris canidia",
+   "label": "Pest Pieris canidia",
+   "key": "pest-pieris-canidia"
+  },
+  {
+   "raw": "Pest Polyphagotars onemus latus",
+   "kind": "pest",
+   "crop": null,
+   "name": "Polyphagotars onemus latus",
+   "label": "Pest Polyphagotars onemus latus",
+   "key": "pest-polyphagotars-onemus-latus"
+  },
+  {
+   "raw": "Pest Potosiabre vitarsis",
+   "kind": "pest",
+   "crop": null,
+   "name": "Potosiabre vitarsis",
+   "label": "Pest Potosiabre vitarsis",
+   "key": "pest-potosiabre-vitarsis"
+  },
+  {
+   "raw": "Pest Prodenia litura",
+   "kind": "pest",
+   "crop": null,
+   "name": "Prodenia litura",
+   "label": "Pest Prodenia litura",
+   "key": "pest-prodenia-litura"
+  },
+  {
+   "raw": "Pest Pseudococcus comstocki Kuwana",
+   "kind": "pest",
+   "crop": null,
+   "name": "Pseudococcus comstocki Kuwana",
+   "label": "Pest Pseudococcus comstocki Kuwana",
+   "key": "pest-pseudococcus-comstocki-kuwana"
+  },
+  {
+   "raw": "Pest Rhytidodera bowrinii white",
+   "kind": "pest",
+   "crop": null,
+   "name": "Rhytidodera bowrinii white",
+   "label": "Pest Rhytidodera bowrinii white",
+   "key": "pest-rhytidodera-bowrinii-white"
+  },
+  {
+   "raw": "Pest Rice Stemfly",
+   "kind": "pest",
+   "crop": null,
+   "name": "Rice Stemfly",
+   "label": "Pest Rice Stemfly",
+   "key": "pest-rice-stemfly"
+  },
+  {
+   "raw": "Pest Salurnis marginella Guerr",
+   "kind": "pest",
+   "crop": null,
+   "name": "Salurnis marginella Guerr",
+   "label": "Pest Salurnis marginella Guerr",
+   "key": "pest-salurnis-marginella-guerr"
+  },
+  {
+   "raw": "Pest Scirtothrips dorsalis Hood",
+   "kind": "pest",
+   "crop": null,
+   "name": "Scirtothrips dorsalis Hood",
+   "label": "Pest Scirtothrips dorsalis Hood",
+   "key": "pest-scirtothrips-dorsalis-hood"
+  },
+  {
+   "raw": "Pest Sternochetus frigidus",
+   "kind": "pest",
+   "crop": null,
+   "name": "Sternochetus frigidus",
+   "label": "Pest Sternochetus frigidus",
+   "key": "pest-sternochetus-frigidus"
+  },
+  {
+   "raw": "Pest Tetradacus c Bactrocera minax",
+   "kind": "pest",
+   "crop": null,
+   "name": "Tetradacus c Bactrocera minax",
+   "label": "Pest Tetradacus c Bactrocera minax",
+   "key": "pest-tetradacus-c-bactrocera-minax"
+  },
+  {
+   "raw": "Pest Thrips",
+   "kind": "pest",
+   "crop": null,
+   "name": "Thrips",
+   "label": "Pest Thrips",
+   "key": "pest-thrips"
+  },
+  {
+   "raw": "Pest Toxoptera aurantii",
+   "kind": "pest",
+   "crop": null,
+   "name": "Toxoptera aurantii",
+   "label": "Pest Toxoptera aurantii",
+   "key": "pest-toxoptera-aurantii"
+  },
+  {
+   "raw": "Pest Toxoptera citricidus",
+   "kind": "pest",
+   "crop": null,
+   "name": "Toxoptera citricidus",
+   "label": "Pest Toxoptera citricidus",
+   "key": "pest-toxoptera-citricidus"
+  },
+  {
+   "raw": "Pest Trialeurodes vaporariorum",
+   "kind": "pest",
+   "crop": null,
+   "name": "Trialeurodes vaporariorum",
+   "label": "Pest Trialeurodes vaporariorum",
+   "key": "pest-trialeurodes-vaporariorum"
+  },
+  {
+   "raw": "Pest Unaspis yanonensis",
+   "kind": "pest",
+   "crop": null,
+   "name": "Unaspis yanonensis",
+   "label": "Pest Unaspis yanonensis",
+   "key": "pest-unaspis-yanonensis"
+  },
+  {
+   "raw": "Pest Viteus vitifoliae",
+   "kind": "pest",
+   "crop": null,
+   "name": "Viteus vitifoliae",
+   "label": "Pest Viteus vitifoliae",
+   "key": "pest-viteus-vitifoliae"
+  },
+  {
+   "raw": "Pest Xylotrechus",
+   "kind": "pest",
+   "crop": null,
+   "name": "Xylotrechus",
+   "label": "Pest Xylotrechus",
+   "key": "pest-xylotrechus"
+  },
+  {
+   "raw": "Pest alfalfa plant bug",
+   "kind": "pest",
+   "crop": null,
+   "name": "alfalfa plant bug",
+   "label": "Pest alfalfa plant bug",
+   "key": "pest-alfalfa-plant-bug"
+  },
+  {
+   "raw": "Pest alfalfa seed chalcid",
+   "kind": "pest",
+   "crop": null,
+   "name": "alfalfa seed chalcid",
+   "label": "Pest alfalfa seed chalcid",
+   "key": "pest-alfalfa-seed-chalcid"
+  },
+  {
+   "raw": "Pest alfalfa weevil",
+   "kind": "pest",
+   "crop": null,
+   "name": "alfalfa weevil",
+   "label": "Pest alfalfa weevil",
+   "key": "pest-alfalfa-weevil"
+  },
+  {
+   "raw": "Pest aphids",
+   "kind": "pest",
+   "crop": null,
+   "name": "aphids",
+   "label": "Pest aphids",
+   "key": "pest-aphids"
+  },
+  {
+   "raw": "Pest army worm",
+   "kind": "pest",
+   "crop": null,
+   "name": "army worm",
+   "label": "Pest army worm",
+   "key": "pest-army-worm"
+  },
+  {
+   "raw": "Pest asiatic rice borer",
+   "kind": "pest",
+   "crop": null,
+   "name": "asiatic rice borer",
+   "label": "Pest asiatic rice borer",
+   "key": "pest-asiatic-rice-borer"
+  },
+  {
+   "raw": "Pest beet army worm",
+   "kind": "pest",
+   "crop": null,
+   "name": "beet army worm",
+   "label": "Pest beet army worm",
+   "key": "pest-beet-army-worm"
+  },
+  {
+   "raw": "Pest beet fly",
+   "kind": "pest",
+   "crop": null,
+   "name": "beet fly",
+   "label": "Pest beet fly",
+   "key": "pest-beet-fly"
+  },
+  {
+   "raw": "Pest beet weevil",
+   "kind": "pest",
+   "crop": null,
+   "name": "beet weevil",
+   "label": "Pest beet weevil",
+   "key": "pest-beet-weevil"
+  },
+  {
+   "raw": "Pest bird cherry-oataphid",
+   "kind": "pest",
+   "crop": null,
+   "name": "bird cherry-oataphid",
+   "label": "Pest bird cherry-oataphid",
+   "key": "pest-bird-cherry-oataphid"
+  },
+  {
+   "raw": "Pest black cutworm",
+   "kind": "pest",
+   "crop": null,
+   "name": "black cutworm",
+   "label": "Pest black cutworm",
+   "key": "pest-black-cutworm"
+  },
+  {
+   "raw": "Pest blister beetle",
+   "kind": "pest",
+   "crop": null,
+   "name": "blister beetle",
+   "label": "Pest blister beetle",
+   "key": "pest-blister-beetle"
+  },
+  {
+   "raw": "Pest brown plant hopper",
+   "kind": "pest",
+   "crop": null,
+   "name": "brown plant hopper",
+   "label": "Pest brown plant hopper",
+   "key": "pest-brown-plant-hopper"
+  },
+  {
+   "raw": "Pest cabbage army worm",
+   "kind": "pest",
+   "crop": null,
+   "name": "cabbage army worm",
+   "label": "Pest cabbage army worm",
+   "key": "pest-cabbage-army-worm"
+  },
+  {
+   "raw": "Pest cerodonta denticornis",
+   "kind": "pest",
+   "crop": null,
+   "name": "cerodonta denticornis",
+   "label": "Pest cerodonta denticornis",
+   "key": "pest-cerodonta-denticornis"
+  },
+  {
+   "raw": "Pest corn borer",
+   "kind": "pest",
+   "crop": null,
+   "name": "corn borer",
+   "label": "Pest corn borer",
+   "key": "pest-corn-borer"
+  },
+  {
+   "raw": "Pest english grain aphid",
+   "kind": "pest",
+   "crop": null,
+   "name": "english grain aphid",
+   "label": "Pest english grain aphid",
+   "key": "pest-english-grain-aphid"
+  },
+  {
+   "raw": "Pest flax budworm",
+   "kind": "pest",
+   "crop": null,
+   "name": "flax budworm",
+   "label": "Pest flax budworm",
+   "key": "pest-flax-budworm"
+  },
+  {
+   "raw": "Pest flea beetle",
+   "kind": "pest",
+   "crop": null,
+   "name": "flea beetle",
+   "label": "Pest flea beetle",
+   "key": "pest-flea-beetle"
+  },
+  {
+   "raw": "Pest grain spreader thrips",
+   "kind": "pest",
+   "crop": null,
+   "name": "grain spreader thrips",
+   "label": "Pest grain spreader thrips",
+   "key": "pest-grain-spreader-thrips"
+  },
+  {
+   "raw": "Pest green bug",
+   "kind": "pest",
+   "crop": null,
+   "name": "green bug",
+   "label": "Pest green bug",
+   "key": "pest-green-bug"
+  },
+  {
+   "raw": "Pest grub",
+   "kind": "pest",
+   "crop": null,
+   "name": "grub",
+   "label": "Pest grub",
+   "key": "pest-grub"
+  },
+  {
+   "raw": "Pest large cutworm",
+   "kind": "pest",
+   "crop": null,
+   "name": "large cutworm",
+   "label": "Pest large cutworm",
+   "key": "pest-large-cutworm"
+  },
+  {
+   "raw": "Pest legume blister beetle",
+   "kind": "pest",
+   "crop": null,
+   "name": "legume blister beetle",
+   "label": "Pest legume blister beetle",
+   "key": "pest-legume-blister-beetle"
+  },
+  {
+   "raw": "Pest longlegged spider mite",
+   "kind": "pest",
+   "crop": null,
+   "name": "longlegged spider mite",
+   "label": "Pest longlegged spider mite",
+   "key": "pest-longlegged-spider-mite"
+  },
+  {
+   "raw": "Pest lytta polita",
+   "kind": "pest",
+   "crop": null,
+   "name": "lytta polita",
+   "label": "Pest lytta polita",
+   "key": "pest-lytta-polita"
+  },
+  {
+   "raw": "Pest meadow moth",
+   "kind": "pest",
+   "crop": null,
+   "name": "meadow moth",
+   "label": "Pest meadow moth",
+   "key": "pest-meadow-moth"
+  },
+  {
+   "raw": "Pest mole cricket",
+   "kind": "pest",
+   "crop": null,
+   "name": "mole cricket",
+   "label": "Pest mole cricket",
+   "key": "pest-mole-cricket"
+  },
+  {
+   "raw": "Pest odontothrips loti",
+   "kind": "pest",
+   "crop": null,
+   "name": "odontothrips loti",
+   "label": "Pest odontothrips loti",
+   "key": "pest-odontothrips-loti"
+  },
+  {
+   "raw": "Pest oides decempunctata",
+   "kind": "pest",
+   "crop": null,
+   "name": "oides decempunctata",
+   "label": "Pest oides decempunctata",
+   "key": "pest-oides-decempunctata"
+  },
+  {
+   "raw": "Pest paddy stem maggot",
+   "kind": "pest",
+   "crop": null,
+   "name": "paddy stem maggot",
+   "label": "Pest paddy stem maggot",
+   "key": "pest-paddy-stem-maggot"
+  },
+  {
+   "raw": "Pest parathrene regalis",
+   "kind": "pest",
+   "crop": null,
+   "name": "parathrene regalis",
+   "label": "Pest parathrene regalis",
+   "key": "pest-parathrene-regalis"
+  },
+  {
+   "raw": "Pest peach borer",
+   "kind": "pest",
+   "crop": null,
+   "name": "peach borer",
+   "label": "Pest peach borer",
+   "key": "pest-peach-borer"
+  },
+  {
+   "raw": "Pest penthaleus major",
+   "kind": "pest",
+   "crop": null,
+   "name": "penthaleus major",
+   "label": "Pest penthaleus major",
+   "key": "pest-penthaleus-major"
+  },
+  {
+   "raw": "Pest red spider",
+   "kind": "pest",
+   "crop": null,
+   "name": "red spider",
+   "label": "Pest red spider",
+   "key": "pest-red-spider"
+  },
+  {
+   "raw": "Pest rice gall midge",
+   "kind": "pest",
+   "crop": null,
+   "name": "rice gall midge",
+   "label": "Pest rice gall midge",
+   "key": "pest-rice-gall-midge"
+  },
+  {
+   "raw": "Pest rice leaf caterpillar",
+   "kind": "pest",
+   "crop": null,
+   "name": "rice leaf caterpillar",
+   "label": "Pest rice leaf caterpillar",
+   "key": "pest-rice-leaf-caterpillar"
+  },
+  {
+   "raw": "Pest rice leaf roller",
+   "kind": "pest",
+   "crop": null,
+   "name": "rice leaf roller",
+   "label": "Pest rice leaf roller",
+   "key": "pest-rice-leaf-roller"
+  },
+  {
+   "raw": "Pest rice leafhopper",
+   "kind": "pest",
+   "crop": null,
+   "name": "rice leafhopper",
+   "label": "Pest rice leafhopper",
+   "key": "pest-rice-leafhopper"
+  },
+  {
+   "raw": "Pest rice shell pest",
+   "kind": "pest",
+   "crop": null,
+   "name": "rice shell pest",
+   "label": "Pest rice shell pest",
+   "key": "pest-rice-shell-pest"
+  },
+  {
+   "raw": "Pest rice water weevil",
+   "kind": "pest",
+   "crop": null,
+   "name": "rice water weevil",
+   "label": "Pest rice water weevil",
+   "key": "pest-rice-water-weevil"
+  },
+  {
+   "raw": "Pest sericaorient alismots chulsky",
+   "kind": "pest",
+   "crop": null,
+   "name": "sericaorient alismots chulsky",
+   "label": "Pest sericaorient alismots chulsky",
+   "key": "pest-sericaorient-alismots-chulsky"
+  },
+  {
+   "raw": "Pest small brown plant hopper",
+   "kind": "pest",
+   "crop": null,
+   "name": "small brown plant hopper",
+   "label": "Pest small brown plant hopper",
+   "key": "pest-small-brown-plant-hopper"
+  },
+  {
+   "raw": "Pest tarnished plant bug",
+   "kind": "pest",
+   "crop": null,
+   "name": "tarnished plant bug",
+   "label": "Pest tarnished plant bug",
+   "key": "pest-tarnished-plant-bug"
+  },
+  {
+   "raw": "Pest therioaphis maculata Buckton",
+   "kind": "pest",
+   "crop": null,
+   "name": "therioaphis maculata Buckton",
+   "label": "Pest therioaphis maculata Buckton",
+   "key": "pest-therioaphis-maculata-buckton"
+  },
+  {
+   "raw": "Pest wheat blossom midge",
+   "kind": "pest",
+   "crop": null,
+   "name": "wheat blossom midge",
+   "label": "Pest wheat blossom midge",
+   "key": "pest-wheat-blossom-midge"
+  },
+  {
+   "raw": "Pest wheat phloeothrips",
+   "kind": "pest",
+   "crop": null,
+   "name": "wheat phloeothrips",
+   "label": "Pest wheat phloeothrips",
+   "key": "pest-wheat-phloeothrips"
+  },
+  {
+   "raw": "Pest wheat sawfly",
+   "kind": "pest",
+   "crop": null,
+   "name": "wheat sawfly",
+   "label": "Pest wheat sawfly",
+   "key": "pest-wheat-sawfly"
+  },
+  {
+   "raw": "Pest white backed plant hopper",
+   "kind": "pest",
+   "crop": null,
+   "name": "white backed plant hopper",
+   "label": "Pest white backed plant hopper",
+   "key": "pest-white-backed-plant-hopper"
+  },
+  {
+   "raw": "Pest white margined moth",
+   "kind": "pest",
+   "crop": null,
+   "name": "white margined moth",
+   "label": "Pest white margined moth",
+   "key": "pest-white-margined-moth"
+  },
+  {
+   "raw": "Pest wireworm",
+   "kind": "pest",
+   "crop": null,
+   "name": "wireworm",
+   "label": "Pest wireworm",
+   "key": "pest-wireworm"
+  },
+  {
+   "raw": "Pest yellow cutworm",
+   "kind": "pest",
+   "crop": null,
+   "name": "yellow cutworm",
+   "label": "Pest yellow cutworm",
+   "key": "pest-yellow-cutworm"
+  },
+  {
+   "raw": "Pest yellow rice borer",
+   "kind": "pest",
+   "crop": null,
+   "name": "yellow rice borer",
+   "label": "Pest yellow rice borer",
+   "key": "pest-yellow-rice-borer"
+  },
+  {
+   "raw": "Potato Early Blight",
+   "kind": "disease",
+   "crop": "Potato",
+   "name": "Early Blight",
+   "label": "Potato Early Blight",
+   "key": "potato-early-blight"
+  },
+  {
+   "raw": "Potato Healthy",
+   "kind": "healthy",
+   "crop": "Potato",
+   "name": "Healthy",
+   "label": "Potato Healthy",
+   "key": "potato-healthy"
+  },
+  {
+   "raw": "Potato Late Blight",
+   "kind": "disease",
+   "crop": "Potato",
+   "name": "Late Blight",
+   "label": "Potato Late Blight",
+   "key": "potato-late-blight"
+  },
+  {
+   "raw": "Tomato Bacterial Spot",
+   "kind": "disease",
+   "crop": "Tomato",
+   "name": "Bacterial Spot",
+   "label": "Tomato Bacterial Spot",
+   "key": "tomato-bacterial-spot"
+  },
+  {
+   "raw": "Tomato Early Blight",
+   "kind": "disease",
+   "crop": "Tomato",
+   "name": "Early Blight",
+   "label": "Tomato Early Blight",
+   "key": "tomato-early-blight"
+  },
+  {
+   "raw": "Tomato Healthy",
+   "kind": "healthy",
+   "crop": "Tomato",
+   "name": "Healthy",
+   "label": "Tomato Healthy",
+   "key": "tomato-healthy"
+  },
+  {
+   "raw": "Tomato Late Blight",
+   "kind": "disease",
+   "crop": "Tomato",
+   "name": "Late Blight",
+   "label": "Tomato Late Blight",
+   "key": "tomato-late-blight"
+  },
+  {
+   "raw": "Tomato Leaf Mold",
+   "kind": "disease",
+   "crop": "Tomato",
+   "name": "Leaf Mold",
+   "label": "Tomato Leaf Mold",
+   "key": "tomato-leaf-mold"
+  },
+  {
+   "raw": "Tomato Mosaic Virus",
+   "kind": "disease",
+   "crop": "Tomato",
+   "name": "Mosaic Virus",
+   "label": "Tomato Mosaic Virus",
+   "key": "tomato-mosaic-virus"
+  },
+  {
+   "raw": "Tomato Septoria Leaf Spot",
+   "kind": "disease",
+   "crop": "Tomato",
+   "name": "Septoria Leaf Spot",
+   "label": "Tomato Septoria Leaf Spot",
+   "key": "tomato-septoria-leaf-spot"
+  },
+  {
+   "raw": "Tomato Spider Mites",
+   "kind": "disease",
+   "crop": "Tomato",
+   "name": "Spider Mites",
+   "label": "Tomato Spider Mites",
+   "key": "tomato-spider-mites"
+  },
+  {
+   "raw": "Tomato Target Spot",
+   "kind": "disease",
+   "crop": "Tomato",
+   "name": "Target Spot",
+   "label": "Tomato Target Spot",
+   "key": "tomato-target-spot"
+  },
+  {
+   "raw": "Tomato Yellow Leaf Curl Virus",
+   "kind": "disease",
+   "crop": "Tomato",
+   "name": "Yellow Leaf Curl Virus",
+   "label": "Tomato Yellow Leaf Curl Virus",
+   "key": "tomato-yellow-leaf-curl-virus"
+  },
+  {
+   "raw": "apple black rot",
+   "kind": "disease",
+   "crop": "Apple",
+   "name": "Black Rot",
+   "label": "Apple Black Rot",
+   "key": "apple-black-rot"
+  },
+  {
+   "raw": "apple mosaic virus",
+   "kind": "disease",
+   "crop": "Apple",
+   "name": "Mosaic Virus",
+   "label": "Apple Mosaic Virus",
+   "key": "apple-mosaic-virus"
+  },
+  {
+   "raw": "apple rust",
+   "kind": "disease",
+   "crop": "Apple",
+   "name": "Rust",
+   "label": "Apple Rust",
+   "key": "apple-rust"
+  },
+  {
+   "raw": "apple scab",
+   "kind": "disease",
+   "crop": "Apple",
+   "name": "Scab",
+   "label": "Apple Scab",
+   "key": "apple-scab"
+  },
+  {
+   "raw": "banana anthracnose",
+   "kind": "disease",
+   "crop": "Banana",
+   "name": "Anthracnose",
+   "label": "Banana Anthracnose",
+   "key": "banana-anthracnose"
+  },
+  {
+   "raw": "banana black leaf streak",
+   "kind": "disease",
+   "crop": "Banana",
+   "name": "Black Leaf Streak",
+   "label": "Banana Black Leaf Streak",
+   "key": "banana-black-leaf-streak"
+  },
+  {
+   "raw": "banana bunchy top",
+   "kind": "disease",
+   "crop": "Banana",
+   "name": "Bunchy Top",
+   "label": "Banana Bunchy Top",
+   "key": "banana-bunchy-top"
+  },
+  {
+   "raw": "banana cigar end rot",
+   "kind": "disease",
+   "crop": "Banana",
+   "name": "Cigar End Rot",
+   "label": "Banana Cigar End Rot",
+   "key": "banana-cigar-end-rot"
+  },
+  {
+   "raw": "banana cordana leaf spot",
+   "kind": "disease",
+   "crop": "Banana",
+   "name": "Cordana Leaf Spot",
+   "label": "Banana Cordana Leaf Spot",
+   "key": "banana-cordana-leaf-spot"
+  },
+  {
+   "raw": "banana panama disease",
+   "kind": "disease",
+   "crop": "Banana",
+   "name": "Panama Disease",
+   "label": "Banana Panama Disease",
+   "key": "banana-panama-disease"
+  },
+  {
+   "raw": "basil downy mildew",
+   "kind": "disease",
+   "crop": "Basil",
+   "name": "Downy Mildew",
+   "label": "Basil Downy Mildew",
+   "key": "basil-downy-mildew"
+  },
+  {
+   "raw": "bean halo blight",
+   "kind": "disease",
+   "crop": "Bean",
+   "name": "Halo Blight",
+   "label": "Bean Halo Blight",
+   "key": "bean-halo-blight"
+  },
+  {
+   "raw": "bean mosaic virus",
+   "kind": "disease",
+   "crop": "Bean",
+   "name": "Mosaic Virus",
+   "label": "Bean Mosaic Virus",
+   "key": "bean-mosaic-virus"
+  },
+  {
+   "raw": "bean rust",
+   "kind": "disease",
+   "crop": "Bean",
+   "name": "Rust",
+   "label": "Bean Rust",
+   "key": "bean-rust"
+  },
+  {
+   "raw": "bell pepper bacterial spot",
+   "kind": "disease",
+   "crop": "Bell Pepper",
+   "name": "Bacterial Spot",
+   "label": "Bell Pepper Bacterial Spot",
+   "key": "bell-pepper-bacterial-spot"
+  },
+  {
+   "raw": "bell pepper blossom end rot",
+   "kind": "disease",
+   "crop": "Bell Pepper",
+   "name": "Blossom End Rot",
+   "label": "Bell Pepper Blossom End Rot",
+   "key": "bell-pepper-blossom-end-rot"
+  },
+  {
+   "raw": "bell pepper frogeye leaf spot",
+   "kind": "disease",
+   "crop": "Bell Pepper",
+   "name": "Frogeye Leaf Spot",
+   "label": "Bell Pepper Frogeye Leaf Spot",
+   "key": "bell-pepper-frogeye-leaf-spot"
+  },
+  {
+   "raw": "bell pepper powdery mildew",
+   "kind": "disease",
+   "crop": "Bell Pepper",
+   "name": "Powdery Mildew",
+   "label": "Bell Pepper Powdery Mildew",
+   "key": "bell-pepper-powdery-mildew"
+  },
+  {
+   "raw": "blueberry anthracnose",
+   "kind": "disease",
+   "crop": "Blueberry",
+   "name": "Anthracnose",
+   "label": "Blueberry Anthracnose",
+   "key": "blueberry-anthracnose"
+  },
+  {
+   "raw": "blueberry botrytis blight",
+   "kind": "disease",
+   "crop": "Blueberry",
+   "name": "Botrytis Blight",
+   "label": "Blueberry Botrytis Blight",
+   "key": "blueberry-botrytis-blight"
+  },
+  {
+   "raw": "blueberry mummy berry",
+   "kind": "disease",
+   "crop": "Blueberry",
+   "name": "Mummy Berry",
+   "label": "Blueberry Mummy Berry",
+   "key": "blueberry-mummy-berry"
+  },
+  {
+   "raw": "blueberry rust",
+   "kind": "disease",
+   "crop": "Blueberry",
+   "name": "Rust",
+   "label": "Blueberry Rust",
+   "key": "blueberry-rust"
+  },
+  {
+   "raw": "blueberry scorch",
+   "kind": "disease",
+   "crop": "Blueberry",
+   "name": "Scorch",
+   "label": "Blueberry Scorch",
+   "key": "blueberry-scorch"
+  },
+  {
+   "raw": "broccoli alternaria leaf spot",
+   "kind": "disease",
+   "crop": "Broccoli",
+   "name": "Alternaria Leaf Spot",
+   "label": "Broccoli Alternaria Leaf Spot",
+   "key": "broccoli-alternaria-leaf-spot"
+  },
+  {
+   "raw": "broccoli downy mildew",
+   "kind": "disease",
+   "crop": "Broccoli",
+   "name": "Downy Mildew",
+   "label": "Broccoli Downy Mildew",
+   "key": "broccoli-downy-mildew"
+  },
+  {
+   "raw": "broccoli ring spot",
+   "kind": "disease",
+   "crop": "Broccoli",
+   "name": "Ring Spot",
+   "label": "Broccoli Ring Spot",
+   "key": "broccoli-ring-spot"
+  },
+  {
+   "raw": "cabbage alternaria leaf spot",
+   "kind": "disease",
+   "crop": "Cabbage",
+   "name": "Alternaria Leaf Spot",
+   "label": "Cabbage Alternaria Leaf Spot",
+   "key": "cabbage-alternaria-leaf-spot"
+  },
+  {
+   "raw": "cabbage black rot",
+   "kind": "disease",
+   "crop": "Cabbage",
+   "name": "Black Rot",
+   "label": "Cabbage Black Rot",
+   "key": "cabbage-black-rot"
+  },
+  {
+   "raw": "cabbage downy mildew",
+   "kind": "disease",
+   "crop": "Cabbage",
+   "name": "Downy Mildew",
+   "label": "Cabbage Downy Mildew",
+   "key": "cabbage-downy-mildew"
+  },
+  {
+   "raw": "carrot alternaria leaf blight",
+   "kind": "disease",
+   "crop": "Carrot",
+   "name": "Alternaria Leaf Blight",
+   "label": "Carrot Alternaria Leaf Blight",
+   "key": "carrot-alternaria-leaf-blight"
+  },
+  {
+   "raw": "carrot cavity spot",
+   "kind": "disease",
+   "crop": "Carrot",
+   "name": "Cavity Spot",
+   "label": "Carrot Cavity Spot",
+   "key": "carrot-cavity-spot"
+  },
+  {
+   "raw": "carrot cercospora leaf blight",
+   "kind": "disease",
+   "crop": "Carrot",
+   "name": "Cercospora Leaf Blight",
+   "label": "Carrot Cercospora Leaf Blight",
+   "key": "carrot-cercospora-leaf-blight"
+  },
+  {
+   "raw": "cauliflower alternaria leaf spot",
+   "kind": "disease",
+   "crop": "Cauliflower",
+   "name": "Alternaria Leaf Spot",
+   "label": "Cauliflower Alternaria Leaf Spot",
+   "key": "cauliflower-alternaria-leaf-spot"
+  },
+  {
+   "raw": "cauliflower bacterial soft rot",
+   "kind": "disease",
+   "crop": "Cauliflower",
+   "name": "Bacterial Soft Rot",
+   "label": "Cauliflower Bacterial Soft Rot",
+   "key": "cauliflower-bacterial-soft-rot"
+  },
+  {
+   "raw": "celery anthracnose",
+   "kind": "disease",
+   "crop": "Celery",
+   "name": "Anthracnose",
+   "label": "Celery Anthracnose",
+   "key": "celery-anthracnose"
+  },
+  {
+   "raw": "celery early blight",
+   "kind": "disease",
+   "crop": "Celery",
+   "name": "Early Blight",
+   "label": "Celery Early Blight",
+   "key": "celery-early-blight"
+  },
+  {
+   "raw": "cherry leaf spot",
+   "kind": "disease",
+   "crop": "Cherry",
+   "name": "Leaf Spot",
+   "label": "Cherry Leaf Spot",
+   "key": "cherry-leaf-spot"
+  },
+  {
+   "raw": "cherry powdery mildew",
+   "kind": "disease",
+   "crop": "Cherry",
+   "name": "Powdery Mildew",
+   "label": "Cherry Powdery Mildew",
+   "key": "cherry-powdery-mildew"
+  },
+  {
+   "raw": "citrus canker",
+   "kind": "disease",
+   "crop": "Citrus",
+   "name": "Canker",
+   "label": "Citrus Canker",
+   "key": "citrus-canker"
+  },
+  {
+   "raw": "citrus greening disease",
+   "kind": "disease",
+   "crop": "Citrus",
+   "name": "Greening Disease",
+   "label": "Citrus Greening Disease",
+   "key": "citrus-greening-disease"
+  },
+  {
+   "raw": "coffee berry blotch",
+   "kind": "disease",
+   "crop": "Coffee",
+   "name": "Berry Blotch",
+   "label": "Coffee Berry Blotch",
+   "key": "coffee-berry-blotch"
+  },
+  {
+   "raw": "coffee black rot",
+   "kind": "disease",
+   "crop": "Coffee",
+   "name": "Black Rot",
+   "label": "Coffee Black Rot",
+   "key": "coffee-black-rot"
+  },
+  {
+   "raw": "coffee brown eye spot",
+   "kind": "disease",
+   "crop": "Coffee",
+   "name": "Brown Eye Spot",
+   "label": "Coffee Brown Eye Spot",
+   "key": "coffee-brown-eye-spot"
+  },
+  {
+   "raw": "coffee leaf rust",
+   "kind": "disease",
+   "crop": "Coffee",
+   "name": "Leaf Rust",
+   "label": "Coffee Leaf Rust",
+   "key": "coffee-leaf-rust"
+  },
+  {
+   "raw": "corn gray leaf spot",
+   "kind": "disease",
+   "crop": "Corn",
+   "name": "Gray Leaf Spot",
+   "label": "Corn Gray Leaf Spot",
+   "key": "corn-gray-leaf-spot"
+  },
+  {
+   "raw": "corn northern leaf blight",
+   "kind": "disease",
+   "crop": "Corn",
+   "name": "Northern Leaf Blight",
+   "label": "Corn Northern Leaf Blight",
+   "key": "corn-northern-leaf-blight"
+  },
+  {
+   "raw": "corn rust",
+   "kind": "disease",
+   "crop": "Corn",
+   "name": "Rust",
+   "label": "Corn Rust",
+   "key": "corn-rust"
+  },
+  {
+   "raw": "corn smut",
+   "kind": "disease",
+   "crop": "Corn",
+   "name": "Smut",
+   "label": "Corn Smut",
+   "key": "corn-smut"
+  },
+  {
+   "raw": "cucumber angular leaf spot",
+   "kind": "disease",
+   "crop": "Cucumber",
+   "name": "Angular Leaf Spot",
+   "label": "Cucumber Angular Leaf Spot",
+   "key": "cucumber-angular-leaf-spot"
+  },
+  {
+   "raw": "cucumber bacterial wilt",
+   "kind": "disease",
+   "crop": "Cucumber",
+   "name": "Bacterial Wilt",
+   "label": "Cucumber Bacterial Wilt",
+   "key": "cucumber-bacterial-wilt"
+  },
+  {
+   "raw": "cucumber powdery mildew",
+   "kind": "disease",
+   "crop": "Cucumber",
+   "name": "Powdery Mildew",
+   "label": "Cucumber Powdery Mildew",
+   "key": "cucumber-powdery-mildew"
+  },
+  {
+   "raw": "eggplant cercospora leaf spot",
+   "kind": "disease",
+   "crop": "Eggplant",
+   "name": "Cercospora Leaf Spot",
+   "label": "Eggplant Cercospora Leaf Spot",
+   "key": "eggplant-cercospora-leaf-spot"
+  },
+  {
+   "raw": "eggplant phomopsis fruit rot",
+   "kind": "disease",
+   "crop": "Eggplant",
+   "name": "Phomopsis Fruit Rot",
+   "label": "Eggplant Phomopsis Fruit Rot",
+   "key": "eggplant-phomopsis-fruit-rot"
+  },
+  {
+   "raw": "eggplant phytophthora blight",
+   "kind": "disease",
+   "crop": "Eggplant",
+   "name": "Phytophthora Blight",
+   "label": "Eggplant Phytophthora Blight",
+   "key": "eggplant-phytophthora-blight"
+  },
+  {
+   "raw": "garlic leaf blight",
+   "kind": "disease",
+   "crop": "Garlic",
+   "name": "Leaf Blight",
+   "label": "Garlic Leaf Blight",
+   "key": "garlic-leaf-blight"
+  },
+  {
+   "raw": "garlic rust",
+   "kind": "disease",
+   "crop": "Garlic",
+   "name": "Rust",
+   "label": "Garlic Rust",
+   "key": "garlic-rust"
+  },
+  {
+   "raw": "ginger leaf spot",
+   "kind": "disease",
+   "crop": "Ginger",
+   "name": "Leaf Spot",
+   "label": "Ginger Leaf Spot",
+   "key": "ginger-leaf-spot"
+  },
+  {
+   "raw": "ginger sheath blight",
+   "kind": "disease",
+   "crop": "Ginger",
+   "name": "Sheath Blight",
+   "label": "Ginger Sheath Blight",
+   "key": "ginger-sheath-blight"
+  },
+  {
+   "raw": "grape black rot",
+   "kind": "disease",
+   "crop": "Grape",
+   "name": "Black Rot",
+   "label": "Grape Black Rot",
+   "key": "grape-black-rot"
+  },
+  {
+   "raw": "grape downy mildew",
+   "kind": "disease",
+   "crop": "Grape",
+   "name": "Downy Mildew",
+   "label": "Grape Downy Mildew",
+   "key": "grape-downy-mildew"
+  },
+  {
+   "raw": "grape leaf spot",
+   "kind": "disease",
+   "crop": "Grape",
+   "name": "Leaf Spot",
+   "label": "Grape Leaf Spot",
+   "key": "grape-leaf-spot"
+  },
+  {
+   "raw": "grapevine leafroll disease",
+   "kind": "disease",
+   "crop": "Grape",
+   "name": "Leafroll Disease",
+   "label": "Grape Leafroll Disease",
+   "key": "grape-leafroll-disease"
+  },
+  {
+   "raw": "lettuce downy mildew",
+   "kind": "disease",
+   "crop": "Lettuce",
+   "name": "Downy Mildew",
+   "label": "Lettuce Downy Mildew",
+   "key": "lettuce-downy-mildew"
+  },
+  {
+   "raw": "lettuce mosaic virus",
+   "kind": "disease",
+   "crop": "Lettuce",
+   "name": "Mosaic Virus",
+   "label": "Lettuce Mosaic Virus",
+   "key": "lettuce-mosaic-virus"
+  },
+  {
+   "raw": "maple tar spot",
+   "kind": "disease",
+   "crop": "Maple",
+   "name": "Tar Spot",
+   "label": "Maple Tar Spot",
+   "key": "maple-tar-spot"
+  },
+  {
+   "raw": "peach anthracnose",
+   "kind": "disease",
+   "crop": "Peach",
+   "name": "Anthracnose",
+   "label": "Peach Anthracnose",
+   "key": "peach-anthracnose"
+  },
+  {
+   "raw": "peach brown rot",
+   "kind": "disease",
+   "crop": "Peach",
+   "name": "Brown Rot",
+   "label": "Peach Brown Rot",
+   "key": "peach-brown-rot"
+  },
+  {
+   "raw": "peach leaf curl",
+   "kind": "disease",
+   "crop": "Peach",
+   "name": "Leaf Curl",
+   "label": "Peach Leaf Curl",
+   "key": "peach-leaf-curl"
+  },
+  {
+   "raw": "peach rust",
+   "kind": "disease",
+   "crop": "Peach",
+   "name": "Rust",
+   "label": "Peach Rust",
+   "key": "peach-rust"
+  },
+  {
+   "raw": "peach scab",
+   "kind": "disease",
+   "crop": "Peach",
+   "name": "Scab",
+   "label": "Peach Scab",
+   "key": "peach-scab"
+  },
+  {
+   "raw": "plum bacterial spot",
+   "kind": "disease",
+   "crop": "Plum",
+   "name": "Bacterial Spot",
+   "label": "Plum Bacterial Spot",
+   "key": "plum-bacterial-spot"
+  },
+  {
+   "raw": "plum brown rot",
+   "kind": "disease",
+   "crop": "Plum",
+   "name": "Brown Rot",
+   "label": "Plum Brown Rot",
+   "key": "plum-brown-rot"
+  },
+  {
+   "raw": "plum pocket disease",
+   "kind": "disease",
+   "crop": "Plum",
+   "name": "Pocket Disease",
+   "label": "Plum Pocket Disease",
+   "key": "plum-pocket-disease"
+  },
+  {
+   "raw": "plum pox virus",
+   "kind": "disease",
+   "crop": "Plum",
+   "name": "Pox Virus",
+   "label": "Plum Pox Virus",
+   "key": "plum-pox-virus"
+  },
+  {
+   "raw": "plum rust",
+   "kind": "disease",
+   "crop": "Plum",
+   "name": "Rust",
+   "label": "Plum Rust",
+   "key": "plum-rust"
+  },
+  {
+   "raw": "raspberry fire blight",
+   "kind": "disease",
+   "crop": "Raspberry",
+   "name": "Fire Blight",
+   "label": "Raspberry Fire Blight",
+   "key": "raspberry-fire-blight"
+  },
+  {
+   "raw": "raspberry gray mold",
+   "kind": "disease",
+   "crop": "Raspberry",
+   "name": "Gray Mold",
+   "label": "Raspberry Gray Mold",
+   "key": "raspberry-gray-mold"
+  },
+  {
+   "raw": "raspberry leaf spot",
+   "kind": "disease",
+   "crop": "Raspberry",
+   "name": "Leaf Spot",
+   "label": "Raspberry Leaf Spot",
+   "key": "raspberry-leaf-spot"
+  },
+  {
+   "raw": "raspberry yellow rust",
+   "kind": "disease",
+   "crop": "Raspberry",
+   "name": "Yellow Rust",
+   "label": "Raspberry Yellow Rust",
+   "key": "raspberry-yellow-rust"
+  },
+  {
+   "raw": "rice blast",
+   "kind": "disease",
+   "crop": "Rice",
+   "name": "Blast",
+   "label": "Rice Blast",
+   "key": "rice-blast"
+  },
+  {
+   "raw": "rice sheath blight",
+   "kind": "disease",
+   "crop": "Rice",
+   "name": "Sheath Blight",
+   "label": "Rice Sheath Blight",
+   "key": "rice-sheath-blight"
+  },
+  {
+   "raw": "soybean bacterial blight",
+   "kind": "disease",
+   "crop": "Soybean",
+   "name": "Bacterial Blight",
+   "label": "Soybean Bacterial Blight",
+   "key": "soybean-bacterial-blight"
+  },
+  {
+   "raw": "soybean brown spot",
+   "kind": "disease",
+   "crop": "Soybean",
+   "name": "Brown Spot",
+   "label": "Soybean Brown Spot",
+   "key": "soybean-brown-spot"
+  },
+  {
+   "raw": "soybean downy mildew",
+   "kind": "disease",
+   "crop": "Soybean",
+   "name": "Downy Mildew",
+   "label": "Soybean Downy Mildew",
+   "key": "soybean-downy-mildew"
+  },
+  {
+   "raw": "soybean frog eye leaf spot",
+   "kind": "disease",
+   "crop": "Soybean",
+   "name": "Frog Eye Leaf Spot",
+   "label": "Soybean Frog Eye Leaf Spot",
+   "key": "soybean-frog-eye-leaf-spot"
+  },
+  {
+   "raw": "soybean mosaic",
+   "kind": "disease",
+   "crop": "Soybean",
+   "name": "Mosaic",
+   "label": "Soybean Mosaic",
+   "key": "soybean-mosaic"
+  },
+  {
+   "raw": "soybean rust",
+   "kind": "disease",
+   "crop": "Soybean",
+   "name": "Rust",
+   "label": "Soybean Rust",
+   "key": "soybean-rust"
+  },
+  {
+   "raw": "squash powdery mildew",
+   "kind": "disease",
+   "crop": "Squash",
+   "name": "Powdery Mildew",
+   "label": "Squash Powdery Mildew",
+   "key": "squash-powdery-mildew"
+  },
+  {
+   "raw": "strawberry anthracnose",
+   "kind": "disease",
+   "crop": "Strawberry",
+   "name": "Anthracnose",
+   "label": "Strawberry Anthracnose",
+   "key": "strawberry-anthracnose"
+  },
+  {
+   "raw": "strawberry leaf scorch",
+   "kind": "disease",
+   "crop": "Strawberry",
+   "name": "Leaf Scorch",
+   "label": "Strawberry Leaf Scorch",
+   "key": "strawberry-leaf-scorch"
+  },
+  {
+   "raw": "tobacco blue mold",
+   "kind": "disease",
+   "crop": "Tobacco",
+   "name": "Blue Mold",
+   "label": "Tobacco Blue Mold",
+   "key": "tobacco-blue-mold"
+  },
+  {
+   "raw": "tobacco brown spot",
+   "kind": "disease",
+   "crop": "Tobacco",
+   "name": "Brown Spot",
+   "label": "Tobacco Brown Spot",
+   "key": "tobacco-brown-spot"
+  },
+  {
+   "raw": "tobacco frogeye leaf spot",
+   "kind": "disease",
+   "crop": "Tobacco",
+   "name": "Frogeye Leaf Spot",
+   "label": "Tobacco Frogeye Leaf Spot",
+   "key": "tobacco-frogeye-leaf-spot"
+  },
+  {
+   "raw": "tobacco mosaic virus",
+   "kind": "disease",
+   "crop": "Tobacco",
+   "name": "Mosaic Virus",
+   "label": "Tobacco Mosaic Virus",
+   "key": "tobacco-mosaic-virus"
+  },
+  {
+   "raw": "tomato bacterial leaf spot",
+   "kind": "disease",
+   "crop": "Tomato",
+   "name": "Bacterial Spot",
+   "label": "Tomato Bacterial Spot",
+   "key": "tomato-bacterial-spot"
+  },
+  {
+   "raw": "wheat bacterial leaf streak (black chaff)",
+   "kind": "disease",
+   "crop": "Wheat",
+   "name": "Bacterial Leaf Streak (Black Chaff)",
+   "label": "Wheat Bacterial Leaf Streak (Black Chaff)",
+   "key": "wheat-bacterial-leaf-streak-black-chaff"
+  },
+  {
+   "raw": "wheat head scab",
+   "kind": "disease",
+   "crop": "Wheat",
+   "name": "Head Scab",
+   "label": "Wheat Head Scab",
+   "key": "wheat-head-scab"
+  },
+  {
+   "raw": "wheat leaf rust",
+   "kind": "disease",
+   "crop": "Wheat",
+   "name": "Leaf Rust",
+   "label": "Wheat Leaf Rust",
+   "key": "wheat-leaf-rust"
+  },
+  {
+   "raw": "wheat loose smut",
+   "kind": "disease",
+   "crop": "Wheat",
+   "name": "Loose Smut",
+   "label": "Wheat Loose Smut",
+   "key": "wheat-loose-smut"
+  },
+  {
+   "raw": "wheat powdery mildew",
+   "kind": "disease",
+   "crop": "Wheat",
+   "name": "Powdery Mildew",
+   "label": "Wheat Powdery Mildew",
+   "key": "wheat-powdery-mildew"
+  },
+  {
+   "raw": "wheat septoria blotch",
+   "kind": "disease",
+   "crop": "Wheat",
+   "name": "Septoria Blotch",
+   "label": "Wheat Septoria Blotch",
+   "key": "wheat-septoria-blotch"
+  },
+  {
+   "raw": "wheat stem rust",
+   "kind": "disease",
+   "crop": "Wheat",
+   "name": "Stem Rust",
+   "label": "Wheat Stem Rust",
+   "key": "wheat-stem-rust"
+  },
+  {
+   "raw": "wheat stripe rust",
+   "kind": "disease",
+   "crop": "Wheat",
+   "name": "Stripe Rust",
+   "label": "Wheat Stripe Rust",
+   "key": "wheat-stripe-rust"
+  },
+  {
+   "raw": "zucchini bacterial wilt",
+   "kind": "disease",
+   "crop": "Zucchini",
+   "name": "Bacterial Wilt",
+   "label": "Zucchini Bacterial Wilt",
+   "key": "zucchini-bacterial-wilt"
+  },
+  {
+   "raw": "zucchini downy mildew",
+   "kind": "disease",
+   "crop": "Zucchini",
+   "name": "Downy Mildew",
+   "label": "Zucchini Downy Mildew",
+   "key": "zucchini-downy-mildew"
+  },
+  {
+   "raw": "zucchini powdery mildew",
+   "kind": "disease",
+   "crop": "Zucchini",
+   "name": "Powdery Mildew",
+   "label": "Zucchini Powdery Mildew",
+   "key": "zucchini-powdery-mildew"
+  },
+  {
+   "raw": "zucchini yellow mosaic virus",
+   "kind": "disease",
+   "crop": "Zucchini",
+   "name": "Yellow Mosaic Virus",
+   "label": "Zucchini Yellow Mosaic Virus",
+   "key": "zucchini-yellow-mosaic-virus"
+  },
+  {
+   "raw": "apple leaf",
+   "kind": "healthy",
+   "crop": "Apple",
+   "name": "Healthy",
+   "label": "Apple Healthy",
+   "key": "apple-healthy"
+  },
+  {
+   "raw": "tomato leaf",
+   "kind": "healthy",
+   "crop": "Tomato",
+   "name": "Healthy",
+   "label": "Tomato Healthy",
+   "key": "tomato-healthy"
+  },
+  {
+   "raw": "rice leaf",
+   "kind": "healthy",
+   "crop": "Rice",
+   "name": "Healthy",
+   "label": "Rice Healthy",
+   "key": "rice-healthy"
+  },
+  {
+   "raw": "pepper bell healthy",
+   "kind": "healthy",
+   "crop": "Bell Pepper",
+   "name": "Healthy",
+   "label": "Bell Pepper Healthy",
+   "key": "bell-pepper-healthy"
+  },
+  {
+   "raw": "bell pepper leaf",
+   "kind": "healthy",
+   "crop": "Bell Pepper",
+   "name": "Healthy",
+   "label": "Bell Pepper Healthy",
+   "key": "bell-pepper-healthy"
+  },
+  {
+   "raw": "Corn (maize) Common rust",
+   "kind": "disease",
+   "crop": "Corn",
+   "name": "Rust",
+   "label": "Corn Rust",
+   "key": "corn-rust"
+  },
+  {
+   "raw": "Corn (maize) healthy",
+   "kind": "healthy",
+   "crop": "Corn",
+   "name": "Healthy",
+   "label": "Corn Healthy",
+   "key": "corn-healthy"
+  },
+  {
+   "raw": "grapevine leafroll disease",
+   "kind": "disease",
+   "crop": "Grape",
+   "name": "Leafroll Disease",
+   "label": "Grape Leafroll Disease",
+   "key": "grape-leafroll-disease"
+  },
+  {
+   "raw": "grape leaf",
+   "kind": "healthy",
+   "crop": "Grape",
+   "name": "Healthy",
+   "label": "Grape Healthy",
+   "key": "grape-healthy"
+  },
+  {
+   "raw": "Potato Healthy",
+   "kind": "healthy",
+   "crop": "Potato",
+   "name": "Healthy",
+   "label": "Potato Healthy",
+   "key": "potato-healthy"
+  },
+  {
+   "raw": "Tomato Spider Mites",
+   "kind": "disease",
+   "crop": "Tomato",
+   "name": "Spider Mites",
+   "label": "Tomato Spider Mites",
+   "key": "tomato-spider-mites"
+  },
+  {
+   "raw": "Pest brown plant hopper",
+   "kind": "pest",
+   "crop": null,
+   "name": "brown plant hopper",
+   "label": "Pest brown plant hopper",
+   "key": "pest-brown-plant-hopper"
+  },
+  {
+   "raw": "  tomato   early_blight  ",
+   "kind": "disease",
+   "crop": "Tomato",
+   "name": "Early Blight",
+   "label": "Tomato Early Blight",
+   "key": "tomato-early-blight"
+  },
+  {
+   "raw": "Maize Gray Leaf Spot",
+   "kind": "disease",
+   "crop": "Corn",
+   "name": "Gray Leaf Spot",
+   "label": "Corn Gray Leaf Spot",
+   "key": "corn-gray-leaf-spot"
+  },
+  {
+   "raw": "orange haunglongbing",
+   "kind": "disease",
+   "crop": "Orange",
+   "name": "Haunglongbing",
+   "label": "Orange Haunglongbing",
+   "key": "orange-haunglongbing"
+  }
+ ],
+ "junk": [
+  "images",
+  "Images",
+  "train",
+  "val",
+  "unknown",
+  "other"
+ ],
+ "notjunk": [
+  "rice leaf",
+  "tomato"
+ ]
+}

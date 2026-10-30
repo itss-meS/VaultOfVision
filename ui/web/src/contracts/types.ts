@@ -13,6 +13,14 @@ export interface VisionResult {
 
 export type Priority = "critical" | "high" | "normal";
 
+export interface AdvisoryDetails {
+  summary: string;
+  symptoms: string[];
+  causes: string[];
+  help?: string;
+  sources: Array<{ title: string; url: string }>;
+}
+
 export interface Advisory {
   schema_version: "advisory_v3";
   diagnosis: { primary: string; confidence: number; differential: string[] };
@@ -25,6 +33,7 @@ export interface Advisory {
   preventive: string[];
   safety_notice: string;
   lang: Lang;
+  details?: AdvisoryDetails;
 }
 
 export interface DosageResult {
@@ -38,7 +47,8 @@ export interface DosageResult {
   notes?: string | null;
 }
 
-export type AdvisorySource = "llm" | "fallback" | "refusal" | "retake";
+export type AdvisorySource =
+  "llm" | "knowledge" | "fallback" | "refusal" | "retake";
 
 export interface AdvisoryResponse {
   case_id: string | null;
@@ -133,7 +143,13 @@ export interface EngineClient {
   deleteAccount(password: string): Promise<void>;
   analyzeImage(photo: Blob): Promise<VisionResult>;
   candidates(): Candidate[];
-  chat(history: ChatTurn[], lang: Lang, topic?: string): Promise<string>;
+  chat(
+    history: ChatTurn[],
+    lang: Lang,
+    topic?: string,
+    onPartial?: (text: string) => void,
+  ): Promise<string>;
+  warmUp(): Promise<void>;
   ask(
     query: string,
     vision: VisionResult | undefined,

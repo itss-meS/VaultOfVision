@@ -4,6 +4,11 @@ const TOKEN = /[\p{L}\p{N}\p{M}]{2,}/gu;
 const K1 = 1.2;
 const B = 0.75;
 const FILTERS = ["crop", "disease", "lang", "region", "stage"] as const;
+const STOP = new Set(
+  "a an the is are was were be to of in on at by for from with and or but so if as it its this that these those i me my we our you your he she they them what which who whom how why when where do does did can could should would will shall may might have has had not no yes please tell about there here than then also very just into over under".split(
+    " ",
+  ),
+);
 
 function tokens(text: string): string[] {
   return (text.normalize("NFKC").toLowerCase().match(TOKEN) ?? []).slice(
@@ -49,13 +54,19 @@ export class Bm25Retriever implements Retriever {
         stage: String(d["stage"] ?? "any"),
         lang: String(d["lang"] ?? "en"),
         region: String(d["region"] ?? "any"),
+        ...(typeof d["source"] === "string" && d["source"] !== ""
+          ? { source: d["source"] }
+          : {}),
       });
     }
     return new Bm25Retriever(chunks);
   }
 
   search(query: string, filters: Record<string, string>, k: number): Chunk[] {
-    const terms = [...new Set(tokens(query))].slice(0, 12);
+    const terms = [...new Set(tokens(query).filter((t) => !STOP.has(t)))].slice(
+      0,
+      12,
+    );
     if (terms.length === 0) return [];
     const n = this.docs.length;
     const scored: Chunk[] = [];

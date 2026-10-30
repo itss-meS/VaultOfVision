@@ -21,9 +21,13 @@ import {
   buildChatMessages,
   CHAT_TOKENS,
   cleanHistory,
-  guardReply,
+  finishReply,
+  MAX_CONTEXT,
+  selectContext,
+  StreamGuard,
 } from "./chat";
 import { type CropGate, DEFAULT_GATE, screenDetection } from "./crop";
+import { KnowledgeBase } from "./knowledge";
 import { Throttle } from "./localAuth";
 import {
   DEFAULT_CONFIG,
@@ -35,7 +39,7 @@ import { type RuleEngine, rulesFromDocument } from "./rules";
 import { kindFor, Scans } from "./scans";
 import { loadSignedJson, publicKeyFromPem } from "./signing";
 import { dosageFromDocument } from "./tools";
-import type { NativePorts, RawDetection, Retriever } from "./types";
+import type { Chunk, NativePorts, RawDetection, Retriever } from "./types";
 import { validateAdvisory, validateVision } from "./validate";
 
 export const ASSETS = {
@@ -45,6 +49,7 @@ export const ASSETS = {
   dosage: "knowledge/dosage_table.json",
   dosageSig: "knowledge/dosage_table.json.sig",
   chunks: "knowledge/chunks.jsonl",
+  cards: "knowledge/cards.json",
 } as const;
 
 export interface LocalEngineOptions {
@@ -53,6 +58,8 @@ export interface LocalEngineOptions {
   maxImageBytes: number;
   pinIterations: number;
   gate: CropGate;
+  groundScore: number;
+  llmAdvice: boolean;
 }
 
 export const DEFAULT_OPTIONS: LocalEngineOptions = {
@@ -61,6 +68,8 @@ export const DEFAULT_OPTIONS: LocalEngineOptions = {
   maxImageBytes: 8_000_000,
   pinIterations: 210000,
   gate: DEFAULT_GATE,
+  groundScore: 3,
+  llmAdvice: false,
 };
 
 const dec = new TextDecoder();
@@ -68,10 +77,20 @@ const dec = new TextDecoder();
 interface Loaded {
   orchestrator: Orchestrator;
   rules: RuleEngine;
+  retriever: Retriever;
   bannedVersion: number;
 }
 
 const MAX_CANDIDATES = 3;
+
+function asSource(value: unknown): AdvisoryResponse["source"] {
+  return value === "llm" ||
+    value === "knowledge" ||
+    value === "refusal" ||
+    value === "retake"
+    ? value
+    : "fallback";
+}
 
 interface Store {
   accounts: Accounts;
@@ -155,15 +174,27 @@ export class LocalEngineClient implements EngineClient {
       const retriever: Retriever = chunks
         ? Bm25Retriever.fromJsonl(dec.decode(chunks))
         : new Bm25Retriever([]);
+      const cards = await p.readAsset(ASSETS.cards);
+      let kb = KnowledgeBase.empty();
+      if (cards) {
+        try {
+          kb = KnowledgeBase.fromJson(dec.decode(cards));
+        } catch {
+          kb = KnowledgeBase.empty();
+        }
+      }
       return {
         orchestrator: new Orchestrator(
           p,
           retriever,
           rules,
           table,
-          DEFAULT_CONFIG,
+          { ...DEFAULT_CONFIG, llmAdvice: this.opts.llmAdvice },
+          () => Date.now(),
+          kb,
         ),
         rules,
+        retriever,
         bannedVersion: rules.version,
       };
     } catch {
@@ -329,20 +360,65 @@ export class LocalEngineClient implements EngineClient {
     }));
   }
 
-  async chat(history: ChatTurn[], lang: Lang, topic?: string): Promise<string> {
+  private retrieve(
+    retriever: Retriever,
+    rules: RuleEngine,
+    question: string,
+    topic: string | undefined,
+    lang: Lang,
+  ): Chunk[] {
+    const query = `${question} ${topic ?? ""}`;
+    let found = retriever.search(query, { lang }, MAX_CONTEXT + 2);
+    if (found.length === 0 && lang !== "en")
+      found = retriever.search(query, { lang: "en" }, MAX_CONTEXT + 2);
+    return found.filter(
+      (c) => c.score >= this.opts.groundScore && rules.isClean(c.text),
+    );
+  }
+
+  async warmUp(): Promise<void> {
+    this.requireUser();
+    try {
+      await this.ready();
+      await this.ports.warmUp();
+    } catch {
+      return;
+    }
+  }
+
+  async chat(
+    history: ChatTurn[],
+    lang: Lang,
+    topic?: string,
+    onPartial?: (text: string) => void,
+  ): Promise<string> {
     this.requireUser();
     const turns = cleanHistory(history);
     if (turns === null) throw new EngineError("rejected", "invalid message");
     if (this.busy) throw new EngineError("busy", "engine busy");
     this.busy = true;
     try {
-      const { rules } = await this.ready();
+      const { rules, retriever } = await this.ready();
+      const question = turns[turns.length - 1]?.content ?? "";
+      const found = this.retrieve(retriever, rules, question, topic, lang);
+      const context = selectContext(found);
+      const used = found.slice(0, context.length);
+      const messages = buildChatMessages(turns, lang, topic, context);
+      const guard = new StreamGuard(rules);
+      let shown = "";
+      const onToken =
+        onPartial === undefined
+          ? undefined
+          : (piece: string) => {
+              const next = guard.push(piece);
+              if (next !== shown) {
+                shown = next;
+                onPartial(next);
+              }
+            };
       let raw: string;
       try {
-        raw = await this.ports.generate(
-          buildChatMessages(turns, lang, topic),
-          CHAT_TOKENS,
-        );
+        raw = await this.ports.generate(messages, CHAT_TOKENS, onToken);
       } catch (err) {
         const text = err instanceof Error ? err.message : "";
         if (text === "llm_unavailable")
@@ -351,7 +427,13 @@ export class LocalEngineClient implements EngineClient {
           throw new EngineError("llm", text.slice(0, 200));
         throw new EngineError("unknown", "chat failed");
       }
-      return guardReply(raw, lang, rules);
+      return finishReply(
+        raw,
+        lang,
+        rules,
+        used.map((c) => c.source ?? ""),
+        context.length > 0,
+      );
     } catch (err) {
       if (err instanceof EngineError) throw err;
       throw new EngineError("unknown", "chat failed");
@@ -481,7 +563,7 @@ export class LocalEngineClient implements EngineClient {
       const advisory = validateAdvisory(entry["advisory"]);
       return {
         case_id: null,
-        source: entry["source"] === "llm" ? "llm" : "fallback",
+        source: asSource(entry["source"]),
         advisory,
         dosage: (entry["dosage"] as AdvisoryResponse["dosage"]) ?? null,
       };
