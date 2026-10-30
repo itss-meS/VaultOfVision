@@ -19,6 +19,16 @@ export const T: Record<Lang, Record<string, string>> = {
     healthy_diag: "Healthy",
     healthy_action:
       "No disease detected. Keep monitoring the plants regularly.",
+    nodata_general:
+      "The scan found a possible plant health problem. Detailed advice for this crop and problem is not available on this device yet.",
+    nodata_refer:
+      "Show the affected plant to your local agriculture extension officer and ask for advice before using any spray.",
+    healthy_tip1:
+      "Check leaves and stems every week, including the underside of leaves, so problems are found early.",
+    healthy_tip2:
+      "Water at the base of the plant and avoid keeping the leaves wet for long periods.",
+    healthy_tip3:
+      "Remove fallen leaves and weeds and keep tools clean to reduce the spread of disease and insects.",
     generic_disease_1:
       "Remove the badly affected leaves and keep them away from healthy plants.",
     generic_disease_2:
@@ -50,6 +60,16 @@ export const T: Record<Lang, Record<string, string>> = {
       "किसी भी फसल सुरक्षा उत्पाद को संभालते समय दस्ताने और मास्क पहनें और लेबल के निर्देश मानें।",
     healthy_diag: "स्वस्थ",
     healthy_action: "कोई रोग नहीं मिला। पौधों की नियमित निगरानी करते रहें।",
+    nodata_general:
+      "स्कैन में पौधे के स्वास्थ्य की एक संभावित समस्या मिली है। इस फसल और समस्या के लिए विस्तृत सलाह अभी इस उपकरण पर उपलब्ध नहीं है।",
+    nodata_refer:
+      "प्रभावित पौधा अपने स्थानीय कृषि विस्तार अधिकारी को दिखाएँ और कोई भी छिड़काव करने से पहले उनसे सलाह लें।",
+    healthy_tip1:
+      "हर हफ्ते पत्तियों और तनों की, पत्तियों के निचले हिस्से सहित, जाँच करें ताकि समस्या जल्दी पकड़ में आए।",
+    healthy_tip2:
+      "पौधे की जड़ के पास पानी दें और पत्तियों को लंबे समय तक गीला न रहने दें।",
+    healthy_tip3:
+      "गिरी हुई पत्तियाँ और खरपतवार हटाएँ और औज़ार साफ़ रखें, ताकि रोग और कीटों का फैलाव कम हो।",
     generic_disease_1:
       "बहुत प्रभावित पत्तियाँ हटा दें और उन्हें स्वस्थ पौधों से दूर रखें।",
     generic_disease_2:
@@ -80,6 +100,16 @@ export const T: Record<Lang, Record<string, string>> = {
       "कोणतेही पीक संरक्षण उत्पादन हाताळताना हातमोजे आणि मास्क वापरा आणि लेबलवरील सूचना पाळा.",
     healthy_diag: "निरोगी",
     healthy_action: "कोणताही रोग आढळला नाही. झाडांवर नियमित लक्ष ठेवा.",
+    nodata_general:
+      "स्कॅनमध्ये वनस्पतीच्या आरोग्याची संभाव्य समस्या आढळली आहे. या पिकासाठी आणि समस्येसाठी सविस्तर सल्ला अद्याप या उपकरणावर उपलब्ध नाही.",
+    nodata_refer:
+      "बाधित झाड तुमच्या स्थानिक कृषी विस्तार अधिकाऱ्याला दाखवा आणि कोणतीही फवारणी करण्यापूर्वी त्यांचा सल्ला घ्या.",
+    healthy_tip1:
+      "दर आठवड्याला पानांची आणि खोडांची, पानांच्या खालच्या बाजूसह, तपासणी करा म्हणजे समस्या लवकर लक्षात येईल.",
+    healthy_tip2:
+      "झाडाच्या बुडाशी पाणी द्या आणि पाने जास्त वेळ ओली राहू देऊ नका.",
+    healthy_tip3:
+      "गळलेली पाने आणि तण काढून टाका आणि अवजारे स्वच्छ ठेवा म्हणजे रोग आणि किडींचा प्रसार कमी होईल.",
     generic_disease_1:
       "जास्त बाधित पाने काढून टाका आणि ती निरोगी झाडांपासून दूर ठेवा.",
     generic_disease_2:
@@ -111,6 +141,16 @@ export const T: Record<Lang, Record<string, string>> = {
     healthy_diag: "ఆరోగ్యంగా ఉంది",
     healthy_action:
       "ఎలాంటి వ్యాధి కనుగొనబడలేదు. మొక్కలను క్రమం తప్పకుండా గమనిస్తూ ఉండండి.",
+    nodata_general:
+      "స్కాన్‌లో మొక్క ఆరోగ్యానికి సంబంధించిన ఒక సమస్య ఉండే అవకాశం కనిపించింది. ఈ పంట మరియు సమస్యకు వివరణాత్మక సలహా ప్రస్తుతం ఈ పరికరంలో అందుబాటులో లేదు.",
+    nodata_refer:
+      "ప్రభావితమైన మొక్కను మీ స్థానిక వ్యవసాయ విస్తరణ అధికారికి చూపించి, ఏదైనా పిచికారీ చేసే ముందు వారి సలహా తీసుకోండి.",
+    healthy_tip1:
+      "సమస్యలను ముందుగానే గుర్తించడానికి ప్రతి వారం ఆకులు, కాండాలను, ఆకుల కింది వైపుతో సహా, పరిశీలించండి.",
+    healthy_tip2:
+      "మొక్క మొదలు దగ్గర నీరు పోయండి; ఆకులు ఎక్కువసేపు తడిగా ఉండకుండా చూడండి.",
+    healthy_tip3:
+      "రాలిన ఆకులను, కలుపు మొక్కలను తొలగించండి; వ్యాధులు, పురుగుల వ్యాప్తి తగ్గడానికి పనిముట్లను శుభ్రంగా ఉంచండి.",
     generic_disease_1:
       "బాగా దెబ్బతిన్న ఆకులను తొలగించి, ఆరోగ్యకరమైన మొక్కలకు దూరంగా ఉంచండి.",
     generic_disease_2:
@@ -178,6 +218,7 @@ function base(
   conf: number,
   actions: ActionPair[],
   severity: SeverityInfo | null,
+  preventive: string[] = [],
 ): Advisory {
   return {
     schema_version: "advisory_v3",
@@ -189,7 +230,7 @@ function base(
     severity,
     actions: actions.map(([t, priority]) => ({ text: t, priority })),
     tool_call: null,
-    preventive: [],
+    preventive,
     safety_notice: text(lang, "safety"),
     lang,
   };
@@ -257,6 +298,30 @@ export function healthy(lang: Lang, confidence: number): Advisory {
     confidence,
     [[text(lang, "healthy_action"), "normal"]],
     null,
+    [
+      text(lang, "healthy_tip1"),
+      text(lang, "healthy_tip2"),
+      text(lang, "healthy_tip3"),
+    ],
+  );
+}
+
+export function noData(
+  lang: Lang,
+  diag: string,
+  confidence: number,
+  severity: SeverityInfo | null,
+): Advisory {
+  return base(
+    lang,
+    diag,
+    confidence,
+    [
+      [text(lang, "nodata_general"), "normal"],
+      [text(lang, "dosage_missing"), "critical"],
+      [text(lang, "nodata_refer"), "high"],
+    ],
+    severity,
   );
 }
 

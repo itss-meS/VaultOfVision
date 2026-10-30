@@ -41,9 +41,13 @@ const SAMPLE_ADVISORY = {
       priority: "normal",
     },
   ],
-  tool_call: { tool: "calc_dosage", args: { crop: "tomato", area_ha: 1, severity: 1 } },
+  tool_call: {
+    tool: "calc_dosage",
+    args: { crop: "tomato", area_ha: 1, severity: 1 },
+  },
   preventive: ["Rotate crops each season.", "Space plants for air flow."],
-  safety_notice: "Development sample, not agronomic advice. Wear gloves when handling plants.",
+  safety_notice:
+    "Development sample, not agronomic advice. Wear gloves when handling plants.",
   lang: "en",
 };
 
@@ -62,10 +66,14 @@ export class DevBrowserPorts implements NativePorts {
 
   async warmUp(): Promise<void> {}
 
-
   async speak(text: string, lang: Lang): Promise<void> {
     if (typeof speechSynthesis === "undefined") return;
-    const tags: Record<Lang, string> = { en: "en-IN", hi: "hi-IN", mr: "mr-IN", te: "te-IN" };
+    const tags: Record<Lang, string> = {
+      en: "en-IN",
+      hi: "hi-IN",
+      mr: "mr-IN",
+      te: "te-IN",
+    };
     const u = new SpeechSynthesisUtterance(text);
     u.lang = tags[lang];
     speechSynthesis.cancel();

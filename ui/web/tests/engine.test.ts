@@ -469,7 +469,9 @@ describe("chat", () => {
   it("answers through the language model with a farming prompt", async () => {
     const ports = new FakePorts({ replies: ["Water early in the morning."] });
     const e = await signedIn(ports);
-    expect(await e.chat(history, "hi")).toContain("Water early in the morning.");
+    expect(await e.chat(history, "hi")).toContain(
+      "Water early in the morning.",
+    );
     const sent = ports.prompts[0] ?? [];
     expect(sent[0]?.role).toBe("system");
     expect(sent[0]?.content).toContain("Hindi");

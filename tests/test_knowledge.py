@@ -85,7 +85,11 @@ def test_chunks_carry_source_and_filters():
     chunks = card_chunks(validate_card(GOOD))
     assert {c["id"].split(":")[1] for c in chunks} >= {"summary", "symptoms", "actions", "prevention"}
     assert all(c["crop"] == "Potato" and c["disease"] == "Late Blight" for c in chunks)
-    assert all(c["source"] == "Example extension page" for c in chunks)
+    assert all(
+        c["source"]
+        == {"document": "Example extension page", "url": "https://extension.example.edu/late-blight"}
+        for c in chunks
+    )
     assert all("Potato Late Blight" in c["text"] for c in chunks)
 
 

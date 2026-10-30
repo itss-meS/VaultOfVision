@@ -108,7 +108,12 @@
       "pest": "Insect and pest model",
       "cassava": "Cassava model"
     },
-    "all": "AI results from every model"
+    "all": "AI results from every model",
+    "risk": {
+      "low": "Marked areas: low risk",
+      "medium": "Marked areas: medium risk",
+      "high": "Marked areas: high risk"
+    }
   },
   "advisory": {
     "title": "Advice",

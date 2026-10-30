@@ -4,6 +4,16 @@ const TOKEN = /[\p{L}\p{N}\p{M}]{2,}/gu;
 const K1 = 1.2;
 const B = 0.75;
 const FILTERS = ["crop", "disease", "lang", "region", "stage"] as const;
+function sourceName(value: unknown): { source?: string } {
+  if (typeof value === "string" && value !== "") return { source: value };
+  if (typeof value === "object" && value !== null) {
+    const v = value as Record<string, unknown>;
+    const name = v["document"] ?? v["title"];
+    if (typeof name === "string" && name !== "") return { source: name };
+  }
+  return {};
+}
+
 const STOP = new Set(
   "a an the is are was were be to of in on at by for from with and or but so if as it its this that these those i me my we our you your he she they them what which who whom how why when where do does did can could should would will shall may might have has had not no yes please tell about there here than then also very just into over under".split(
     " ",
@@ -54,9 +64,7 @@ export class Bm25Retriever implements Retriever {
         stage: String(d["stage"] ?? "any"),
         lang: String(d["lang"] ?? "en"),
         region: String(d["region"] ?? "any"),
-        ...(typeof d["source"] === "string" && d["source"] !== ""
-          ? { source: d["source"] }
-          : {}),
+        ...sourceName(d["source"]),
       });
     }
     return new Bm25Retriever(chunks);

@@ -413,7 +413,7 @@ describe("orchestrator", () => {
       "",
       1,
     );
-    expect(h.source).toBe("knowledge");
+    expect(h.source).toBe("llm");
     expect(h.advisory.actions.length).toBe(1);
   });
   it("accepts a valid answer and rebuilds the tool call itself", async () => {

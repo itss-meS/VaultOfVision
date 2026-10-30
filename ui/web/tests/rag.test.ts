@@ -156,7 +156,7 @@ describe("advice from the knowledge base", () => {
       lang: "en",
     });
     expect(r.source).toBe("fallback");
-    expect(r.advisory.diagnosis.primary).toBe("brown plant hopper");
+    expect(r.advisory.diagnosis.primary).toBe("Brown Plant Hopper");
     expect(r.advisory.actions[0]?.text).toContain("insects");
   });
 

@@ -256,7 +256,7 @@ def card_chunks(card: dict[str, object]) -> list[dict[str, str]]:
         if tail.lower() not in head.lower():
             head = f"{head} ({tail})"
     sources = card["sources"]
-    first = sources[0]["title"] if isinstance(sources, list) and sources else ""
+    first = sources[0] if isinstance(sources, list) and sources else {"title": "", "url": ""}
     parts: list[tuple[str, str]] = [("summary", f"{head}. {card['summary']}")]
     symptoms = card["symptoms"]
     causes = card["causes"]
@@ -287,7 +287,7 @@ def card_chunks(card: dict[str, object]) -> list[dict[str, str]]:
             "stage": "any",
             "lang": str(card["lang"]),
             "region": "any",
-            "source": first,
+            "source": {"document": first["title"], "url": first["url"]},
         }
         for section, text in parts
     ]
@@ -300,7 +300,11 @@ def build(folder: Path, out: Path) -> tuple[int, int]:
     cards.sort(key=lambda c: (str(c["id"]), str(c["lang"])))
     doc = {"version": 1, "cards": cards}
     (out / "cards.json").write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    lines = [json.dumps(chunk, ensure_ascii=False) for card in cards for chunk in card_chunks(card)]
+    lines = []
+    base = folder.parent / "base_chunks.jsonl"
+    if base.exists():
+        lines.extend(line for line in base.read_text(encoding="utf-8").splitlines() if line.strip())
+    lines.extend(json.dumps(chunk, ensure_ascii=False) for card in cards for chunk in card_chunks(card))
     (out / "chunks.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8")
     return len(cards), len(lines)
 
